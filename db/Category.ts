@@ -1,8 +1,32 @@
 import * as PouchDB from "pouchdb";
-import Metadata from './Metadata';
+import FlorinObject from './FlorinObject';
 
-export default interface Category {
-    metadata: Metadata
-  id: string;
-  name: string;
+export enum CategoryType {
+  EXPENSE = "EXPENSE",
+  INCOME = "INCOME"
 }
+
+export interface Category extends FlorinObject {
+  name: string;
+  parent: string | null;
+
+  type: string;
+};
+
+export const newCategory = (
+  id: string,
+  name: string,
+  parent: string | null = null,
+  type: CategoryType = CategoryType.EXPENSE
+): Category => {
+  return { metadata: { docType: "category" }, _id: id, name, parent, type };
+};
+
+export const seed = (): Array<Category> => {
+  return [
+    newCategory("automobile", "Automobile"),
+    newCategory("bankcharges", "Bank Charges"),
+    newCategory("bills", "Bills"),
+    newCategory("mortgage", "Mortgage")
+  ];
+};
