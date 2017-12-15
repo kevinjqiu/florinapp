@@ -1,11 +1,11 @@
 {
   "development": {
-    "storage": "./florin-dev.sqlite"
+    "storage": "./_storage/florin-dev.sqlite"
   },
   "test": {
-    "storage": "./test.sqlite"
+    "storage": "./_storage/test.sqlite"
   },
   "production": {
-    "storage": "./florin.sqlite"
+    "storage": "./_storage/florin.sqlite"
   }
 }
