@@ -1,7 +1,7 @@
 import * as express from "express";
 import * as healthController from "./controllers/health";
 import * as categoryController from "./controllers/category";
-import db from "./db";
+import { db } from "./db";
 import { seed } from "./db/seed";
 
 export default (app: express.Express) => {

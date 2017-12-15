@@ -1,5 +1,5 @@
 import { Response, Request } from "express";
-import db from "../db";
+import { db } from "../db";
 import { Category } from "../db/Category";
 
 class SearchResponse<T> {

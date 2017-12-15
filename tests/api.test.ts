@@ -1,5 +1,17 @@
 import app from "../index";
+import { db, init } from "../db";
 import * as supertest from "supertest";
+
+beforeEach(() => {
+    init();
+});
+
+afterEach(async () => {
+    const allDocs = await db.allDocs();
+    allDocs.rows.forEach(row => {
+       db.remove(<any>row);
+    });
+});
 
 test("health endpoint should return 200", () => {
     const request = supertest(app);
