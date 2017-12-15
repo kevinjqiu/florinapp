@@ -6,7 +6,7 @@ export enum CategoryType {
   INCOME = "INCOME",
 
   TRANSFER = "TRANSFER"
-}
+};
 
 export interface Category extends FlorinBase {
   name: string;
