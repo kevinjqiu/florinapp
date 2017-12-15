@@ -1,12 +1,12 @@
 import * as PouchDB from "pouchdb";
-import FlorinObject from './FlorinObject';
+import FlorinBase from './FlorinBase';
 
 export enum CategoryType {
   EXPENSE = "EXPENSE",
   INCOME = "INCOME"
 }
 
-export interface Category extends FlorinObject {
+export interface Category extends FlorinBase {
   name: string;
   parent: string | null;
 
