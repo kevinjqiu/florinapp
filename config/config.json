@@ -1,0 +1,11 @@
+{
+  "development": {
+    "storage": "./florin-dev.sqlite"
+  },
+  "test": {
+    "storage": "./test.sqlite"
+  },
+  "production": {
+    "storage": "./florin.sqlite"
+  }
+}
