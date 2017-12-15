@@ -20,11 +20,3 @@ export const search = async (req: CategorySearchRequest): Promise<SearchResponse
 
   return new SearchResponse<Category>(result.docs);
 };
-
-export const index = async (req: Request, resp: Response) => {
-  const result = await (<any>db).find({
-    selector: { "metadata.docType": "category" }
-  });
-  console.log(result);
-  resp.send(result);
-};
