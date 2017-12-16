@@ -1,20 +1,19 @@
 import * as PouchDB from "pouchdb";
-import FlorinBase from './FlorinBase';
+import FlorinBase from "./FlorinBase";
 
 export enum CategoryType {
   EXPENSE = "EXPENSE",
   INCOME = "INCOME",
-
   TRANSFER = "TRANSFER"
-};
+}
 
 export interface Category extends FlorinBase {
   name: string;
   parent: string | null;
-  type: string;
+  type: CategoryType;
   // Whether or not transactions are allowed to be tagged this category
   allowTransactions: boolean;
-};
+}
 
 export const newCategory = (
   id: string,

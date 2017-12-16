@@ -33,7 +33,6 @@ export const reset = async () => {
   allDocs.rows
     .filter(row => !(<any>row.id).startsWith("_design/"))
     .forEach(async row => {
-      console.log(row);
       await db.remove(row.id, row.value.rev);
     });
 };
