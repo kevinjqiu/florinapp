@@ -18,6 +18,7 @@
     "@types/node": "^7.0.50",
     "@types/pouchdb": "^6.3.2",
     "@types/sqlite3": "^3.1.1",
+    "@types/supertest": "^2.0.4",
     "@types/websql": "0.0.27",
     "jest": "^21.2.1",
     "nodemon": "^1.12.7",
@@ -37,22 +38,22 @@
     "sqlite3": "^3.1.13",
     "websql": "^0.4.4"
   },
-  "jest": {                                                                                                                                                                                   
-    "globals": {                                                                                                                                                                              
-      "ts-jest": {                                                                                                                                                                            
-        "tsConfigFile": "tsconfig.json"                                                                                                                                                       
-      }                                                                                                                                                                                       
-    },                                                                                                                                                                                        
-    "moduleFileExtensions": [                                                                                                                                                                 
-      "ts",                                                                                                                                                                                   
-      "js"                                                                                                                                                                                    
-    ],                                                                                                                                                                                        
-    "transform": {                                                                                                                                                                            
-      "^.+\\.(ts|tsx)$": "./node_modules/ts-jest/preprocessor.js"                                                                                                                             
-    },                                                                                                                                                                                        
-    "testMatch": [                                                                                                                                                                            
-      "**/tests/**/*.test.(ts|js)"                                                                                                                                                             
-    ],                                                                                                                                                                                        
-    "testEnvironment": "node"                                                                                                                                                                 
+  "jest": {
+    "globals": {
+      "ts-jest": {
+        "tsConfigFile": "tsconfig.json"
+      }
+    },
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "./node_modules/ts-jest/preprocessor.js"
+    },
+    "testMatch": [
+      "**/tests/**/*.test.(ts|js)"
+    ],
+    "testEnvironment": "node"
   }
 }

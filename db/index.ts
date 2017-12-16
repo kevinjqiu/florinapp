@@ -1,4 +1,5 @@
 import * as PouchDB from "pouchdb";
+import * as fs from "fs";
 
 export const init = () => {
   const config = require("../config/config.json");
@@ -20,4 +21,21 @@ export const init = () => {
   return db;
 };
 
-export const db = init();
+export const reset = async () => {
+  const config = require("../config/config.json");
+  if (process.env.NODE_ENV === "production") {
+    new Error(
+      "Cannot reset the production database. Please manually reset it."
+    );
+  }
+
+  const allDocs = await db.allDocs();
+  allDocs.rows
+    .filter(row => !(<any>row.id).startsWith("_design/"))
+    .forEach(async row => {
+      console.log(row);
+      await db.remove(row.id, row.value.rev);
+    });
+};
+
+export let db = init();
