@@ -4,6 +4,7 @@ import { db, reset } from "../db";
 import * as supertest from "supertest";
 import * as assert from "assert";
 import { newCategory } from "../db/Category";
+import { newAccount, AccountType } from "../db/Account";
 import CategoryDTO from "../dtos/Category";
 
 beforeEach(async () => {
@@ -28,7 +29,7 @@ describe("Category endpoints", () => {
   test("GET /categories: No categories", async () => {
     const request = supertest(app);
     const response = await request.get("/api/v2/categories").expect(200);
-    expect(response.body).toBe({ total: 0, result: [] });
+    expect(response.body).toEqual({ total: 0, result: [] });
   });
 
   test("GET /categories: Single category", async () => {
@@ -98,5 +99,25 @@ describe("Category endpoints", () => {
       }
     ];
     expect(response.body.result).toEqual(expected);
+  });
+});
+
+describe("Account endpoints", () => {
+  test("GET /accounts: No accounts", async () => {
+    const request = supertest(app);
+    const response = await request.get("/api/v2/accounts").expect(200);
+    expect(response.body).toEqual({ total: 0, result: [] });
+  });
+
+  test("GET /accounts: Multiple accounts", async () => {
+    db.post(newAccount("Checking account", "TD", AccountType.CHECKING));
+    db.post(newAccount("Credit card", "Tangerine", AccountType.CREDIT_CARD));
+    const request = supertest(app);
+    const response = await request.get("/api/v2/accounts").expect(200);
+    expect(response.body.total).toEqual(2);
+    expect(response.body.result.map((r: any) => r.name)).toEqual([
+      "Checking account",
+      "Credit card"
+    ]);
   });
 });

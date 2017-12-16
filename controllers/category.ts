@@ -6,7 +6,9 @@ import CategoryDTO from "../dtos/Category";
 
 class CategorySearchRequest {}
 
-export const search = async (req: CategorySearchRequest): Promise<SearchResponse<CategoryDTO>> => {
+export const search = async (
+  req: CategorySearchRequest
+): Promise<SearchResponse<CategoryDTO>> => {
   const result = await (<any>db).find({
     selector: { "metadata.docType": "category" }
   });
@@ -16,7 +18,9 @@ export const search = async (req: CategorySearchRequest): Promise<SearchResponse
   const categoryDtos = categories
     .filter((category: Category) => category.parent === null)
     .map(category => new CategoryDTO(category));
-  const secondLevelCategories = categories.filter((category: Category) => category.parent !== null);
+  const secondLevelCategories = categories.filter(
+    (category: Category) => category.parent !== null
+  );
   categoryDtos.forEach(category => {
     category.subCategories = secondLevelCategories
       .filter(subCategory => subCategory.parent === category.id)

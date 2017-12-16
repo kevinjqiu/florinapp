@@ -1,6 +1,7 @@
 import * as express from "express";
 import * as healthController from "./controllers/health";
 import * as categoryController from "./controllers/category";
+import * as accountController from "./controllers/account";
 import { db } from "./db";
 import { seed } from "./db/seed";
 
@@ -9,6 +10,10 @@ export default (app: express.Express) => {
   app.get("/api/v2/healthz", healthController.index);
   app.get("/api/v2/categories", async (req, resp) => {
     const result = await categoryController.search({});
+    resp.send(result);
+  });
+  app.get("/api/v2/accounts", async (req, resp) => {
+    const result = await accountController.search({});
     resp.send(result);
   });
   app.post(
