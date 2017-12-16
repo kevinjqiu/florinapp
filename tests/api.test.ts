@@ -115,7 +115,7 @@ describe("Account endpoints", () => {
     const request = supertest(app);
     const response = await request.get("/api/v2/accounts").expect(200);
     expect(response.body.total).toEqual(2);
-    expect(response.body.result.map((r: any) => r.name)).toEqual([
+    expect(response.body.result.map((r: any) => r.name).sort()).toEqual([
       "Checking account",
       "Credit card"
     ]);
