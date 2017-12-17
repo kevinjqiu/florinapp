@@ -29,7 +29,9 @@
     "typescript": "^2.6.2"
   },
   "dependencies": {
+    "@types/body-parser": "^1.16.8",
     "@types/decimal.js": "0.0.32",
+    "body-parser": "^1.18.2",
     "decimal.js": "^9.0.1",
     "express": "^4.16.2",
     "pouchdb": "^6.3.4",

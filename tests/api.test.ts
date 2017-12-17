@@ -120,4 +120,25 @@ describe("Account endpoints", () => {
       "Credit card"
     ]);
   });
+
+  test("POST /accounts: minimum fields", async () => {
+    const request = supertest(app);
+    const response = await request
+      .post("/api/v2/accounts")
+      .set("Accept", "application/json")
+      .send({
+        name: "Awesome checking account",
+        financialInstitution: "Awesome Bank",
+        type: "CHECKING"
+      });
+    expect(response.status).toEqual(201);
+    const account = response.body.result;
+    expect(account).toBeDefined();
+    delete account.id;
+    expect(account).toEqual({
+      name: "Awesome checking account",
+      financialInstitution: "Awesome Bank",
+      type: "CHECKING"
+    });
+  });
 });
