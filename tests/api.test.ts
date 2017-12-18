@@ -131,6 +131,7 @@ describe("Account endpoints", () => {
         financialInstitution: "Awesome Bank",
         type: "CHECKING"
       });
+    console.log(response.body);
     expect(response.status).toEqual(201);
     const account = response.body.result;
     expect(account).toBeDefined();
@@ -140,5 +141,20 @@ describe("Account endpoints", () => {
       financialInstitution: "Awesome Bank",
       type: "CHECKING"
     });
+  });
+
+  test("POST /accounts: invalid account type", async() => {
+    const request = supertest(app);
+    const response = await request
+      .post("/api/v2/accounts")
+      .set("Accept", "application/json")
+      .send({
+        name: "Awesome checking account",
+        financialInstitution: "Awesome Bank",
+        type: "CHEQUING"
+      });
+    expect(response.status).toEqual(400);
+    console.log(response.body);
+    expect(response.body).toEqual({ type: "INVALID_ACCOUNT_TYPE", message: "CHEQUING is not a valid account type" });
   });
 });

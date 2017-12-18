@@ -19,12 +19,17 @@ export default (app: express.Express) => {
   });
 
   app.post("/api/v2/accounts", async (req: express.Request, resp) => {
-    console.log(req.body);
-    const { name, financialInstitution, type } = req.body;
-    const accountPostRequest = new accountController.AccountPostRequest(name, financialInstitution, type);
-    const account = await accountController.post(accountPostRequest);
-    resp.status(201);
-    resp.send(account);
+    try {
+      const { name, financialInstitution, type } = req.body;
+      const accountPostRequest = new accountController.AccountPostRequest(name, financialInstitution, type);
+      accountPostRequest.validate();
+      const account = await accountController.post(accountPostRequest);
+      resp.status(201);
+      resp.send(account);
+    } catch (error) {
+      resp.status(400);
+      resp.send(error);
+    }
   });
 
   app.post(
