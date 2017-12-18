@@ -8,7 +8,6 @@ import {
   NavLink,
   Badge
 } from "reactstrap";
-import HeaderDropdown from "./HeaderDropdown";
 
 class Header extends Component {
   constructor(props) {
@@ -45,37 +44,14 @@ class Header extends Component {
         <NavbarToggler className="d-md-down-none" onClick={this.sidebarToggle}>
           <span className="navbar-toggler-icon" />
         </NavbarToggler>
-        <Nav className="d-md-down-none" navbar>
-          <NavItem className="px-3">
-            <NavLink href="#">Dashboard</NavLink>
-          </NavItem>
-          <NavItem className="px-3">
-            <NavLink href="#">Users</NavLink>
-          </NavItem>
-          <NavItem className="px-3">
-            <NavLink href="#">Settings</NavLink>
-          </NavItem>
-        </Nav>
         <Nav className="ml-auto" navbar>
           <NavItem className="d-md-down-none">
             <NavLink href="#">
               <i className="icon-bell" />
               <Badge pill color="danger">
-                5
               </Badge>
             </NavLink>
           </NavItem>
-          <NavItem className="d-md-down-none">
-            <NavLink href="#">
-              <i className="icon-list" />
-            </NavLink>
-          </NavItem>
-          <NavItem className="d-md-down-none">
-            <NavLink href="#">
-              <i className="icon-location-pin" />
-            </NavLink>
-          </NavItem>
-          <HeaderDropdown />
         </Nav>
         <NavbarToggler className="d-md-down-none" onClick={this.asideToggle}>
           <span className="navbar-toggler-icon" />
