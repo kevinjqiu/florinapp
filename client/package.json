@@ -10,10 +10,13 @@
     "node-sass-chokidar": "^0.0.3",
     "react": "15",
     "react-dom": "15",
+    "react-redux": "^5.0.6",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.17",
     "react-transition-group": "2.2.1",
     "reactstrap": "5.0.0-alpha.4",
+    "redux": "^3.7.2",
+    "redux-thunk": "^2.2.0",
     "simple-line-icons": "^2.4.1"
   },
   "scripts": {
