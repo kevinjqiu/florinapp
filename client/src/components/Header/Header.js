@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import {
   Nav,
   NavbarBrand,
@@ -10,10 +9,6 @@ import {
 } from "reactstrap";
 
 class Header extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   sidebarToggle(e) {
     e.preventDefault();
     document.body.classList.toggle("sidebar-hidden");
