@@ -41,7 +41,10 @@ export class AccountPostRequest {
     }
 
     if (this.financialIntitution === undefined) {
-      throw { type: "REQUIRED_FIELD", message: `financialInstitution is a required field` };
+      throw {
+        type: "REQUIRED_FIELD",
+        message: `financialInstitution is a required field`
+      };
     }
   }
 }
