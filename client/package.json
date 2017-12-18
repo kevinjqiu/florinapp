@@ -4,8 +4,8 @@
   "private": true,
   "dependencies": {
     "@coreui/react": "1.0.6",
+    "axios": "^0.17.1",
     "bootstrap": "^4.0.0-beta.2",
-    "font-awesome": "4.7.0",
     "fontawesome": "^4.7.2",
     "node-sass-chokidar": "^0.0.3",
     "react": "15",
@@ -18,6 +18,11 @@
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
     "simple-line-icons": "^2.4.1"
+  },
+  "proxy": {
+    "/api/*": {
+      "target": "http://localhost:5000"
+    }
   },
   "scripts": {
     "start": "react-scripts start",
