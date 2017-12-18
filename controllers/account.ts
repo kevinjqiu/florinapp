@@ -20,30 +20,25 @@ export const search = async (
 
 export class AccountPostRequest {
   name: string;
-  financialIntitution: string;
+  financialInstitution: string;
   type: AccountType;
   constructor(name: string, financialInstitution: string, type: AccountType) {
     this.name = name;
-    this.financialIntitution = financialInstitution;
+    this.financialInstitution = financialInstitution;
     this.type = type;
   }
 
   validate() {
+    ["type", "financialInstitution", "name"].forEach((field: string) => {
+      // @ts-ignore
+      if (this[field] === undefined) {
+        throw { type: "REQUIRED_FIELD", message: `${field} is a required field` };
+      }
+    });
     if (!(this.type in AccountType)) {
       throw {
         type: "INVALID_ACCOUNT_TYPE",
         message: `${this.type} is not a valid account type`
-      };
-    }
-
-    if (this.name === undefined) {
-      throw { type: "REQUIRED_FIELD", message: `name is a required field` };
-    }
-
-    if (this.financialIntitution === undefined) {
-      throw {
-        type: "REQUIRED_FIELD",
-        message: `financialInstitution is a required field`
       };
     }
   }
@@ -52,7 +47,7 @@ export const post = async (
   req: AccountPostRequest
 ): Promise<PostResponse<AccountDTO>> => {
   const postResult = await db.post(
-    newAccount(req.name, req.financialIntitution, req.type)
+    newAccount(req.name, req.financialInstitution, req.type)
   );
   const getResult = await db.get(postResult.id);
   // @ts-ignore
