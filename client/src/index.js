@@ -14,6 +14,7 @@ import { createLogger } from "redux-logger";
 
 const store = createStore(
   reducers,
+  {},
   applyMiddleware(reduxThunk, createLogger())
 );
 

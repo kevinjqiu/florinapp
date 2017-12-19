@@ -35,13 +35,15 @@ const AccountCardBody = ({ accounts }) => {
             <th>Name</th>
             <th>Financial Institution</th>
             <th>Type</th>
+            <th>Current Balance</th>
           </tr>
         </thead>
         <tbody>
           {accounts.map(account => <tr key={account.id}>
-              <td>{account.name}</td>
+              <td><Link to={`/accounts/${account.id}`}>{account.name}</Link></td>
               <td>{account.financialInstitution}</td>
               <td>{account.type}</td>
+              <td>$0.00</td>
             </tr>)}
         </tbody>
       </Table>
@@ -49,6 +51,9 @@ const AccountCardBody = ({ accounts }) => {
 };
 
 class Accounts extends Component {
+  componentWillMount() {
+    this.props.fetchAccounts();
+  }
   render() {
     const { accounts } = this.props;
     return <div className="animated fadeIn">
