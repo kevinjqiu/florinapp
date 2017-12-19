@@ -16,21 +16,65 @@ describe("Account", () => {
   let store;
   const mock = new MockAdapter(axios);
 
-  afterEach(() => {
-      mock.reset();
+  beforeEach(() => {
+    store = mockStore({ accounts: [] });
   });
 
-  it("Should show that no existing accounts when nothing in store", () => {
+  afterEach(() => {
+    mock.reset();
+  });
+
+  it("should show 'no existing accounts' and the create account button when GET /accounts return empty", () => {
     mock.onGet("/api/v2/accounts").reply(200, { result: [] });
-    store = mockStore({ accounts: [] });
-    const wrapper = mount(<Provider store={store}>
+    const wrapper = mount(
+      <Provider store={store}>
         <BrowserRouter>
-          <Accounts accounts={[]} />
+          <Accounts />
         </BrowserRouter>
-      </Provider>);
-    const cardBody = wrapper.find('CardBody');
-    console.log(cardBody.debug());
-    expect(cardBody.find(".card-body").text()).toContain("There are currently no existing accounts.");
+      </Provider>
+    );
+    const cardBody = wrapper.find("CardBody");
+    expect(cardBody.find(".card-body").text()).toContain(
+      "There are currently no existing accounts."
+    );
     expect(cardBody.find("NewAccountButton").length).toBe(1);
+  });
+
+  it("should populate accounts table with accounts from GET /accounts", () => {
+    const accounts = [
+      {
+        id: "abcdefghijk",
+        name: "Awesome Account",
+        financialInstitution: "Awesome Bank",
+        type: "CHECKING"
+      },
+      {
+        id: "cafebabe123",
+        name: "Another Account",
+        financialInstitution: "Another Bank",
+        type: "CREDIT_CARD"
+      }
+    ];
+    store = mockStore({ accounts });
+    mock.onGet("/api/v2/accounts").reply(200, {
+      result: accounts
+    });
+    const wrapper = mount(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Accounts />
+        </BrowserRouter>
+      </Provider>
+    );
+    const cardBody = wrapper.find("CardBody");
+    expect(cardBody.find("tbody").find("tr").length).toBe(accounts.length);
+    cardBody.find("tbody").find("tr").forEach((tr, idx) => {
+      const tds = tr.find("td");
+      const links = tds.at(0).find("Link");
+      expect(links.length).toBe(1);
+      expect(links.at(0).prop("to")).toEqual(`/accounts/${accounts[idx].id}`);
+      expect(tds.at(1).text()).toEqual(accounts[idx].financialInstitution);
+      expect(tds.at(2).text()).toEqual(accounts[idx].type);
+    })
   });
 });
