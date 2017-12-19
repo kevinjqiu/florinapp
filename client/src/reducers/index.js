@@ -1,8 +1,6 @@
-// import { combineReducers } from "redux";
+import { combineReducers } from "redux";
+import accounts from './accounts';
 
-export default (state) => {
-    return {}
-}
-// export default combineReducers({
-
-// });
+export default combineReducers({
+    accounts,
+})

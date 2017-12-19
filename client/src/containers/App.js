@@ -1,14 +1,17 @@
-import React, { Component } from 'react';
-import Header from '../components/Header/Header';
-import Sidebar from '../components/Sidebar/Sidebar';
-import { Container } from 'reactstrap';
-import { Switch, Route, Redirect } from 'react-router-dom';
-import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
-import Accounts from '../views/Accounts/Accounts';
+import React, { Component } from "react";
+import Header from "../components/Header/Header";
+import Sidebar from "../components/Sidebar/Sidebar";
+import { Container } from "reactstrap";
+import { Switch, Route, Redirect } from "react-router-dom";
+import Breadcrumb from "../components/Breadcrumb/Breadcrumb";
+import Accounts from "../views/Accounts/Accounts";
+import { connect } from "react-redux";
+import * as actions from "../actions";
 
 class App extends Component {
   render() {
-    return <div className="app">
+    return (
+      <div className="app">
         <Header />
         <div className="app-body">
           <Sidebar {...this.props} />
@@ -23,8 +26,9 @@ class App extends Component {
             </Container>
           </main>
         </div>
-      </div>;
+      </div>
+    );
   }
 }
 
-export default App;
+export default connect(null, actions)(App);

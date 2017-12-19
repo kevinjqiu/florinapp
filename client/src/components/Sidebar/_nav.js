@@ -1,3 +1,4 @@
+// TODO: consolidate this with routes.js file
 export default {
   items: [
     {
