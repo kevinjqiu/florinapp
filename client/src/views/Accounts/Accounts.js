@@ -1,4 +1,4 @@
-import { Row, Col, Card, CardHeader, CardBody, Table, Button, ButtonGroup } from "reactstrap";
+import { Alert, Row, Col, Card, CardHeader, CardBody, Table, Button, ButtonGroup } from "reactstrap";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
@@ -20,7 +20,12 @@ const NewAccountButton = ({ alignRight }) => {
   );
 };
 
-const AccountCardBody = ({ accounts }) => {
+const AccountCardBody = ({ accounts, ui }) => {
+  if (ui.failed) {
+    return <CardBody>
+        <Alert color="danger">Loading accounts failed. Try again later...</Alert>
+      </CardBody>;
+  }
   if (accounts.length === 0) {
     return (
       <CardBody>
@@ -55,27 +60,23 @@ class Accounts extends Component {
     this.props.fetchAccounts();
   }
   render() {
-    const { accounts } = this.props;
+    const { accounts, ui } = this.props;
     return <div className="animated fadeIn">
         <Row>
           <Col xs="12" lg="12">
             <Card>
               <CardHeader>
                 <strong>Current Accounts</strong>
+                {ui.loading ? <i className="fa fa-refresh fa-spin fa-1x fa-fw" /> : <span />}
                 <ButtonGroup className="float-right">
                   <NewAccountButton alignRight />
-                  <Button
-                    color="primary"
-                    size="sm"
-                    outline
-                    onClick={this.props.fetchAccounts}
-                  >
+                  <Button color="primary" size="sm" outline onClick={this.props.fetchAccounts}>
                     <i className="fa fa-refresh" aria-hidden="true" />
                     {"\u00A0"}Refresh
                   </Button>
                 </ButtonGroup>
               </CardHeader>
-              <AccountCardBody accounts={accounts} />
+              <AccountCardBody accounts={accounts} ui={ui} />
             </Card>
           </Col>
         </Row>
@@ -83,8 +84,8 @@ class Accounts extends Component {
   }
 }
 
-const mapStateToProps = ({accounts}) => {
-  return { accounts };
+const mapStateToProps = ({accounts, ui}) => {
+  return { accounts, ui: ui.accounts };
 }
 
 export default connect(mapStateToProps, actions)(Accounts);

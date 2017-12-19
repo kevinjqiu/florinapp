@@ -16,15 +16,12 @@ describe("Account", () => {
   let store;
   const mock = new MockAdapter(axios);
 
-  beforeEach(() => {
-    store = mockStore({ accounts: [] });
-  });
-
   afterEach(() => {
     mock.reset();
   });
 
   it("should show 'no existing accounts' and the create account button when GET /accounts return empty", () => {
+    store = mockStore({ ui: { accounts: {}}, accounts: [] });
     mock.onGet("/api/v2/accounts").reply(200, { result: [] });
     const wrapper = mount(
       <Provider store={store}>
@@ -46,16 +43,18 @@ describe("Account", () => {
         id: "abcdefghijk",
         name: "Awesome Account",
         financialInstitution: "Awesome Bank",
-        type: "CHECKING"
+        type: "CHECKING",
+        currentBalance: "0.00"
       },
       {
         id: "cafebabe123",
         name: "Another Account",
         financialInstitution: "Another Bank",
-        type: "CREDIT_CARD"
+        type: "CREDIT_CARD",
+        currentBalance: "0.00"
       }
     ];
-    store = mockStore({ accounts });
+    store = mockStore({ accounts, ui: { accounts: {} } });
     mock.onGet("/api/v2/accounts").reply(200, {
       result: accounts
     });
@@ -75,6 +74,21 @@ describe("Account", () => {
       expect(links.at(0).prop("to")).toEqual(`/accounts/${accounts[idx].id}`);
       expect(tds.at(1).text()).toEqual(accounts[idx].financialInstitution);
       expect(tds.at(2).text()).toEqual(accounts[idx].type);
+      expect(tds.at(3).text()).toEqual('$' + accounts[idx].currentBalance);
     })
   });
+
+  it("should show alert when failed to GET /accounts", () => {
+    store = mockStore({ accounts: [], ui: { accounts: { failed: true } } });
+    mock.onGet("/api/v2/accounts").timeout();
+    const wrapper = mount(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Accounts />
+        </BrowserRouter>
+      </Provider>
+    );
+    expect(wrapper.find("Alert").length).toBe(1);
+    expect(wrapper.find("Alert").text()).toContain("Loading accounts failed");
+  })
 });

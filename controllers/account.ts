@@ -4,6 +4,12 @@ import PostResponse from "../dtos/PostResponse";
 import AccountDTO from "../dtos/Account";
 import { Account, AccountType, newAccount } from "../db/Account";
 
+function sleep(ms: number) {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
+}
+
 export class AccountSearchRequest {}
 export const search = async (
   req: AccountSearchRequest
@@ -15,6 +21,7 @@ export const search = async (
   const accountDtos = result.docs.map(
     (account: Account) => new AccountDTO(account)
   );
+  // await sleep(60000);
   return new SearchResponse<AccountDTO>(accountDtos);
 };
 
