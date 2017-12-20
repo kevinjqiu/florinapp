@@ -6,6 +6,7 @@
     "@coreui/react": "1.0.6",
     "axios": "^0.17.1",
     "bootstrap": "^4.0.0-beta.2",
+    "flash-notification-react-redux": "^1.0.5",
     "font-awesome": "^4.7.0",
     "react": "^16",
     "react-dom": "^16",

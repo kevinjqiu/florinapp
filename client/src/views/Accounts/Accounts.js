@@ -20,17 +20,21 @@ const NewAccountButton = ({ alignRight }) => {
   );
 };
 
-const deleteAccountWithConfirmation = (showGlobalModal, deleteAccount, accountId) => {
+const deleteAccountWithConfirmation = ({showGlobalModal, hideGlobalModal, deleteAccount, accountId, fetchAccounts}) => {
   showGlobalModal({
     title: "Are you sure?",
     body: "Do you want to delete this account?",
     positiveActionLabel: "Yes",
-    positiveAction: () => deleteAccount(accountId),
+    positiveAction: () => {
+      hideGlobalModal();
+      deleteAccount(accountId);
+      fetchAccounts();
+    },
     negativeActionLabel: "No"
   })
 };
 
-const AccountCardBody = ({ accounts, ui, deleteAccount, showGlobalModal }) => {
+const AccountCardBody = ({ accounts, ui, deleteAccount, showGlobalModal, hideGlobalModal, fetchAccounts }) => {
   if (ui.failed) {
     return <CardBody>
         <Alert color="danger">Loading accounts failed. Try again later...</Alert>
@@ -65,7 +69,7 @@ const AccountCardBody = ({ accounts, ui, deleteAccount, showGlobalModal }) => {
               <td>$0.00</td>
               <td>
                 <ButtonGroup className="float-right">
-                  <Button color="danger" size="sm" outline onClick={() => deleteAccountWithConfirmation(showGlobalModal, deleteAccount, account.id)}>
+                  <Button color="danger" size="sm" outline onClick={() => deleteAccountWithConfirmation({accountId: account.id, showGlobalModal, hideGlobalModal, deleteAccount, fetchAccounts})}>
                     <i className="fa fa-trash" aria-hidden="true" />
                     {"\u00A0"}Delete
                   </Button>
@@ -83,7 +87,7 @@ class Accounts extends Component {
   }
   render() {
     const { accounts, ui } = this.props;
-    const { fetchAccounts, deleteAccount, showGlobalModal } = this.props;
+    const { fetchAccounts } = this.props;
     return <div className="animated fadeIn">
         <Row>
           <Col xs="12" lg="12">
@@ -99,7 +103,7 @@ class Accounts extends Component {
                   </Button>
                 </ButtonGroup>
               </CardHeader>
-              <AccountCardBody accounts={accounts} ui={ui} deleteAccount={deleteAccount} showGlobalModal={showGlobalModal} />
+              <AccountCardBody accounts={accounts} {...this.props} />
             </Card>
           </Col>
         </Row>

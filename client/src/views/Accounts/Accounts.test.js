@@ -6,7 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 import { configure, mount, shallow } from "enzyme";
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
-import Adapter from "enzyme-adapter-react-15";
+import Adapter from "enzyme-adapter-react-16";
 import Accounts from "./Accounts";
 
 configure({ adapter: new Adapter() });
