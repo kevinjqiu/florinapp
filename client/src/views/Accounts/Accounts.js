@@ -41,6 +41,7 @@ const AccountCardBody = ({ accounts, ui }) => {
             <th>Financial Institution</th>
             <th>Type</th>
             <th>Current Balance</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -49,6 +50,14 @@ const AccountCardBody = ({ accounts, ui }) => {
               <td>{account.financialInstitution}</td>
               <td>{account.type}</td>
               <td>$0.00</td>
+              <td>
+                <ButtonGroup className="float-right">
+                  <Button color="danger" size="sm" outline onClick={() => console.log("called")}>
+                    <i className="fa fa-trash" aria-hidden="true" />
+                    {"\u00A0"}Delete
+                  </Button>
+                </ButtonGroup>
+              </td>
             </tr>)}
         </tbody>
       </Table>

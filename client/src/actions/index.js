@@ -13,3 +13,7 @@ export const fetchAccounts = () => async dispatch => {
     dispatch(actionCreators.fetchAccountsFailed(err));
   }
 };
+
+export const deleteAccount = (accountId) => async dispatch => {
+
+}
