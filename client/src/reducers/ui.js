@@ -2,6 +2,14 @@ import * as actionTypes from "../actions/types";
 
 const initState = {
   global: {},
+  globalModal: {
+    isOpen: false,
+    title: null,
+    body: null,
+    positiveActionLabel: null,
+    positiveAction: () => {},
+    negativeActionLabel: null
+  },
   accounts: {
     loading: false,
     failed: false
@@ -9,7 +17,7 @@ const initState = {
 };
 
 export default (state = initState, action) => {
-  let accounts;
+  let accounts, globalModal;
   switch (action.type) {
     case actionTypes.FETCH_ACCOUNTS_REQUESTED:
       accounts = state.accounts;
@@ -28,6 +36,24 @@ export default (state = initState, action) => {
       return {
         ...state,
         accounts: { ...accounts, failed: true }
+      };
+    case actionTypes.SHOW_GLOBAL_MODAL:
+      globalModal = state.globalModal;
+      return {
+        ...state,
+        globalModal: {
+          ...action.config,
+          isOpen: true
+        }
+      };
+    case actionTypes.HIDE_GLOBAL_MODAL:
+      globalModal = state.globalModal;
+      return {
+        ...state,
+        globalModal: {
+          ...globalModal,
+          isOpen: false
+        }
       };
     default:
       return state;

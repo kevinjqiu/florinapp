@@ -1,5 +1,4 @@
 import axios from "axios";
-import * as actionTypes from "./types";
 import * as actionCreators from "./creators";
 
 export const fetchAccounts = () => async dispatch => {
@@ -15,5 +14,21 @@ export const fetchAccounts = () => async dispatch => {
 };
 
 export const deleteAccount = (accountId) => async dispatch => {
+  dispatch(actionCreators.deleteAccountRequested());
+  try {
+    await axios.delete(`/api/v2/accounts/${accountId}`);
+    return dispatch(
+      actionCreators.deleteAccountSucceeded()
+    );
+  } catch (err) {
+    dispatch(actionCreators.deleteAccountFailed(err));
+  }
+}
 
+export const showGlobalModal = (modalConfig) => dispatch => {
+  dispatch(actionCreators.showGlobalModal(modalConfig));
+}
+
+export const hideGlobalModal = () => dispatch => {
+  dispatch(actionCreators.hideGlobalModal());
 }

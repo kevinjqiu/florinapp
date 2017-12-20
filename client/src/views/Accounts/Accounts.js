@@ -20,7 +20,17 @@ const NewAccountButton = ({ alignRight }) => {
   );
 };
 
-const AccountCardBody = ({ accounts, ui }) => {
+const deleteAccountWithConfirmation = (showGlobalModal, deleteAccount, accountId) => {
+  showGlobalModal({
+    title: "Are you sure?",
+    body: "Do you want to delete this account?",
+    positiveActionLabel: "Yes",
+    positiveAction: () => deleteAccount(accountId),
+    negativeActionLabel: "No"
+  })
+};
+
+const AccountCardBody = ({ accounts, ui, deleteAccount, showGlobalModal }) => {
   if (ui.failed) {
     return <CardBody>
         <Alert color="danger">Loading accounts failed. Try again later...</Alert>
@@ -33,6 +43,7 @@ const AccountCardBody = ({ accounts, ui }) => {
       </CardBody>
     );
   }
+
   return <CardBody>
       <Table responsive>
         <thead>
@@ -41,18 +52,20 @@ const AccountCardBody = ({ accounts, ui }) => {
             <th>Financial Institution</th>
             <th>Type</th>
             <th>Current Balance</th>
-            <th></th>
+            <th />
           </tr>
         </thead>
         <tbody>
           {accounts.map(account => <tr key={account.id}>
-              <td><Link to={`/accounts/${account.id}`}>{account.name}</Link></td>
+              <td>
+                <Link to={`/accounts/${account.id}`}>{account.name}</Link>
+              </td>
               <td>{account.financialInstitution}</td>
               <td>{account.type}</td>
               <td>$0.00</td>
               <td>
                 <ButtonGroup className="float-right">
-                  <Button color="danger" size="sm" outline onClick={() => console.log("called")}>
+                  <Button color="danger" size="sm" outline onClick={() => deleteAccountWithConfirmation(showGlobalModal, deleteAccount, account.id)}>
                     <i className="fa fa-trash" aria-hidden="true" />
                     {"\u00A0"}Delete
                   </Button>
@@ -70,6 +83,7 @@ class Accounts extends Component {
   }
   render() {
     const { accounts, ui } = this.props;
+    const { fetchAccounts, deleteAccount, showGlobalModal } = this.props;
     return <div className="animated fadeIn">
         <Row>
           <Col xs="12" lg="12">
@@ -79,13 +93,13 @@ class Accounts extends Component {
                 {ui.loading ? <i className="fa fa-refresh fa-spin fa-1x fa-fw" /> : <span />}
                 <ButtonGroup className="float-right">
                   <NewAccountButton alignRight />
-                  <Button color="primary" size="sm" outline onClick={this.props.fetchAccounts}>
+                  <Button color="primary" size="sm" outline onClick={fetchAccounts}>
                     <i className="fa fa-refresh" aria-hidden="true" />
                     {"\u00A0"}Refresh
                   </Button>
                 </ButtonGroup>
               </CardHeader>
-              <AccountCardBody accounts={accounts} ui={ui} />
+              <AccountCardBody accounts={accounts} ui={ui} deleteAccount={deleteAccount} showGlobalModal={showGlobalModal} />
             </Card>
           </Col>
         </Row>

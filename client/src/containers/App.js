@@ -7,6 +7,7 @@ import Breadcrumb from "../components/Breadcrumb/Breadcrumb";
 import Accounts from "../views/Accounts/Accounts";
 import { connect } from "react-redux";
 import * as actions from "../actions";
+import GlobalModal from "../components/GlobalModal/GlobalModal";
 
 class App extends Component {
   render() {
@@ -26,6 +27,7 @@ class App extends Component {
             </Container>
           </main>
         </div>
+        <GlobalModal />
       </div>
     );
   }
