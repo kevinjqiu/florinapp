@@ -8,6 +8,7 @@ import Accounts from "../views/Accounts/Accounts";
 import { connect } from "react-redux";
 import * as actions from "../actions";
 import GlobalModal from "../components/GlobalModal/GlobalModal";
+import Notifications from "react-notification-system-redux";
 
 class App extends Component {
   render() {
@@ -28,6 +29,8 @@ class App extends Component {
           </main>
         </div>
         <GlobalModal />
+        {/* // TODO Make Notifications a top-level component */}
+        {/* <Notifications notifications={notifications} style={style} /> */}
       </div>
     );
   }
