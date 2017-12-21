@@ -38,7 +38,6 @@ class App extends Component {
 }
 
 const mapStateToProps = ({ notifications }) => {
-  console.log(notifications);
   return { notifications };
 };
 

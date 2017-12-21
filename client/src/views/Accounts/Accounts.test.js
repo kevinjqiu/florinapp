@@ -8,6 +8,9 @@ import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import Adapter from "enzyme-adapter-react-16";
 import Accounts from "./Accounts";
+import * as actionCreators from "../../actions/creators";
+import * as actionTypes from "../../actions/types";
+import { deleteAccount } from "../../actions/index";
 
 configure({ adapter: new Adapter() });
 const mockStore = configureMockStore([thunk]);
@@ -90,5 +93,68 @@ describe("Account", () => {
     );
     expect(wrapper.find("Alert").length).toBe(1);
     expect(wrapper.find("Alert").text()).toContain("Loading accounts failed");
+  })
+
+  it("should show delete failed notification when DELETE /accounts/:id fails", async () => {
+    const accounts = [{ id: "deadbeefcafebabe", name: "Awesome Account", financialInstitution: "Awesome Bank", type: "CHECKING", currentBalance: "0.00" }];
+    store = mockStore({
+      accounts,
+      ui: { accounts: { failed: false } }
+    });
+    mock.onGet("/api/v2/accounts").reply(200, { result: accounts });
+    mock.onDelete("/api/v2/accounts/deadbeefcafebabe").timeout();
+    const wrapper = mount(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Accounts />
+        </BrowserRouter>
+      </Provider>
+    );
+    await deleteAccount("deadbeefcafebabe")(store.dispatch);
+    const actions = store.getActions().filter(action => {
+      return [actionTypes.FETCH_ACCOUNTS_REQUESTED, actionTypes.FETCH_ACCOUNTS_SUCCEEDED].indexOf(action.type) === -1;
+    });
+
+    expect(actions[0].type).toBe(actionTypes.DELETE_ACCOUNT_REQUESTED)
+    expect(actions[0].accountId).toBe("deadbeefcafebabe");
+
+    expect(actions[1].type).toBe("RNS_SHOW_NOTIFICATION");
+    expect(actions[1].title).toBe("Cannot delete account");
+    expect(actions[1].message).toBe("Error: timeout of 0ms exceeded");
+    expect(actions[1].level).toBe("error");
+
+    expect(actions[2].type).toBe(actionTypes.DELETE_ACCOUNT_FAILED);
+
+    expect(store.getState().accounts.length).toBe(1);
+  })
+
+  it("should remove deleted account when DELETE /accounts/:id succeeds", async () => {
+    const accounts = [{ id: "deadbeefcafebabe", name: "Awesome Account", financialInstitution: "Awesome Bank", type: "CHECKING", currentBalance: "0.00" }];
+    store = mockStore({
+      accounts,
+      ui: { accounts: { failed: false } }
+    });
+    mock.onGet("/api/v2/accounts").reply(200, { result: accounts });
+    mock.onDelete("/api/v2/accounts/deadbeefcafebabe").reply(200, {});
+    const wrapper = mount(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Accounts />
+        </BrowserRouter>
+      </Provider>
+    );
+    await deleteAccount("deadbeefcafebabe")(store.dispatch);
+    const actions = store.getActions().filter(action => {
+      return [actionTypes.FETCH_ACCOUNTS_REQUESTED, actionTypes.FETCH_ACCOUNTS_SUCCEEDED].indexOf(action.type) === -1;
+    });
+
+    expect(actions[0].type).toBe(actionTypes.DELETE_ACCOUNT_REQUESTED)
+    expect(actions[0].accountId).toBe("deadbeefcafebabe");
+
+    expect(actions[1].type).toBe("RNS_SHOW_NOTIFICATION");
+    expect(actions[1].title).toBe('The account was deleted');
+    expect(actions[1].level).toBe("success");
+
+    expect(actions[2].type).toBe(actionTypes.DELETE_ACCOUNT_SUCCEEDED);
   })
 });
