@@ -12,6 +12,7 @@ import Notifications from "react-notification-system-redux";
 
 class App extends Component {
   render() {
+    const { notifications } = this.props;
     return (
       <div className="app">
         <Header />
@@ -30,10 +31,15 @@ class App extends Component {
         </div>
         <GlobalModal />
         {/* // TODO Make Notifications a top-level component */}
-        {/* <Notifications notifications={notifications} style={style} /> */}
+        <Notifications notifications={notifications} />
       </div>
     );
   }
 }
 
-export default connect(null, actions)(App);
+const mapStateToProps = ({ notifications }) => {
+  console.log(notifications);
+  return { notifications };
+};
+
+export default connect(mapStateToProps, actions)(App);

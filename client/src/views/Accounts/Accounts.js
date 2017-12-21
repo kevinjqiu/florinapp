@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
 import * as actions from '../../actions';
+import { success } from "react-notification-system-redux";
 
 const NewAccountButton = ({ alignRight }) => {
   return (
@@ -26,8 +27,8 @@ const deleteAccountWithConfirmation = ({showGlobalModal, hideGlobalModal, delete
     body: "Do you want to delete this account?",
     positiveActionLabel: "Yes",
     positiveAction: () => {
-      hideGlobalModal();
       deleteAccount(accountId);
+      hideGlobalModal();
       fetchAccounts();
     },
     negativeActionLabel: "No"

@@ -9,6 +9,7 @@ export const fetchAccounts = () => async dispatch => {
       actionCreators.fetchAccountsSucceeded(response.data.result)
     );
   } catch (err) {
+    dispatch(actionCreators.showErrorNotification("Cannot fetch accounts", err));
     dispatch(actionCreators.fetchAccountsFailed(err));
   }
 };
@@ -21,6 +22,7 @@ export const deleteAccount = (accountId) => async dispatch => {
       actionCreators.deleteAccountSucceeded()
     );
   } catch (err) {
+    dispatch(actionCreators.showErrorNotification("Cannot delete account", err));
     dispatch(actionCreators.deleteAccountFailed(err));
   }
 }

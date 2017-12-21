@@ -37,15 +37,6 @@ export default (state = initState, action) => {
         ...state,
         accounts: { ...accounts, failed: true }
       };
-    // case actionTypes.DELETE_ACCOUNT_FAILED:
-    //   return {
-    //     ...state,
-    //     globalModal: {
-    //       title: "Failed to delete the account",
-    //       body: action.error,
-    //       isOpen: true
-    //     }
-    //   }
     case actionTypes.SHOW_GLOBAL_MODAL:
       globalModal = state.globalModal;
       return {

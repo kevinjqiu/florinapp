@@ -1,4 +1,12 @@
 import * as actionTypes from "./types";
+import { success, error } from "react-notification-system-redux";
+
+export const showErrorNotification = (msg, err) => {
+  return error({
+    title: msg,
+    message: `${err.toString()}`
+  });
+};
 
 export const showGlobalModal = modalConfig => {
   // For available modalConfig keys see reducers/ui.js
