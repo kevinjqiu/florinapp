@@ -1,14 +1,9 @@
 import { db } from "../db";
 import SearchResponse from "../dtos/SearchResponse";
 import PostResponse from "../dtos/PostResponse";
+import DeleteResponse from "../dtos/DeleteResponse";
 import AccountDTO from "../dtos/Account";
 import { Account, AccountType, newAccount } from "../db/Account";
-
-function sleep(ms: number) {
-  return new Promise(resolve => {
-    setTimeout(resolve, ms);
-  });
-}
 
 export class AccountSearchRequest {}
 export const search = async (
@@ -21,7 +16,6 @@ export const search = async (
   const accountDtos = result.docs.map(
     (account: Account) => new AccountDTO(account)
   );
-  // await sleep(60000);
   return new SearchResponse<AccountDTO>(accountDtos);
 };
 
@@ -59,4 +53,19 @@ export const post = async (
   const getResult = await db.get(postResult.id);
   // @ts-ignore
   return new PostResponse(new AccountDTO(<Account>getResult));
+};
+
+export class AccountDeleteRequest {
+  accountId: string;
+  constructor(accountId: string) {
+    this.accountId = accountId;
+  }
+}
+
+export const del = async (
+  req: AccountDeleteRequest
+): Promise<DeleteResponse> => {
+  const doc = await db.get(req.accountId);
+  await db.remove(doc);
+  return new DeleteResponse();
 };

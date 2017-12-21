@@ -17,7 +17,7 @@ const initState = {
 };
 
 export default (state = initState, action) => {
-  let accounts, globalModal;
+  let accounts;
   switch (action.type) {
     case actionTypes.FETCH_ACCOUNTS_REQUESTED:
       accounts = state.accounts;
@@ -38,7 +38,6 @@ export default (state = initState, action) => {
         accounts: { ...accounts, failed: true }
       };
     case actionTypes.SHOW_GLOBAL_MODAL:
-      globalModal = state.globalModal;
       return {
         ...state,
         globalModal: {
@@ -47,7 +46,6 @@ export default (state = initState, action) => {
         }
       };
     case actionTypes.HIDE_GLOBAL_MODAL:
-      globalModal = state.globalModal;
       return {
         ...state,
         globalModal: {

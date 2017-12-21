@@ -131,7 +131,6 @@ describe("Account endpoints", () => {
         financialInstitution: "Awesome Bank",
         type: "CHECKING"
       });
-    console.log(response.body);
     expect(response.status).toEqual(201);
     const account = response.body.result;
     expect(account).toBeDefined();
@@ -143,7 +142,7 @@ describe("Account endpoints", () => {
     });
   });
 
-  test("POST /accounts: invalid account type", async() => {
+  test("POST /accounts: invalid account type", async () => {
     const request = supertest(app);
     const response = await request
       .post("/api/v2/accounts")
@@ -154,7 +153,28 @@ describe("Account endpoints", () => {
         type: "CHEQUING"
       });
     expect(response.status).toEqual(400);
-    console.log(response.body);
-    expect(response.body).toEqual({ type: "INVALID_ACCOUNT_TYPE", message: "CHEQUING is not a valid account type" });
+    expect(response.body).toEqual({
+      type: "INVALID_ACCOUNT_TYPE",
+      message: "CHEQUING is not a valid account type"
+    });
+  });
+
+  test("DELETE /accounts/<id>: invalid account id", async () => {
+    console.log("here");
+    const request = supertest(app);
+    const response = await request.delete("/api/v2/accounts/nonexistent");
+    expect(response.status).toEqual(404);
+    expect(response.body).toEqual({
+      type: "ACCOUNT_NOT_FOUND",
+      message: "Account nonexistent does not exist"
+    });
+  });
+
+  test("DELETE /accounts/<id>: removes account from the database", async () => {
+    await db.post(newAccount("Checking account", "TD", AccountType.CHECKING));
+    const id = (await db.post(newAccount("Credit card", "Tangerine", AccountType.CREDIT_CARD))).id;
+    const request = supertest(app);
+    const response = await request.delete(`/api/v2/accounts/${id}`);
+    expect(response.status).toEqual(200);
   });
 });

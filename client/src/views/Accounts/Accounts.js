@@ -3,7 +3,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
 import * as actions from '../../actions';
-import { success } from "react-notification-system-redux";
 
 const NewAccountButton = ({ alignRight }) => {
   return (

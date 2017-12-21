@@ -32,6 +32,24 @@ export default (app: express.Express) => {
     }
   });
 
+  app.delete("/api/v2/accounts/:accountId", async (req: express.Request, resp) => {
+    try {
+      const accountDeleteRequest = new accountController.AccountDeleteRequest(req.params.accountId);
+      const result = await accountController.del(accountDeleteRequest);
+      resp.status(200);
+      resp.send(result);
+    } catch (error) {
+      // TODO: revamp error handling
+      if (error.status === 404) {
+        resp.status(error.status);
+        resp.send({ type: "ACCOUNT_NOT_FOUND", message: `Account ${req.params.accountId} does not exist` });
+        return;
+      }
+      resp.status(500);
+      resp.send(error);
+    }
+  });
+
   app.post(
     "/api/v2/seed",
     async (req: express.Request, resp: express.Response): Promise<any> => {
