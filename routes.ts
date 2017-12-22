@@ -2,7 +2,7 @@ import * as express from "express";
 import * as healthController from "./controllers/health";
 import * as categoryController from "./controllers/category";
 import * as accountController from "./controllers/account";
-import { InternalServerError } from "./dtos/error";
+import { InternalServerError, AccountNotFound } from "./dtos/error";
 import { db } from "./db";
 import { seed } from "./db/seed";
 
@@ -43,7 +43,7 @@ export default (app: express.Express) => {
       // TODO: revamp error handling
       if (error.status === 404) {
         resp.status(error.status);
-        resp.send({ type: "ACCOUNT_NOT_FOUND", message: `Account ${req.params.accountId} does not exist` });
+        resp.send(new AccountNotFound(`Account ${req.params.accountId} does not exist`));
         return;
       }
       console.log(error);
