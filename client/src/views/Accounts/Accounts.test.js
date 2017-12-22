@@ -7,7 +7,7 @@ import { configure, mount, shallow } from "enzyme";
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import Adapter from "enzyme-adapter-react-16";
-import Accounts from "./Accounts";
+import AccountList from "./AccountList";
 import * as actionCreators from "../../actions/creators";
 import * as actionTypes from "../../actions/types";
 import { deleteAccount } from "../../actions/index";
@@ -29,7 +29,7 @@ describe("Account", () => {
     const wrapper = mount(
       <Provider store={store}>
         <BrowserRouter>
-          <Accounts />
+          <AccountList />
         </BrowserRouter>
       </Provider>
     );
@@ -64,7 +64,7 @@ describe("Account", () => {
     const wrapper = mount(
       <Provider store={store}>
         <BrowserRouter>
-          <Accounts />
+          <AccountList />
         </BrowserRouter>
       </Provider>
     );
@@ -87,7 +87,7 @@ describe("Account", () => {
     const wrapper = mount(
       <Provider store={store}>
         <BrowserRouter>
-          <Accounts />
+          <AccountList />
         </BrowserRouter>
       </Provider>
     );
@@ -106,7 +106,7 @@ describe("Account", () => {
     const wrapper = mount(
       <Provider store={store}>
         <BrowserRouter>
-          <Accounts />
+          <AccountList />
         </BrowserRouter>
       </Provider>
     );
@@ -139,7 +139,7 @@ describe("Account", () => {
     const wrapper = mount(
       <Provider store={store}>
         <BrowserRouter>
-          <Accounts />
+          <AccountList />
         </BrowserRouter>
       </Provider>
     );
