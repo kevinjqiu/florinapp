@@ -5,67 +5,103 @@ import {
   CardBody,
   Row,
   Col,
-  Input,
   Label,
   FormGroup,
-  CardFooter
+  Input,
+  FormFeedback
 } from "reactstrap";
 import React, { Component } from "react";
 import { Field, reduxForm } from "redux-form";
 
-const AccountTypeSelector = () => {
+const AccountTypeSelector = ({
+  input,
+  meta: { touched, error, warning }
+}) => {
+  const options = (touched ? {...input, valid: !error} : {...input});
+  return <div className="form-group">
+      <FormGroup row>
+        <Col md="3">
+          <Label htmlFor="type">Account Type</Label>
+        </Col>
+        <Col xs="12" md="9">
+          <Input name="type" type="select" {...options} >
+            <option value="" />
+            <option value="CHECKING">Checking</option>
+            <option value="SAVINGS">Savings</option>
+            <option value="CREDIT_CARD">Credit Card</option>
+            <option value="INVESTMENT">Investment</option>
+          </Input>
+          <FormFeedback>{error}</FormFeedback>
+        </Col>
+      </FormGroup>
+    </div>;
+};
+
+const required = value => (value ? undefined : "This field is required");
+
+const validAccountType = value => {
+  // TODO: refactor
+  return ["CHECKING", "SAVINGS", "CREDIT_CARD", "INVESTMENT"].indexOf(value) !== -1
+    ? undefined
+    : "Not a valid account type";
+}
+
+const InputField = ({
+  input,
+  label,
+  type,
+  meta: { touched, error, warning }
+}) => {
+  const options = (touched ? {...input, valid: !error} : {...input});
   return (
-    <Field name="type" component="select" type="select" className="form-control">
-      <option value="CHECKING">Checking</option>
-      <option value="SAVINGS">Savings</option>
-      <option value="CREDIT_CARD">Credit Card</option>
-      <option value="INVESTMENT">Investment</option>
-    </Field>
+    <div className="form-group">
+      <FormGroup row>
+        <Col md="3">
+          <Label htmlFor="{input.name}">{label}</Label>
+        </Col>
+        <Col xs="12" md="9">
+          <Input {...options} />
+          <FormFeedback>{error}</FormFeedback>
+        </Col>
+      </FormGroup>
+    </div>
   );
 };
 
-const newAccountForm = props => {
-  const {handleSubmit} = props;
-  const onSubmit = props => console.log(props);
-  return <form className="form-horizontal" onSubmit={handleSubmit(onSubmit)}>
-      <FormGroup row>
-        <Col md="3">
-          <Label htmlFor="name">Account Name</Label>&nbsp;
-        </Col>
-        <Col xs="12" md="9">
-          <Field name="name" component="input" type="text" className="form-control"/>
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <Col md="3">
-          <Label htmlFor="name">Financial Institution</Label>&nbsp;
-        </Col>
-        <Col xs="12" md="9">
-          <Field name="financialInstitution" component="input" type="text" className="form-control"/>
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <Col md="3">
-          <Label htmlFor="name">Account Type</Label>&nbsp;
-        </Col>
-        <Col xs="12" md="9">
-          <Field name="type" component={AccountTypeSelector} />
-        </Col>
-      </FormGroup>
+const newAccountForm = ({ onSubmit, handleSubmit, reset }) => {
+  return (
+    <form className="form-horizontal" onSubmit={handleSubmit(onSubmit)}>
+      <Field
+        name="name"
+        label="Account Name"
+        component={InputField}
+        validate={[required]}
+      />
+      <Field
+        name="financialInstitution"
+        label="Financial Institution"
+        component={InputField}
+        validate={[required]}
+      />
+      <Field name="type" component={AccountTypeSelector} validate={[validAccountType]}/>
       <Button type="submit" color="primary">
         Create
       </Button>
-      <Button color="secondary">Cancel</Button>
-    </form>;
+      <Button color="secondary" onClick={reset}>
+        Clear
+      </Button>
+      <Button color="danger">Cancel</Button>
+    </form>
+  );
 };
 
 const NewAccountForm = reduxForm({ form: "newAccount" })(newAccountForm);
 
 export default class AccountNew extends Component {
   render() {
-    const submit = (props, e) => {
+    const submit = (props) => {
       console.log(props);
-    }
+    };
     return (
       <Row>
         <Col xs="12" lg="12">
