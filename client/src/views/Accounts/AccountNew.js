@@ -12,6 +12,8 @@ import {
 } from "reactstrap";
 import React, { Component } from "react";
 import { Field, reduxForm } from "redux-form";
+import * as actions from "../../actions";
+import { connect } from "react-redux";
 
 const AccountTypeSelector = ({
   input,
@@ -97,11 +99,10 @@ const newAccountForm = ({ onSubmit, handleSubmit, reset }) => {
 
 const NewAccountForm = reduxForm({ form: "newAccount" })(newAccountForm);
 
-export default class AccountNew extends Component {
+export class AccountNew extends Component {
   render() {
-    const submit = (props) => {
-      console.log(props);
-    };
+    const {createAccount} = this.props;
+    const onSubmit = (props) => createAccount(props);
     return (
       <Row>
         <Col xs="12" lg="12">
@@ -110,7 +111,7 @@ export default class AccountNew extends Component {
               <strong>New Account</strong>
             </CardHeader>
             <CardBody>
-              <NewAccountForm onSubmit={submit} />
+              <NewAccountForm onSubmit={onSubmit} />
             </CardBody>
           </Card>
         </Col>
@@ -118,3 +119,5 @@ export default class AccountNew extends Component {
     );
   }
 }
+
+export default connect(null, actions)(AccountNew);

@@ -21,12 +21,23 @@ export const deleteAccount = accountId => async dispatch => {
   try {
     await axios.delete(`/api/v2/accounts/${accountId}`);
     dispatch(actionCreators.showSuccessNotification("The account was deleted"));
-    return dispatch(actionCreators.deleteAccountSucceeded(accountId));
+    dispatch(actionCreators.deleteAccountSucceeded(accountId));
   } catch (err) {
     dispatch(
       actionCreators.showErrorNotification("Cannot delete account", err)
     );
     dispatch(actionCreators.deleteAccountFailed(err));
+  }
+};
+
+export const createAccount = accountData => async dispatch => {
+  try {
+    const response = await axios.post(`/api/v2/accounts`, accountData);
+    dispatch(actionCreators.showSuccessNotification("Account created"));
+    dispatch(actionCreators.createAccountSucceeded(response.account));
+  } catch (err) {
+    dispatch(actionCreators.showErrorNotification("Account creation failed", err));
+    dispatch(actionCreators.createAccountFailed(err));
   }
 };
 

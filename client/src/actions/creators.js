@@ -71,3 +71,17 @@ export const deleteAccountFailed = error => {
     error
   };
 };
+
+export const createAccountSucceeded = account => {
+  return {
+    type: actionTypes.CREATE_ACCOUNT_SUCCEEDED,
+    account
+  };
+};
+
+export const createAccountFailed = error => {
+  return {
+    type: actionTypes.CREATE_ACCOUNT_FAILED,
+    error
+  }
+}
