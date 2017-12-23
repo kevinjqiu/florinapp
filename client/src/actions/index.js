@@ -1,4 +1,5 @@
 import axios from "axios";
+import { push } from "react-router-redux";
 import * as actionCreators from "./creators";
 
 export const fetchAccounts = () => async dispatch => {
@@ -33,8 +34,9 @@ export const deleteAccount = accountId => async dispatch => {
 export const createAccount = accountData => async dispatch => {
   try {
     const response = await axios.post(`/api/v2/accounts`, accountData);
-    dispatch(actionCreators.showSuccessNotification("Account created"));
     dispatch(actionCreators.createAccountSucceeded(response.account));
+    dispatch(push("/accounts"));
+    dispatch(actionCreators.showSuccessNotification("Account created"));
   } catch (err) {
     dispatch(actionCreators.showErrorNotification("Account creation failed", err));
     dispatch(actionCreators.createAccountFailed(err));

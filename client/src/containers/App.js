@@ -30,7 +30,6 @@ class App extends Component {
           </main>
         </div>
         <GlobalModal />
-        {/* // TODO Make Notifications a top-level component */}
         <Notifications notifications={notifications} />
       </div>
     );

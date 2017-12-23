@@ -102,7 +102,6 @@ const NewAccountForm = reduxForm({ form: "newAccount" })(newAccountForm);
 export class AccountNew extends Component {
   render() {
     const {createAccount} = this.props;
-    const onSubmit = (props) => createAccount(props);
     return (
       <Row>
         <Col xs="12" lg="12">
@@ -111,7 +110,7 @@ export class AccountNew extends Component {
               <strong>New Account</strong>
             </CardHeader>
             <CardBody>
-              <NewAccountForm onSubmit={onSubmit} />
+              <NewAccountForm onSubmit={props => createAccount(props)} />
             </CardBody>
           </Card>
         </Col>
