@@ -7,7 +7,6 @@ export const fetchAccounts = () => async dispatch => {
   dispatch(actionCreators.fetchAccountsRequested());
   try {
     const response = await db.find({selector: { "metadata.type": "Account" }})
-    console.log(response);
     dispatch(
       actionCreators.fetchAccountsSucceeded(response.docs)
     );
@@ -22,7 +21,8 @@ export const fetchAccounts = () => async dispatch => {
 export const deleteAccount = accountId => async dispatch => {
   dispatch(actionCreators.deleteAccountRequested(accountId));
   try {
-    await axios.delete(`/api/v2/accounts/${accountId}`);
+    const doc = await db.get(accountId);
+    await db.remove(doc);
     dispatch(actionCreators.showSuccessNotification("The account was deleted"));
     dispatch(actionCreators.deleteAccountSucceeded(accountId));
   } catch (err) {

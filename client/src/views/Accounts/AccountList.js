@@ -62,19 +62,19 @@ const AccountCardBody = ({ accounts, ui, deleteAccount, showGlobalModal, hideGlo
         <tbody>
           {accounts.map(account => <tr key={account._id}>
               <td>
-                <Link to={`/accounts/${account.id}/view`}>{account.name}</Link>
+                <Link to={`/accounts/${account._id}/view`}>{account.name}</Link>
               </td>
               <td>{account.financialInstitution}</td>
               <td>{account.type}</td>
               <td>$0.00</td>
               <td>
                 <ButtonGroup className="float-right">
-                  <Link to={`/accounts/${account.id}/view`}> 
+                  <Link to={`/accounts/${account._id}/view`}>
                     <Button color="primary" size="sm">
                       <i className="fa fa-pencil-square-o" aria-hidden="true" />
                     </Button>
                   </Link>
-                  <Button color="danger" size="sm" onClick={() => deleteAccountWithConfirmation({accountId: account.id, showGlobalModal, hideGlobalModal, deleteAccount, fetchAccounts})}>
+                  <Button color="danger" size="sm" onClick={() => deleteAccountWithConfirmation({accountId: account._id, showGlobalModal, hideGlobalModal, deleteAccount, fetchAccounts})}>
                     <i className="fa fa-trash" aria-hidden="true" />
                   </Button>
                 </ButtonGroup>
