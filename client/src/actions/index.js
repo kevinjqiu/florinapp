@@ -43,6 +43,15 @@ export const createAccount = accountData => async dispatch => {
   }
 };
 
+export const fetchAccountById = accountId => async dispatch => {
+  try {
+    const response = await axios.get(`/api/v2/accounts/${accountId}`);
+    dispatch(actionCreators.fetchAccountByIdSucceeded(response.data.result));
+  } catch (err) {
+    dispatch(actionCreators.showErrorNotification("Failed to get account", err));
+  }
+};
+
 export const showGlobalModal = modalConfig => dispatch => {
   dispatch(actionCreators.showGlobalModal(modalConfig));
 };

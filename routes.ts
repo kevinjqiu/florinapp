@@ -19,6 +19,29 @@ export default (app: express.Express) => {
     resp.send(result);
   });
 
+  app.get(
+    "/api/v2/accounts/:accountId",
+    async (req: express.Request, resp) => {
+      try {
+        const accountGetRequest = new accountController.GetAccountByIdRequest(
+          req.params.accountId
+        );
+        const result = await accountController.get(accountGetRequest);
+        resp.status(200);
+        resp.send(result);
+      } catch (error) {
+        if (error.status == 404) {
+          resp.status(error.status);
+          resp.send(new AccountNotFound(`Account ${req.params.accountId} does not exist`));
+          return;
+        }
+        console.log(error);
+        resp.status(500);
+        resp.send(InternalServerError);
+      }
+    }
+  );
+
   app.post("/api/v2/accounts", async (req: express.Request, resp) => {
     try {
       const { name, financialInstitution, type } = req.body;

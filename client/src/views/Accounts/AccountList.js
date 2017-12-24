@@ -62,14 +62,14 @@ const AccountCardBody = ({ accounts, ui, deleteAccount, showGlobalModal, hideGlo
         <tbody>
           {accounts.map(account => <tr key={account.id}>
               <td>
-                <Link to={`/accounts/${account.id}`}>{account.name}</Link>
+                <Link to={`/accounts/${account.id}/view`}>{account.name}</Link>
               </td>
               <td>{account.financialInstitution}</td>
               <td>{account.type}</td>
               <td>$0.00</td>
               <td>
                 <ButtonGroup className="float-right">
-                  <Link to={`/accounts/${account.id}/edit`}> 
+                  <Link to={`/accounts/${account.id}/view`}> 
                     <Button color="primary" size="sm">
                       <i className="fa fa-pencil-square-o" aria-hidden="true" />
                     </Button>

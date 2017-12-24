@@ -85,3 +85,10 @@ export const createAccountFailed = error => {
     error
   }
 }
+
+export const fetchAccountByIdSucceeded = account => {
+  return {
+    type: actionTypes.FETCH_ACCOUNT_BY_ID_SUCCEEDED,
+    account
+  }
+}

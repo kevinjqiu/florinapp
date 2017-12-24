@@ -3,6 +3,7 @@ import SearchResponse from "../dtos/SearchResponse";
 import PostResponse from "../dtos/PostResponse";
 import DeleteResponse from "../dtos/DeleteResponse";
 import AccountDTO from "../dtos/Account";
+import GetResponse from "../dtos/GetResponse";
 import { Account, AccountType, newAccount } from "../db/Account";
 
 export class AccountSearchRequest {}
@@ -68,4 +69,17 @@ export const del = async (
   const doc = await db.get(req.accountId);
   await db.remove(doc);
   return new DeleteResponse();
+};
+
+export class GetAccountByIdRequest {
+  accountId: string;
+
+  constructor(accountId: string) {
+    this.accountId = accountId;
+  }
+}
+export const get = async (req: GetAccountByIdRequest): Promise<GetResponse<AccountDTO>> => {
+  const doc = await db.get(req.accountId);
+  // @ts-ignore
+  return new GetResponse(new AccountDTO(<Account>doc));
 };
