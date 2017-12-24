@@ -71,15 +71,33 @@ export const del = async (
   return new DeleteResponse();
 };
 
-export class GetAccountByIdRequest {
+export class AccountGetRequest {
   accountId: string;
 
   constructor(accountId: string) {
     this.accountId = accountId;
   }
 }
-export const get = async (req: GetAccountByIdRequest): Promise<GetResponse<AccountDTO>> => {
+export const get = async (req: AccountGetRequest): Promise<GetResponse<AccountDTO>> => {
   const doc = await db.get(req.accountId);
   // @ts-ignore
   return new GetResponse(new AccountDTO(<Account>doc));
+};
+
+export class AccountPutRequest extends AccountPostRequest {
+  accountId: string;
+  constructor(accountId: string, name: string, financialInstitution: string, type: AccountType) {
+    super(name, financialInstitution, type);
+    this.accountId = accountId;
+  }
+}
+
+export const put = async (req: AccountPutRequest): Promise<any> => {
+  // @ts-ignore
+  const doc = <Account> await db.get(req.accountId);
+  doc.name = req.name;
+  doc.financialInstitution = req.financialInstitution;
+  doc.type = req.type;
+  await db.put(doc);
+  return {};
 };

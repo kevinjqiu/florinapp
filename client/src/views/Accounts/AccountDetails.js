@@ -5,10 +5,10 @@ import AccountForm from "./AccountForm";
 import * as actions from "../../actions";
 import { reduxForm } from "redux-form";
 
-const ViewAccountForm = connect(({currentAccount}) => {
+const ViewAccountForm = connect(({ currentAccount }) => {
   return {
     initialValues: currentAccount
-  }
+  };
 }, null)(reduxForm({ form: "viewAccount" })(AccountForm));
 
 class AccountDetails extends Component {
@@ -19,6 +19,8 @@ class AccountDetails extends Component {
   }
 
   render() {
+    const { accountId } = this.props.match.params;
+    const { updateAccount } = this.props;
     return (
       <Row>
         <Col xs="12" lg="12">
@@ -27,7 +29,10 @@ class AccountDetails extends Component {
               <strong>Account Details</strong>
             </CardHeader>
             <CardBody>
-              <ViewAccountForm editMode onSubmit={props => console.log(props)} />
+              <ViewAccountForm
+                editMode
+                onSubmit={props => updateAccount(accountId, props)}
+              />
             </CardBody>
           </Card>
         </Col>

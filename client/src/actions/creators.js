@@ -92,3 +92,16 @@ export const fetchAccountByIdSucceeded = account => {
     account
   }
 }
+
+export const updateAccountSucceeded = () => {
+  return {
+    type: actionTypes.UPDATE_ACCOUNT_SUCCEEDED
+  }
+};
+
+export const updateAccountFailed = () => {
+  return {
+    type: actionTypes.UPDATE_ACCOUNT_FAILED,
+    error
+  }
+}

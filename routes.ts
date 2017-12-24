@@ -23,7 +23,7 @@ export default (app: express.Express) => {
     "/api/v2/accounts/:accountId",
     async (req: express.Request, resp) => {
       try {
-        const accountGetRequest = new accountController.GetAccountByIdRequest(
+        const accountGetRequest = new accountController.AccountGetRequest(
           req.params.accountId
         );
         const result = await accountController.get(accountGetRequest);
@@ -64,6 +64,26 @@ export default (app: express.Express) => {
       resp.send(result);
     } catch (error) {
       // TODO: revamp error handling
+      if (error.status === 404) {
+        resp.status(error.status);
+        resp.send(new AccountNotFound(`Account ${req.params.accountId} does not exist`));
+        return;
+      }
+      console.log(error);
+      resp.status(500);
+      resp.send(InternalServerError);
+    }
+  });
+
+  app.put("/api/v2/accounts/:accountId", async (req: express.Request, resp) => {
+    try {
+      const { name, financialInstitution, type } = req.body;
+      const accountPutRequest = new accountController.AccountPutRequest(req.params.accountId, name, financialInstitution, type);
+      accountPutRequest.validate();
+      const response = await accountController.put(accountPutRequest);
+      resp.status(202);
+      resp.send(response);
+    } catch (error) {
       if (error.status === 404) {
         resp.status(error.status);
         resp.send(new AccountNotFound(`Account ${req.params.accountId} does not exist`));

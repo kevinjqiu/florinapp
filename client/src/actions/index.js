@@ -52,6 +52,18 @@ export const fetchAccountById = accountId => async dispatch => {
   }
 };
 
+export const updateAccount = (accountId, accountData) => async dispatch => {
+  try {
+    await axios.put(`/api/v2/accounts/${accountId}`, accountData);
+    dispatch(actionCreators.updateAccountSucceeded());
+    dispatch(push("/accounts"));
+    dispatch(actionCreators.showSuccessNotification("Account updated"));
+  } catch (err) {
+    dispatch(actionCreators.showErrorNotification("Account update failed", err));
+    dispatch(actionCreators.updateAccountFailed(err));
+  }
+};
+
 export const showGlobalModal = modalConfig => dispatch => {
   dispatch(actionCreators.showGlobalModal(modalConfig));
 };
