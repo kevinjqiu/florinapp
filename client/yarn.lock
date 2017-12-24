@@ -5666,6 +5666,18 @@ postcss@^6.0.0, postcss@^6.0.1, postcss@^6.0.13:
     source-map "^0.6.1"
     supports-color "^4.4.0"
 
+pouchdb-abstract-mapreduce@6.4.1:
+  version "6.4.1"
+  resolved "https://registry.yarnpkg.com/pouchdb-abstract-mapreduce/-/pouchdb-abstract-mapreduce-6.4.1.tgz#b8ba3f9ff661ddb2b3e1cc1bd47c98142be1a4fe"
+  dependencies:
+    pouchdb-binary-utils "6.4.1"
+    pouchdb-collate "6.4.1"
+    pouchdb-collections "6.4.1"
+    pouchdb-mapreduce-utils "6.4.1"
+    pouchdb-md5 "6.4.1"
+    pouchdb-promise "6.4.1"
+    pouchdb-utils "6.4.1"
+
 pouchdb-adapter-leveldb-core@6.4.1:
   version "6.4.1"
   resolved "https://registry.yarnpkg.com/pouchdb-adapter-leveldb-core/-/pouchdb-adapter-leveldb-core-6.4.1.tgz#ccb825a01337c31a815433ba7d9f3c445ef86ada"
@@ -5712,6 +5724,10 @@ pouchdb-binary-utils@6.4.1:
   dependencies:
     buffer-from "0.1.1"
 
+pouchdb-collate@6.4.1:
+  version "6.4.1"
+  resolved "https://registry.yarnpkg.com/pouchdb-collate/-/pouchdb-collate-6.4.1.tgz#b0ee89c7964cb965170af22de9ad78a58ef8d0c3"
+
 pouchdb-collections@6.4.1:
   version "6.4.1"
   resolved "https://registry.yarnpkg.com/pouchdb-collections/-/pouchdb-collections-6.4.1.tgz#d7407255a6058664cd8fa0a076c53e5e0eff4ef2"
@@ -5722,11 +5738,31 @@ pouchdb-errors@6.4.1:
   dependencies:
     inherits "2.0.3"
 
+pouchdb-find@^6.4.1:
+  version "6.4.1"
+  resolved "https://registry.yarnpkg.com/pouchdb-find/-/pouchdb-find-6.4.1.tgz#e2a290665abb645984ad6916a6a984a1cc2ddf3e"
+  dependencies:
+    pouchdb-abstract-mapreduce "6.4.1"
+    pouchdb-collate "6.4.1"
+    pouchdb-md5 "6.4.1"
+    pouchdb-promise "6.4.1"
+    pouchdb-selector-core "6.4.1"
+    pouchdb-utils "6.4.1"
+
 pouchdb-json@6.4.1:
   version "6.4.1"
   resolved "https://registry.yarnpkg.com/pouchdb-json/-/pouchdb-json-6.4.1.tgz#02d2d77bf7bc13b7da35687a762b0a55a1055951"
   dependencies:
     vuvuzela "1.0.3"
+
+pouchdb-mapreduce-utils@6.4.1:
+  version "6.4.1"
+  resolved "https://registry.yarnpkg.com/pouchdb-mapreduce-utils/-/pouchdb-mapreduce-utils-6.4.1.tgz#abddc1ef9344c7e650a697d7b609bcbc8581c9e5"
+  dependencies:
+    argsarray "0.0.1"
+    inherits "2.0.3"
+    pouchdb-collections "6.4.1"
+    pouchdb-utils "6.4.1"
 
 pouchdb-md5@6.4.1:
   version "6.4.1"
@@ -5744,6 +5780,13 @@ pouchdb-promise@6.4.1:
   resolved "https://registry.yarnpkg.com/pouchdb-promise/-/pouchdb-promise-6.4.1.tgz#f93ccbfaea7e29eed3b3359abb1e25d2f63b95db"
   dependencies:
     lie "3.1.1"
+
+pouchdb-selector-core@6.4.1:
+  version "6.4.1"
+  resolved "https://registry.yarnpkg.com/pouchdb-selector-core/-/pouchdb-selector-core-6.4.1.tgz#992550920a5aff1a4aa41e07e1a40414bb167e93"
+  dependencies:
+    pouchdb-collate "6.4.1"
+    pouchdb-utils "6.4.1"
 
 pouchdb-utils@6.4.1:
   version "6.4.1"

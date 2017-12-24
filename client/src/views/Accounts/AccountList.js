@@ -60,7 +60,7 @@ const AccountCardBody = ({ accounts, ui, deleteAccount, showGlobalModal, hideGlo
           </tr>
         </thead>
         <tbody>
-          {accounts.map(account => <tr key={account.id}>
+          {accounts.map(account => <tr key={account._id}>
               <td>
                 <Link to={`/accounts/${account.id}/view`}>{account.name}</Link>
               </td>

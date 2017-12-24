@@ -1,14 +1,15 @@
 import axios from "axios";
 import { push } from "react-router-redux";
 import * as actionCreators from "./creators";
-import { db } from "../db";
+import db from "../db";
 
 export const fetchAccounts = () => async dispatch => {
   dispatch(actionCreators.fetchAccountsRequested());
   try {
-    const response = await db.allDocs({include_docs: true});
-    return dispatch(
-      actionCreators.fetchAccountsSucceeded(response.rows.map(r => r.doc))
+    const response = await db.find({selector: { "metadata.type": "Account" }})
+    console.log(response);
+    dispatch(
+      actionCreators.fetchAccountsSucceeded(response.docs)
     );
   } catch (err) {
     dispatch(
