@@ -15,7 +15,7 @@ import { deleteAccount } from "../../actions/index";
 configure({ adapter: new Adapter() });
 const mockStore = configureMockStore([thunk]);
 
-describe("Account", () => {
+describe("Account List", () => {
   let store;
   const mock = new MockAdapter(axios);
 
