@@ -12,9 +12,8 @@ const ViewAccountForm = connect(({ currentAccount }) => {
 }, null)(reduxForm({ form: "viewAccount" })(AccountForm));
 
 class AccountDetails extends Component {
-  componentDidMount() {
-    const { match } = this.props;
-    const { accountId } = match.params;
+  componentWillMount() {
+    const { accountId } = this.props.match.params;
     this.props.fetchAccountById(accountId);
   }
 
