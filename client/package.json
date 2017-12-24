@@ -8,6 +8,8 @@
     "bootstrap": "^4.0.0-beta.2",
     "font-awesome": "^4.7.0",
     "history": "^4.7.2",
+    "pouchdb": "^6.4.1",
+    "pouchdb-adapter-memory": "^6.4.1",
     "react": "^16",
     "react-dom": "^16",
     "react-notification-system": "^0.2.16",

@@ -1,13 +1,14 @@
 import axios from "axios";
 import { push } from "react-router-redux";
 import * as actionCreators from "./creators";
+import { db } from "../db";
 
 export const fetchAccounts = () => async dispatch => {
   dispatch(actionCreators.fetchAccountsRequested());
   try {
-    const response = await axios.get("/api/v2/accounts");
+    const response = await db.allDocs({include_docs: true});
     return dispatch(
-      actionCreators.fetchAccountsSucceeded(response.data.result)
+      actionCreators.fetchAccountsSucceeded(response.rows.map(r => r.doc))
     );
   } catch (err) {
     dispatch(
@@ -33,7 +34,14 @@ export const deleteAccount = accountId => async dispatch => {
 
 export const createAccount = accountData => async dispatch => {
   try {
-    const response = await axios.post(`/api/v2/accounts`, accountData);
+    const doc = {
+      metadata: {
+        type: "Account"
+      },
+      ...accountData
+    }
+    const response = await db.post(doc);
+    console.log(response);
     dispatch(actionCreators.createAccountSucceeded(response.account));
     dispatch(push("/accounts"));
     dispatch(actionCreators.showSuccessNotification("Account created"));
