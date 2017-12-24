@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import "font-awesome/css/font-awesome.min.css";
 import "simple-line-icons/css/simple-line-icons.css";
 import registerServiceWorker from "./registerServiceWorker";
-import { Switch, Route, BrowserRouter } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import App from "./containers/App";
 import "./style.css";
 import reduxThunk from "redux-thunk";
