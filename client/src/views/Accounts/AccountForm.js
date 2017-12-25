@@ -27,7 +27,7 @@ const AccountTypeSelector = ({ input, meta: { touched, error, warning } }) => {
 const required = value => (value ? undefined : "This field is required");
 
 const validAccountType = value => {
-  return value in accountTypes;
+  return value in accountTypes ? undefined : "Not a valid account type";
 };
 
 const InputField = ({

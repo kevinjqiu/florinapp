@@ -1,6 +1,7 @@
 import { push } from "react-router-redux";
 import * as actionCreators from "./creators";
 import db from "../db";
+import Account from "../models/Account";
 
 export const fetchAccounts = () => async dispatch => {
   dispatch(actionCreators.fetchAccountsRequested());
@@ -39,13 +40,15 @@ export const createAccount = accountData => async dispatch => {
         type: "Account"
       },
       ...accountData
-    }
+    };
     const response = await db.post(doc);
     dispatch(actionCreators.createAccountSucceeded(response.account));
     dispatch(push("/accounts"));
     dispatch(actionCreators.showSuccessNotification("Account created"));
   } catch (err) {
-    dispatch(actionCreators.showErrorNotification("Account creation failed", err));
+    dispatch(
+      actionCreators.showErrorNotification("Account creation failed", err)
+    );
     dispatch(actionCreators.createAccountFailed(err));
   }
 };

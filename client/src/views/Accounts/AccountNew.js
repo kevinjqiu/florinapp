@@ -10,6 +10,7 @@ import * as actions from "../../actions";
 import { connect } from "react-redux";
 import AccountForm from "./AccountForm";
 import { reduxForm } from "redux-form";
+import Account from "../../models/Account";
 
 const NewAccountForm = reduxForm({form: 'newAccount'})(AccountForm);
 
