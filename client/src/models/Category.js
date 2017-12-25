@@ -13,7 +13,7 @@ export default class Category extends FlorinBase {
   constructor(props: {_id: string, name: string, parent: ?string, type: CategoryType, allowTransactions: boolean}) {
     super("Category");
     const { _id, name, parent, type, allowTransactions } = props;
-    this._id = id;
+    this._id = _id;
     this.name = name;
     this.parent = parent;
     this.type = type;
