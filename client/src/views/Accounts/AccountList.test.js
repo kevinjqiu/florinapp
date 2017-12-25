@@ -1,6 +1,4 @@
 import React from "react";
-import axios from "axios";
-import MockAdapter from "axios-mock-adapter";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import { configure, mount, shallow } from "enzyme";
@@ -11,21 +9,20 @@ import AccountList from "./AccountList";
 import * as actionCreators from "../../actions/creators";
 import * as actionTypes from "../../actions/types";
 import { deleteAccount } from "../../actions/index";
+import db from "../../db";
+import reset from "../../db/reset";
 
 configure({ adapter: new Adapter() });
 const mockStore = configureMockStore([thunk]);
 
 describe("Account List", () => {
-  let store;
-  const mock = new MockAdapter(axios);
-
-  afterEach(() => {
-    mock.reset();
+  beforeEach(() => {
+    reset();
   });
+  let store;
 
-  it("should show 'no existing accounts' and the create account button when GET /accounts return empty", () => {
+  it("should show 'no existing accounts' and the create account button when no accounts", () => {
     store = mockStore({ ui: { accounts: {}}, accounts: [] });
-    mock.onGet("/api/v2/accounts").reply(200, { result: [] });
     const wrapper = mount(
       <Provider store={store}>
         <BrowserRouter>
@@ -40,17 +37,17 @@ describe("Account List", () => {
     expect(cardBody.find("NewAccountButton").length).toBe(1);
   });
 
-  it("should populate accounts table with accounts from GET /accounts", () => {
+  it("should populate accounts table with accounts from stored accounts", () => {
     const accounts = [
       {
-        id: "abcdefghijk",
+        _id: "abcdefghijk",
         name: "Awesome Account",
         financialInstitution: "Awesome Bank",
         type: "CHECKING",
         currentBalance: "0.00"
       },
       {
-        id: "cafebabe123",
+        _id: "cafebabe123",
         name: "Another Account",
         financialInstitution: "Another Bank",
         type: "CREDIT_CARD",
@@ -58,9 +55,6 @@ describe("Account List", () => {
       }
     ];
     store = mockStore({ accounts, ui: { accounts: {} } });
-    mock.onGet("/api/v2/accounts").reply(200, {
-      result: accounts
-    });
     const wrapper = mount(
       <Provider store={store}>
         <BrowserRouter>
@@ -74,16 +68,15 @@ describe("Account List", () => {
       const tds = tr.find("td");
       const links = tds.at(0).find("Link");
       expect(links.length).toBe(1);
-      expect(links.at(0).prop("to")).toEqual(`/accounts/${accounts[idx].id}`);
+      expect(links.at(0).prop("to")).toEqual(`/accounts/${accounts[idx]._id}/view`);
       expect(tds.at(1).text()).toEqual(accounts[idx].financialInstitution);
       expect(tds.at(2).text()).toEqual(accounts[idx].type);
       expect(tds.at(3).text()).toEqual('$' + accounts[idx].currentBalance);
     })
   });
 
-  it("should show alert when failed to GET /accounts", () => {
+  it("should show alert when failed to get accounts", () => {
     store = mockStore({ accounts: [], ui: { accounts: { failed: true } } });
-    mock.onGet("/api/v2/accounts").timeout();
     const wrapper = mount(
       <Provider store={store}>
         <BrowserRouter>
@@ -96,13 +89,11 @@ describe("Account List", () => {
   })
 
   it("should show delete failed notification when DELETE /accounts/:id fails", async () => {
-    const accounts = [{ id: "deadbeefcafebabe", name: "Awesome Account", financialInstitution: "Awesome Bank", type: "CHECKING", currentBalance: "0.00" }];
+    const accounts = [{ _id: "deadbeefcafebabe", name: "Awesome Account", financialInstitution: "Awesome Bank", type: "CHECKING", currentBalance: "0.00" }];
     store = mockStore({
       accounts,
       ui: { accounts: { failed: false } }
     });
-    mock.onGet("/api/v2/accounts").reply(200, { result: accounts });
-    mock.onDelete("/api/v2/accounts/deadbeefcafebabe").timeout();
     const wrapper = mount(
       <Provider store={store}>
         <BrowserRouter>
@@ -120,7 +111,6 @@ describe("Account List", () => {
 
     expect(actions[1].type).toBe("RNS_SHOW_NOTIFICATION");
     expect(actions[1].title).toBe("Cannot delete account");
-    expect(actions[1].message).toBe("Error: timeout of 0ms exceeded");
     expect(actions[1].level).toBe("error");
 
     expect(actions[2].type).toBe(actionTypes.DELETE_ACCOUNT_FAILED);
@@ -129,13 +119,14 @@ describe("Account List", () => {
   })
 
   it("should remove deleted account when DELETE /accounts/:id succeeds", async () => {
-    const accounts = [{ id: "deadbeefcafebabe", name: "Awesome Account", financialInstitution: "Awesome Bank", type: "CHECKING", currentBalance: "0.00" }];
+    const accounts = [{ _id: "deadbeefcafebabe", name: "Awesome Account", financialInstitution: "Awesome Bank", type: "CHECKING", currentBalance: "0.00" }];
+    accounts.forEach(async account => {
+      await db.post(account);
+    })
     store = mockStore({
       accounts,
       ui: { accounts: { failed: false } }
     });
-    mock.onGet("/api/v2/accounts").reply(200, { result: accounts });
-    mock.onDelete("/api/v2/accounts/deadbeefcafebabe").reply(200, {});
     const wrapper = mount(
       <Provider store={store}>
         <BrowserRouter>
