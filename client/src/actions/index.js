@@ -1,4 +1,3 @@
-import axios from "axios";
 import { push } from "react-router-redux";
 import * as actionCreators from "./creators";
 import db from "../db";
@@ -42,7 +41,6 @@ export const createAccount = accountData => async dispatch => {
       ...accountData
     }
     const response = await db.post(doc);
-    console.log(response);
     dispatch(actionCreators.createAccountSucceeded(response.account));
     dispatch(push("/accounts"));
     dispatch(actionCreators.showSuccessNotification("Account created"));
@@ -54,8 +52,8 @@ export const createAccount = accountData => async dispatch => {
 
 export const fetchAccountById = accountId => async dispatch => {
   try {
-    const response = await axios.get(`/api/v2/accounts/${accountId}`);
-    dispatch(actionCreators.fetchAccountByIdSucceeded(response.data.result));
+    const account = await db.get(accountId);
+    dispatch(actionCreators.fetchAccountByIdSucceeded(account));
   } catch (err) {
     dispatch(actionCreators.showErrorNotification("Failed to get account", err));
   }
@@ -63,7 +61,11 @@ export const fetchAccountById = accountId => async dispatch => {
 
 export const updateAccount = (accountId, accountData) => async dispatch => {
   try {
-    await axios.put(`/api/v2/accounts/${accountId}`, accountData);
+    const account = {
+      ...await db.get(accountId),
+      ...accountData
+    }
+    db.put(account);
     dispatch(actionCreators.updateAccountSucceeded());
     dispatch(push("/accounts"));
     dispatch(actionCreators.showSuccessNotification("Account updated"));
