@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import AccountForm from "./AccountForm";
 import * as actions from "../../actions";
 import { reduxForm } from "redux-form";
+import Account from "../../models/Account";
 
 const ViewAccountForm = connect(({ currentAccount }) => {
   return {
@@ -30,7 +31,7 @@ class AccountDetails extends Component {
             <CardBody>
               <ViewAccountForm
                 editMode
-                onSubmit={props => updateAccount(accountId, props)}
+                onSubmit={props => updateAccount(accountId, new Account(props))}
               />
             </CardBody>
           </Card>

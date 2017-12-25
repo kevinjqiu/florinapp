@@ -25,7 +25,7 @@ export class AccountNew extends Component {
               <strong>New Account</strong>
             </CardHeader>
             <CardBody>
-              <NewAccountForm onSubmit={props => createAccount(props)} />
+              <NewAccountForm onSubmit={props => createAccount(new Account(props))} />
             </CardBody>
           </Card>
         </Col>

@@ -1,5 +1,5 @@
 // @flow
-import { AccountType } from "./AccountType";
+import type { AccountType } from "./AccountType";
 import Metadata from "./Metadata";
 
 export default class Account {
@@ -9,8 +9,7 @@ export default class Account {
   financialInstitution: string;
   type: AccountType;
 
-  construct(props) {
-    console.log(props);
+  constructor(props: {name:string, financialInstitution:string, type:AccountType}) {
     const { name, financialInstitution, type } = props;
     this.name = name;
     this.financialInstitution = financialInstitution;

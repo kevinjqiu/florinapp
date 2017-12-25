@@ -1,3 +1,4 @@
+// @flow
 import { push } from "react-router-redux";
 import * as actionCreators from "./creators";
 import db from "../db";
@@ -18,7 +19,7 @@ export const fetchAccounts = () => async dispatch => {
   }
 };
 
-export const deleteAccount = accountId => async dispatch => {
+export const deleteAccount = (accountId: string) => async dispatch => {
   dispatch(actionCreators.deleteAccountRequested(accountId));
   try {
     const doc = await db.get(accountId);
@@ -33,15 +34,9 @@ export const deleteAccount = accountId => async dispatch => {
   }
 };
 
-export const createAccount = accountData => async dispatch => {
+export const createAccount = (accountData: Account) => async dispatch => {
   try {
-    const doc = {
-      metadata: {
-        type: "Account"
-      },
-      ...accountData
-    };
-    const response = await db.post(doc);
+    const response = await db.post(accountData);
     dispatch(actionCreators.createAccountSucceeded(response.account));
     dispatch(push("/accounts"));
     dispatch(actionCreators.showSuccessNotification("Account created"));
@@ -53,7 +48,7 @@ export const createAccount = accountData => async dispatch => {
   }
 };
 
-export const fetchAccountById = accountId => async dispatch => {
+export const fetchAccountById = (accountId: string) => async dispatch => {
   try {
     const account = await db.get(accountId);
     dispatch(actionCreators.fetchAccountByIdSucceeded(account));
@@ -62,7 +57,7 @@ export const fetchAccountById = accountId => async dispatch => {
   }
 };
 
-export const updateAccount = (accountId, accountData) => async dispatch => {
+export const updateAccount = (accountId: string, accountData: Account) => async dispatch => {
   try {
     const account = {
       ...await db.get(accountId),
