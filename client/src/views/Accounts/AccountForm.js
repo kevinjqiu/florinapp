@@ -2,6 +2,7 @@ import { Button, Col, Label, FormGroup, Input, FormFeedback } from "reactstrap";
 import React from "react";
 import { Field } from "redux-form";
 import { Link } from "react-router-dom";
+import { accountTypes } from "../../models/AccountType"
 
 const AccountTypeSelector = ({ input, meta: { touched, error, warning } }) => {
   const options = touched ? { ...input, valid: !error } : { ...input };
@@ -14,10 +15,7 @@ const AccountTypeSelector = ({ input, meta: { touched, error, warning } }) => {
         <Col xs="12" md="9">
           <Input name="type" type="select" {...options}>
             <option value="" />
-            <option value="CHECKING">Checking</option>
-            <option value="SAVINGS">Savings</option>
-            <option value="CREDIT_CARD">Credit Card</option>
-            <option value="INVESTMENT">Investment</option>
+            { Object.keys(accountTypes).map(key => <option key={key} value={key}>{accountTypes[key]}</option>) }
           </Input>
           <FormFeedback>{error}</FormFeedback>
         </Col>
@@ -29,11 +27,7 @@ const AccountTypeSelector = ({ input, meta: { touched, error, warning } }) => {
 const required = value => (value ? undefined : "This field is required");
 
 const validAccountType = value => {
-  // TODO: refactor
-  return ["CHECKING", "SAVINGS", "CREDIT_CARD", "INVESTMENT"].indexOf(value) !==
-    -1
-    ? undefined
-    : "Not a valid account type";
+  return value in accountTypes;
 };
 
 const InputField = ({
