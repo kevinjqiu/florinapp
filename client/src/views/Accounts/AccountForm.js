@@ -76,10 +76,12 @@ const AccountForm = ({ editMode, onSubmit, handleSubmit, reset, account }) => {
         {editMode ? "Save" : "Create"}
       </Button>
       <Button color="secondary" onClick={reset}>
-        Clear
+        {editMode ? "Reset" : "Clear"}
       </Button>
       <Link to="/accounts">
-        <Button color="danger">Cancel</Button>
+        <Button color="danger">
+          {editMode ? "Cancel" : "Discard"}
+        </Button>
       </Link>
     </form>
   );
