@@ -3,6 +3,7 @@ import React from "react";
 import { Field } from "redux-form";
 import { Link } from "react-router-dom";
 import { accountTypes } from "../../models/AccountType"
+import { DropdownList } from 'react-widgets'
 
 const AccountTypeSelector = ({ input, meta: { touched, error, warning } }) => {
   const options = touched ? { ...input, valid: !error } : { ...input };
@@ -13,10 +14,7 @@ const AccountTypeSelector = ({ input, meta: { touched, error, warning } }) => {
           <Label htmlFor="type">Account Type</Label>
         </Col>
         <Col xs="12" md="9">
-          <Input name="type" type="select" {...options}>
-            <option value="" />
-            { Object.keys(accountTypes).map(key => <option key={key} value={key}>{accountTypes[key]}</option>) }
-          </Input>
+          <DropdownList data={Object.keys(accountTypes)} {...options} />
           <FormFeedback>{error}</FormFeedback>
         </Col>
       </FormGroup>

@@ -12,8 +12,8 @@ import reducers from "./reducers";
 import { Provider } from "react-redux";
 import { createLogger } from "redux-logger";
 import { routerMiddleware, ConnectedRouter } from "react-router-redux";
-
 import createHistory from "history/createBrowserHistory";
+import 'react-widgets/dist/css/react-widgets.css';
 
 const history = createHistory();
 
