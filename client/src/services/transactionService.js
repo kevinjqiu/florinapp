@@ -4,6 +4,7 @@ import Banking from "banking";
 import Account from "../models/Account";
 import Transaction from "../models/Transaction";
 import { transactionTypes } from "../models/TransactionType";
+import db from "../db";
 
 const parseOfx = (fileContent) => {
   return new Promise((resolve, reject) => {
@@ -16,7 +17,8 @@ const parseOfx = (fileContent) => {
 export const importAccountStatement = async (account: Account, statementFile: File) => {
     const fileContent = await PromiseFileReader.readAsText(statementFile);
     const result = await parseOfx(fileContent);
-    result.body.OFX.BANKMSGSRSV1.STMTTRNRS.STMTRS.BANKTRANLIST.STMTTRN.forEach(t => {
+    const stmttrns = result.body.OFX.BANKMSGSRSV1.STMTTRNRS.STMTRS.BANKTRANLIST.STMTTRN;
+    stmttrns.map(async t => {
       const txn = new Transaction({
         accountId: account._id,
         amount: t.TRNAMT,
@@ -25,7 +27,10 @@ export const importAccountStatement = async (account: Account, statementFile: Fi
         memo: t.MEMO,
         type: parseFloat(t.TRNAMT) > 0 ? transactionTypes.DEBIT : transactionTypes.CREDIT
       })
-      console.log(t);
-      console.log(txn);
+      try {
+        await db.post(txn);
+      } catch (error) {
+        console.log(error);
+      }
     });
 }

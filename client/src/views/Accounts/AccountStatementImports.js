@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import { Row, Col, CardHeader, CardBody } from "reactstrap";
+import { Col } from "reactstrap";
 import Dropzone from  "react-dropzone";
 import { connect } from "react-redux";
 import * as actions from "../../actions";
 
-class AccountStatementImports extends React.Component {
+class AccountStatementImports extends Component {
   render() {
     const { currentAccount, importAccountStatement } = this.props;
     return <div>

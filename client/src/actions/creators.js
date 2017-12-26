@@ -1,9 +1,10 @@
 import * as actionTypes from "./types";
 import { success, error } from "react-notification-system-redux";
 
-export const showSuccessNotification = (msg) => {
+export const showSuccessNotification = (title: string, message="") => {
   return success({
-    title: msg,
+    title,
+    message,
     autoDismiss: 5
   });
 };

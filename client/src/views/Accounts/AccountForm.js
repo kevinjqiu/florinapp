@@ -4,7 +4,6 @@ import { Field } from "redux-form";
 import { Link } from "react-router-dom";
 import { accountTypes } from "../../models/AccountType";
 import { DropdownList } from "react-widgets";
-import Dropzone from "react-dropzone";
 
 const AccountTypeSelector = ({ input, meta: { touched, error, warning } }) => {
   const options = touched ? { ...input, valid: !error } : { ...input };
