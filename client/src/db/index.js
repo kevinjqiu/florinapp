@@ -2,9 +2,17 @@ import PouchDB from "pouchdb";
 import PouchDBFind from "pouchdb-find";
 import PouchDBMemoryAdapter from "pouchdb-adapter-memory";
 
+let db;
+
+const ENV = process.env.ENV;
+
 PouchDB.plugin(PouchDBFind);
-PouchDB.plugin(PouchDBMemoryAdapter);
-const db = new PouchDB("florin-test", {adapter: "memory"});
+if (ENV === "test") {
+  PouchDB.plugin(PouchDBMemoryAdapter);
+  db = new PouchDB("florin-test", {adapter: "memory"});
+} else {
+  db = new PouchDB("florin-test");
+}
 
 db.createIndex({
   index: {

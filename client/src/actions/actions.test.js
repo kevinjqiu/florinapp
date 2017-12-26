@@ -87,3 +87,81 @@ describe("deleteAccount", () => {
     expect(notifications[0].title).toEqual("The account was deleted");
   });
 });
+
+describe("createAccount", () => {
+  let flushThunks, store;
+
+  beforeEach(() => {
+    reset();
+    flushThunks = FlushThunks.createMiddleware();
+    store = createStore(reducer, applyMiddleware(flushThunks, thunk));
+  });
+
+  it("should create account", async () => {
+    await store.dispatch(actions.createAccount(new Account({name: "TEST", financialInstitution: "FI", type: "CHECKING"})));
+    const { notifications } = store.getState();
+    expect(notifications.length).toBe(1);
+    expect(notifications[0].title).toEqual("Account created");
+  });
+});
+
+describe("udpateAccount", async () => {
+  let flushThunks, store;
+
+  beforeEach(() => {
+    reset();
+    flushThunks = FlushThunks.createMiddleware();
+    store = createStore(reducer, applyMiddleware(flushThunks, thunk));
+  });
+
+  it("should update account", async () => {
+    let result = await db.post(
+      new Account({
+        name: "TEST",
+        financialInstitution: "TEST_FI",
+        type: "CHECKING"
+      })
+    );
+    await store.dispatch(actions.updateAccount(result.id, new Account({name: "TEST", financialInstitution: "TEST_FI", type: "INVESTMENT"})));
+    const { notifications } = store.getState();
+    expect(notifications.length).toBe(1);
+    expect(notifications[0].title).toEqual("Account updated");
+    result = await db.get(result.id)
+    expect(result.type).toEqual("INVESTMENT");
+    expect(result.name).toEqual("TEST");
+    expect(result.financialInstitution).toEqual("TEST_FI");
+  });
+});
+
+describe("fetchAccountById", async () => {
+  let flushThunks, store;
+
+  beforeEach(() => {
+    reset();
+    flushThunks = FlushThunks.createMiddleware();
+    store = createStore(reducer, applyMiddleware(flushThunks, thunk));
+  });
+
+  it("should fetch account by id", async () => {
+    const result = await db.post(
+      new Account({
+        name: "TEST",
+        financialInstitution: "TEST_FI",
+        type: "CHECKING"
+      })
+    );
+    await store.dispatch(actions.fetchAccountById(result.id));
+    const { currentAccount } = store.getState();
+    expect(currentAccount.name).toEqual("TEST");
+    expect(currentAccount.financialInstitution).toEqual("TEST_FI");
+    expect(currentAccount.type).toEqual("CHECKING");
+  });
+
+  it("should return error when account not found", async () => {
+    await store.dispatch(actions.fetchAccountById("nonexistent"));
+    const { currentAccount, notifications } = store.getState();
+    expect(currentAccount).toBe(null);
+    expect(notifications.length).toBe(1);
+    expect(notifications[0].title).toBe("Failed to get account");
+  })
+});

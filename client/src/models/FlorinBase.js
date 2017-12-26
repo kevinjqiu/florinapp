@@ -1,6 +1,5 @@
-import Metadata from "./Metadata";
-
 // @flow
+import Metadata from "./Metadata";
 
 export default class FlorinBase {
   metadata: Metadata;
