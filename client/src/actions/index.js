@@ -94,9 +94,9 @@ export const importAccountStatement = (
 ) => async dispatch => {
   dispatch(actionCreators.importAccountStatementRequested());
   try {
-     await transactionService.importAccountStatement(account, statementFile);
+    const { numImported, numSkipped } = await transactionService.importAccountStatement(account, statementFile);
     dispatch(actionCreators.importAccountStatementSucceeded());
-    dispatch(actionCreators.showSuccessNotification("Statement import succeeded"));
+    dispatch(actionCreators.showSuccessNotification("Statement import succeeded", `Imported: ${numImported}. Skipped ${numSkipped}`));
   } catch (err) {
     dispatch(
       actionCreators.showErrorNotification("Statement import failed", err)

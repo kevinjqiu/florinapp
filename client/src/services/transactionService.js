@@ -14,11 +14,11 @@ const parseOfx = (fileContent) => {
   });
 }
 
-export const importAccountStatement = async (account: Account, statementFile: File) => {
+export const importAccountStatement = async (account: Account, statementFile: File): Promise<{numImported: number, numSkipped: number}> => {
     const fileContent = await PromiseFileReader.readAsText(statementFile);
     const result = await parseOfx(fileContent);
     const stmttrns = result.body.OFX.BANKMSGSRSV1.STMTTRNRS.STMTRS.BANKTRANLIST.STMTTRN;
-    stmttrns.map(async t => {
+    const dbResult = stmttrns.map(async t => {
       const txn = new Transaction({
         accountId: account._id,
         amount: t.TRNAMT,
@@ -28,9 +28,20 @@ export const importAccountStatement = async (account: Account, statementFile: Fi
         type: parseFloat(t.TRNAMT) > 0 ? transactionTypes.DEBIT : transactionTypes.CREDIT
       })
       try {
+        // Calculate checksum
+        // Verify db does not contain such checksum
+        // If checksum clash, throw error, otherwise, proceed to post
         await db.post(txn);
+        // Update account with the new import
+        // TODO: if performance becomes a problem, consider using service worker
+        return true;
       } catch (error) {
         console.log(error);
+        return false;
       }
     });
+    const resolvedResults = await Promise.all(dbResult);
+    const numImported = resolvedResults.filter(r => r === true).length;
+    const numSkipped = resolvedResults.filter(r => r === false).length;
+    return { numImported, numSkipped };
 }
