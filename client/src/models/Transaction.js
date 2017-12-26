@@ -1,17 +1,19 @@
 // @flow
 import FlorinBase from "./FlorinBase";
+import type { TransactionType } from "./TransactionType";
 
-export class Transaction extends FlorinBase {
+export default class Transaction extends FlorinBase {
   _id: string;
   accountId: string;
   amount: string;
   date: string;
   info: string;
-  payee: string;
+  name: string;
   memo: string;
-  categoryId: string;
+  categoryId: ?string;
   isDeleted: boolean;
   checksum: string;
+  type: TransactionType;
   // id of the transaction this transaction is split from
   splitFrom: ?string;
   // id of the transaction this transaction links to (for internal transfers)

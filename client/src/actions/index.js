@@ -90,11 +90,11 @@ export const hideGlobalModal = () => dispatch => {
 };
 
 export const importAccountStatement = (
-  statementFile: File
+  account: Account, statementFile: File
 ) => async dispatch => {
   dispatch(actionCreators.importAccountStatementRequested());
   try {
-    await transactionService.importAccountStatement(statementFile);
+    await transactionService.importAccountStatement(account, statementFile);
     dispatch(actionCreators.importAccountStatementSucceeded());
     dispatch(actionCreators.showSuccessNotification("Statement import succeeded"));
   } catch (err) {

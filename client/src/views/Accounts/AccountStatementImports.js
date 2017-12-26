@@ -6,12 +6,12 @@ import * as actions from "../../actions";
 
 class AccountStatementImports extends React.Component {
   render() {
-    const { importAccountStatement } = this.props;
+    const { currentAccount, importAccountStatement } = this.props;
     return <div>
         <Col xs="3" lg="3">
           <Dropzone className="form-control" onDrop={(accepted, rejected) => {
             const statementFile = accepted[0];
-            importAccountStatement(statementFile);
+            importAccountStatement(currentAccount, statementFile);
             }}>
             <i className="fa fa-cloud-upload" style={{ fontSize: "8em" }} aria-hidden="true" />
             <div>Drop your account statements here (OFX/QFX)</div>
@@ -22,4 +22,8 @@ class AccountStatementImports extends React.Component {
   }
 }
 
-export default connect(null, actions)(AccountStatementImports);
+const mapStateToProps = ({currentAccount}) => {
+  return {currentAccount};
+}
+
+export default connect(mapStateToProps, actions)(AccountStatementImports);
