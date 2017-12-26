@@ -2,8 +2,9 @@ import { Button, Col, Label, FormGroup, Input, FormFeedback } from "reactstrap";
 import React from "react";
 import { Field } from "redux-form";
 import { Link } from "react-router-dom";
-import { accountTypes } from "../../models/AccountType"
-import { DropdownList } from 'react-widgets'
+import { accountTypes } from "../../models/AccountType";
+import { DropdownList } from "react-widgets";
+import Dropzone from "react-dropzone";
 
 const AccountTypeSelector = ({ input, meta: { touched, error, warning } }) => {
   const options = touched ? { ...input, valid: !error } : { ...input };
@@ -77,9 +78,7 @@ const AccountForm = ({ editMode, onSubmit, handleSubmit, reset, account }) => {
         {editMode ? "Reset" : "Clear"}
       </Button>
       <Link to="/accounts">
-        <Button color="danger">
-          {editMode ? "Cancel" : "Discard"}
-        </Button>
+        <Button color="danger">{editMode ? "Cancel" : "Discard"}</Button>
       </Link>
     </form>
   );

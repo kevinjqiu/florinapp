@@ -105,3 +105,22 @@ export const updateAccountFailed = () => {
     error
   }
 }
+
+export const importAccountStatementRequested = () => {
+  return {
+    type: actionTypes.IMPORT_ACCOUNT_STATEMENT_REQUESTED
+  }
+}
+
+export const importAccountStatementSucceeded = () => {
+  return {
+    type: actionTypes.IMPORT_ACCOUNT_STATEMENT_SUCCEEDED
+  }
+}
+
+export const importAccountStatementFailed = (error) => {
+  return {
+    type: actionTypes.IMPORT_ACCOUNT_STATEMENT_FAILED,
+    error
+  }
+}

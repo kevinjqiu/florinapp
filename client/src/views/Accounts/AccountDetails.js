@@ -5,6 +5,7 @@ import AccountForm from "./AccountForm";
 import * as actions from "../../actions";
 import { reduxForm } from "redux-form";
 import Account from "../../models/Account";
+import AccountStatementImports from "./AccountStatementImports";
 
 const ViewAccountForm = connect(({ currentAccount }) => {
   return {
@@ -22,6 +23,7 @@ class AccountDetails extends Component {
     const { accountId } = this.props.match.params;
     const { updateAccount } = this.props;
     return (
+      <div>
       <Row>
         <Col xs="12" lg="12">
           <Card>
@@ -37,6 +39,19 @@ class AccountDetails extends Component {
           </Card>
         </Col>
       </Row>
+      <Row>
+        <Col xs="12" lg="12">
+          <Card>
+            <CardHeader>
+              <strong>Statement Imports</strong>
+            </CardHeader>
+            <CardBody>
+              <AccountStatementImports />
+            </CardBody>
+          </Card>
+        </Col>
+      </Row>
+      </div>
     );
   }
 }
