@@ -6,10 +6,10 @@ const Transaction = ({ transaction }) => {
   return (
     <tr>
       <td>{transaction.date}</td>
-      <td />
-      <td>{transaction.info}</td>
+      <td>{transaction.accountId}</td>
       <td>{transaction.memo}</td>
       <td><Currency amount={transaction.amount} code={"CAD"} /></td>
+      <td>{transaction.categoryId}</td>
       <td />
     </tr>
   );
@@ -24,14 +24,14 @@ class TransactionTable extends Component {
     }
 
     return (
-      <Table response>
+      <Table response striped>
         <thead>
           <tr>
             <th>Date</th>
             <th>Account</th>
-            <th>Info</th>
             <th>Memo</th>
             <th>Amount</th>
+            <th>Category</th>
             <th>Actions</th>
           </tr>
         </thead>
