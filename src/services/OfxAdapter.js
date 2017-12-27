@@ -52,9 +52,9 @@ export default class OfxAdapter {
     const ofxObject = await this.getOfxObject();
     const ledgerBalance = ofxObject.body.OFX.BANKMSGSRSV1.STMTTRNRS.STMTRS.LEDGERBAL;
     const dt = ledgerBalance.DTASOF;
-    const matched = /([\d\.]+)\[([\d-]+).+\]/.exec(dt);
+    const matched = /([\d.]+)\[([\d-]+).+\]/.exec(dt);
     const dtString = matched[1];
-    const offset = parseInt(matched[2]) * 60;
+    const offset = parseInt(matched[2], 10) * 60;
     return {
       dateTime: moment.utc(dtString, OFX_TIME_FORMAT).utcOffset(offset).toJSON(),
       amount: ledgerBalance.BALAMT

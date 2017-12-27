@@ -37,7 +37,7 @@ const deleteAccountWithConfirmation = ({showGlobalModal, hideGlobalModal, delete
 
 const getLatestAccountBalance = (account) => {
   const history = account.history || [];
-  if (history.length == 0) {
+  if (history.length === 0) {
     return "N/A";
   }
   const latest = history[history.length-1];
