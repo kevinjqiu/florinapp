@@ -1,6 +1,6 @@
 {
-  "name": "client",
-  "version": "0.1.0",
+  "name": "florin",
+  "version": "2.0.0",
   "private": true,
   "dependencies": {
     "@coreui/react": "1.0.6",
