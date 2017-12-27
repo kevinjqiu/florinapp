@@ -5,9 +5,15 @@ import Transaction from "../models/Transaction";
 import db from "../db";
 import OfxAdapter from "./OfxAdapter";
 
+export const fetchTransactions = async () => {
+  return await db.find({
+    selector: {
+      "metadata.type": "Transaction"
+    }
+  });
+}
+
 export const saveNewTransaction = async (transaction: Transaction) => {
-  // Verify db does not contain such checksum
-  // If checksum clash, throw error, otherwise, proceed to post
   const response = await db.find({
     selector: {
       "metadata.type": {
@@ -47,7 +53,6 @@ export const importAccountStatement = async (
 
   const balance = await ofxAdapter.getBalance();
   account.addAccountBalanceRecord(balance.dateTime, balance.amount);
-  const response = await db.put(account);
-  console.log(response);
+  await db.put(account);
   return { numImported, numSkipped };
 };

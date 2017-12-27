@@ -125,9 +125,7 @@ export const importAccountStatement = (
 export const fetchTransactions = () => async dispatch => {
   dispatch(actionCreators.fetchTransactionsRequested());
   try {
-    const response = await db.find({
-      selector: { "metadata.type": "Transaction" }
-    });
+    const response = await transactionService.fetchTransactions();
     dispatch(
       actionCreators.fetchTransactionsSucceeded(
         response.docs.map(doc => new Transaction(doc))

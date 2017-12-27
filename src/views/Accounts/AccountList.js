@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
 import * as actions from '../../actions';
 import Currency from "../../components/Currency/Currency";
+import RefreshButton from "../../components/RefreshButton/RefreshButton";
 
 const NewAccountButton = ({ alignRight }) => {
   return (
@@ -112,10 +113,7 @@ class AccountList extends Component {
                 {ui.loading ? <i className="fa fa-refresh fa-spin fa-1x fa-fw" /> : <span />}
                 <ButtonGroup className="float-right">
                   <NewAccountButton alignRight />
-                  <Button color="primary" size="sm" outline onClick={fetchAccounts}>
-                    <i className="fa fa-refresh" aria-hidden="true" />
-                    {"\u00A0"}Refresh
-                  </Button>
+                  <RefreshButton onClick={fetchAccounts} />
                 </ButtonGroup>
               </CardHeader>
               <AccountCardBody accounts={accounts} {...this.props} />
