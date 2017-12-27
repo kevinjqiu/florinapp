@@ -18,7 +18,7 @@ describe("transactionService.importAccountStatement", () => {
       })
     );
     account = await db.get(account.id);
-    return account;
+    return new Account(account);
   };
 
   it("should not import any transactions if OFX is empty", async () => {

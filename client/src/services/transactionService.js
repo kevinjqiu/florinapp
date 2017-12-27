@@ -45,8 +45,9 @@ export const importAccountStatement = async (
   const numImported = resolvedResults.filter(r => r === true).length;
   const numSkipped = resolvedResults.filter(r => r === false).length;
 
-  // const ledgerBalance = result.body.OFX.BANKMSGSRSV1.STMTTRNRS.STMTRS.LEDGERBAL;
-  // console.log(ledgerBalance);
-
+  const balance = await ofxAdapter.getBalance();
+  account.addAccountBalanceRecord(balance.dateTime, balance.amount);
+  const response = await db.put(account);
+  console.log(response);
   return { numImported, numSkipped };
 };

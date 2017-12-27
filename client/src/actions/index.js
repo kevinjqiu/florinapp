@@ -11,7 +11,11 @@ export const fetchAccounts = () => async dispatch => {
     const response = await db.find({
       selector: { "metadata.type": "Account" }
     });
-    dispatch(actionCreators.fetchAccountsSucceeded(response.docs));
+    dispatch(
+      actionCreators.fetchAccountsSucceeded(
+        response.docs.map(doc => new Account(doc))
+      )
+    );
   } catch (err) {
     dispatch(
       actionCreators.showErrorNotification("Cannot fetch accounts", err)
@@ -38,7 +42,9 @@ export const deleteAccount = (accountId: string) => async dispatch => {
 export const createAccount = (accountData: Account) => async dispatch => {
   try {
     const response = await db.post(accountData);
-    dispatch(actionCreators.createAccountSucceeded(response.account));
+    dispatch(
+      actionCreators.createAccountSucceeded(new Account(response.account))
+    );
     dispatch(push("/accounts"));
     dispatch(actionCreators.showSuccessNotification("Account created"));
   } catch (err) {
@@ -52,7 +58,7 @@ export const createAccount = (accountData: Account) => async dispatch => {
 export const fetchAccountById = (accountId: string) => async dispatch => {
   try {
     const account = await db.get(accountId);
-    dispatch(actionCreators.fetchAccountByIdSucceeded(account));
+    dispatch(actionCreators.fetchAccountByIdSucceeded(new Account(account)));
   } catch (err) {
     dispatch(
       actionCreators.showErrorNotification("Failed to get account", err)
@@ -90,13 +96,22 @@ export const hideGlobalModal = () => dispatch => {
 };
 
 export const importAccountStatement = (
-  account: Account, statementFile: File
+  account: Account,
+  statementFile: File
 ) => async dispatch => {
   dispatch(actionCreators.importAccountStatementRequested());
   try {
-    const { numImported, numSkipped } = await transactionService.importAccountStatement(account, statementFile);
+    const {
+      numImported,
+      numSkipped
+    } = await transactionService.importAccountStatement(account, statementFile);
     dispatch(actionCreators.importAccountStatementSucceeded());
-    dispatch(actionCreators.showSuccessNotification("Statement import succeeded", `Imported: ${numImported}. Skipped ${numSkipped}`));
+    dispatch(
+      actionCreators.showSuccessNotification(
+        "Statement import succeeded",
+        `Imported: ${numImported}. Skipped ${numSkipped}`
+      )
+    );
   } catch (err) {
     dispatch(
       actionCreators.showErrorNotification("Statement import failed", err)

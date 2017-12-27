@@ -3,6 +3,7 @@ import { Col } from "reactstrap";
 import Dropzone from "react-dropzone";
 import { connect } from "react-redux";
 import * as actions from "../../actions";
+import Account from "../../models/Account";
 
 class AccountStatementImports extends Component {
   render() {
