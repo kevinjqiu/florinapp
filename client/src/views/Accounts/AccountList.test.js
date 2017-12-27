@@ -22,7 +22,7 @@ describe("Account List", () => {
   let store;
 
   it("should show 'no existing accounts' and the create account button when no accounts", () => {
-    store = mockStore({ ui: { accounts: {}}, accounts: [] });
+    store = mockStore({ ui: { accounts: {} }, accounts: [] });
     const wrapper = mount(
       <Provider store={store}>
         <BrowserRouter>
@@ -64,16 +64,21 @@ describe("Account List", () => {
     );
     const cardBody = wrapper.find("CardBody");
     expect(cardBody.find("tbody").find("tr").length).toBe(accounts.length);
-    cardBody.find("tbody").find("tr").forEach((tr, idx) => {
-      const tds = tr.find("td");
-      const links = tds.at(0).find("Link");
-      expect(links.length).toBe(1);
-      expect(links.at(0).prop("to")).toEqual(`/accounts/${accounts[idx]._id}/view`);
-      expect(tds.at(1).text()).toEqual(accounts[idx].financialInstitution);
-      expect(tds.at(2).text()).toEqual(accounts[idx].currency);
-      expect(tds.at(3).text()).toEqual(accounts[idx].type);
-      expect(tds.at(4).text()).toEqual("N/A");
-    })
+    cardBody
+      .find("tbody")
+      .find("tr")
+      .forEach((tr, idx) => {
+        const tds = tr.find("td");
+        const links = tds.at(0).find("Link");
+        expect(links.length).toBe(1);
+        expect(links.at(0).prop("to")).toEqual(
+          `/accounts/${accounts[idx]._id}/view`
+        );
+        expect(tds.at(1).text()).toEqual(accounts[idx].financialInstitution);
+        expect(tds.at(2).text()).toEqual(accounts[idx].currency);
+        expect(tds.at(3).text()).toEqual(accounts[idx].type);
+        expect(tds.at(4).text()).toEqual("N/A");
+      });
   });
 
   it("should show alert when failed to get accounts", () => {
@@ -87,10 +92,18 @@ describe("Account List", () => {
     );
     expect(wrapper.find("Alert").length).toBe(1);
     expect(wrapper.find("Alert").text()).toContain("Loading accounts failed");
-  })
+  });
 
   it("should show delete failed notification when DELETE /accounts/:id fails", async () => {
-    const accounts = [{ _id: "deadbeefcafebabe", name: "Awesome Account", financialInstitution: "Awesome Bank", type: "CHECKING", currentBalance: "0.00" }];
+    const accounts = [
+      {
+        _id: "deadbeefcafebabe",
+        name: "Awesome Account",
+        financialInstitution: "Awesome Bank",
+        type: "CHECKING",
+        currentBalance: "0.00"
+      }
+    ];
     store = mockStore({
       accounts,
       ui: { accounts: { failed: false } }
@@ -104,10 +117,15 @@ describe("Account List", () => {
     );
     await deleteAccount("deadbeefcafebabe")(store.dispatch);
     const actions = store.getActions().filter(action => {
-      return [actionTypes.FETCH_ACCOUNTS_REQUESTED, actionTypes.FETCH_ACCOUNTS_SUCCEEDED].indexOf(action.type) === -1;
+      return (
+        [
+          actionTypes.FETCH_ACCOUNTS_REQUESTED,
+          actionTypes.FETCH_ACCOUNTS_SUCCEEDED
+        ].indexOf(action.type) === -1
+      );
     });
 
-    expect(actions[0].type).toBe(actionTypes.DELETE_ACCOUNT_REQUESTED)
+    expect(actions[0].type).toBe(actionTypes.DELETE_ACCOUNT_REQUESTED);
     expect(actions[0].accountId).toBe("deadbeefcafebabe");
 
     expect(actions[1].type).toBe("RNS_SHOW_NOTIFICATION");
@@ -117,13 +135,21 @@ describe("Account List", () => {
     expect(actions[2].type).toBe(actionTypes.DELETE_ACCOUNT_FAILED);
 
     expect(store.getState().accounts.length).toBe(1);
-  })
+  });
 
   it("should remove deleted account when DELETE /accounts/:id succeeds", async () => {
-    const accounts = [{ _id: "deadbeefcafebabe", name: "Awesome Account", financialInstitution: "Awesome Bank", type: "CHECKING", currentBalance: "0.00" }];
+    const accounts = [
+      {
+        _id: "deadbeefcafebabe",
+        name: "Awesome Account",
+        financialInstitution: "Awesome Bank",
+        type: "CHECKING",
+        currentBalance: "0.00"
+      }
+    ];
     accounts.forEach(async account => {
       await db.post(account);
-    })
+    });
     store = mockStore({
       accounts,
       ui: { accounts: { failed: false } }
@@ -137,16 +163,21 @@ describe("Account List", () => {
     );
     await deleteAccount("deadbeefcafebabe")(store.dispatch);
     const actions = store.getActions().filter(action => {
-      return [actionTypes.FETCH_ACCOUNTS_REQUESTED, actionTypes.FETCH_ACCOUNTS_SUCCEEDED].indexOf(action.type) === -1;
+      return (
+        [
+          actionTypes.FETCH_ACCOUNTS_REQUESTED,
+          actionTypes.FETCH_ACCOUNTS_SUCCEEDED
+        ].indexOf(action.type) === -1
+      );
     });
 
-    expect(actions[0].type).toBe(actionTypes.DELETE_ACCOUNT_REQUESTED)
+    expect(actions[0].type).toBe(actionTypes.DELETE_ACCOUNT_REQUESTED);
     expect(actions[0].accountId).toBe("deadbeefcafebabe");
 
     expect(actions[1].type).toBe("RNS_SHOW_NOTIFICATION");
-    expect(actions[1].title).toBe('The account was deleted');
+    expect(actions[1].title).toBe("The account was deleted");
     expect(actions[1].level).toBe("success");
 
     expect(actions[2].type).toBe(actionTypes.DELETE_ACCOUNT_SUCCEEDED);
-  })
+  });
 });

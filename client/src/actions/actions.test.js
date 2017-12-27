@@ -10,6 +10,7 @@ import * as actionTypes from "./types";
 import * as actions from "./index";
 import Account from "../models/Account";
 import reducer from "../reducers";
+import { fetchAccounts } from "./index";
 
 const mockStore = configureMockStore([thunk]);
 
@@ -122,6 +123,7 @@ describe("udpateAccount", async () => {
         type: "CHECKING"
       })
     );
+
     await store.dispatch(actions.updateAccount(result.id, new Account({name: "TEST", financialInstitution: "TEST_FI", type: "INVESTMENT"})));
     const { notifications } = store.getState();
     expect(notifications.length).toBe(1);
