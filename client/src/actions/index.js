@@ -71,12 +71,13 @@ export const updateAccount = (
   accountData: Account
 ) => async dispatch => {
   try {
-    const account = {
+    let account = {
       ...(await db.get(accountId)),
       ...accountData
     };
-    db.put(account);
-    dispatch(actionCreators.updateAccountSucceeded());
+    await db.put(account);
+    account = await db.get(account._id);
+    dispatch(actionCreators.updateAccountSucceeded(new Account(account)));
     dispatch(push("/accounts"));
     dispatch(actionCreators.showSuccessNotification("Account updated"));
   } catch (err) {

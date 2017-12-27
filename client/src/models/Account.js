@@ -16,6 +16,7 @@ export default class Account extends FlorinBase {
   name: string;
   financialInstitution: string;
   type: AccountType;
+  currency: string;
   history: Array<AccountHistory>;
 
   constructor(props: {name:string, financialInstitution:string, type:AccountType}) {

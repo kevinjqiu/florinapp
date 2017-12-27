@@ -6,6 +6,7 @@
     "@coreui/react": "1.0.6",
     "banking": "^1.1.0",
     "bootstrap": "^4.0.0-beta.2",
+    "currency-formatter": "^1.3.1",
     "font-awesome": "^4.7.0",
     "history": "^4.7.2",
     "moment": "^2.20.1",

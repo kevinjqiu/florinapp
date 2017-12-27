@@ -4,6 +4,7 @@ import Dropzone from "react-dropzone";
 import { connect } from "react-redux";
 import * as actions from "../../actions";
 import moment from "moment";
+import Currency from "../../components/Currency/Currency";
 
 const AccountHistory = ({ currentAccount }) => {
   if (currentAccount && currentAccount.history) {
@@ -19,7 +20,7 @@ const AccountHistory = ({ currentAccount }) => {
           {currentAccount.history.map((h, idx) => {
             return <tr key={idx}>
               <td>{moment.utc(h.dateTime).format("YYYY/MM/DD")}</td>
-              <td>{h.balance}</td>
+              <td><Currency amount={h.balance} code={currentAccount.currency} /></td>
               </tr>
           })}
         </tbody>

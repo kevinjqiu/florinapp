@@ -44,14 +44,14 @@ describe("Account List", () => {
         name: "Awesome Account",
         financialInstitution: "Awesome Bank",
         type: "CHECKING",
-        currentBalance: "0.00"
+        currency: "CAD"
       },
       {
         _id: "cafebabe123",
         name: "Another Account",
         financialInstitution: "Another Bank",
         type: "CREDIT_CARD",
-        currentBalance: "0.00"
+        currency: "CAD"
       }
     ];
     store = mockStore({ accounts, ui: { accounts: {} } });
@@ -70,8 +70,9 @@ describe("Account List", () => {
       expect(links.length).toBe(1);
       expect(links.at(0).prop("to")).toEqual(`/accounts/${accounts[idx]._id}/view`);
       expect(tds.at(1).text()).toEqual(accounts[idx].financialInstitution);
-      expect(tds.at(2).text()).toEqual(accounts[idx].type);
-      expect(tds.at(3).text()).toEqual('$' + accounts[idx].currentBalance);
+      expect(tds.at(2).text()).toEqual(accounts[idx].currency);
+      expect(tds.at(3).text()).toEqual(accounts[idx].type);
+      expect(tds.at(4).text()).toEqual("N/A");
     })
   });
 

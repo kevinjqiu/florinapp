@@ -1,5 +1,6 @@
 import * as actionTypes from "./types";
 import { success, error } from "react-notification-system-redux";
+import Account from "../models/Account";
 
 export const showSuccessNotification = (title: string, message="") => {
   return success({
@@ -94,9 +95,10 @@ export const fetchAccountByIdSucceeded = account => {
   }
 }
 
-export const updateAccountSucceeded = () => {
+export const updateAccountSucceeded = (account: Account) => {
   return {
-    type: actionTypes.UPDATE_ACCOUNT_SUCCEEDED
+    type: actionTypes.UPDATE_ACCOUNT_SUCCEEDED,
+    account
   }
 };
 

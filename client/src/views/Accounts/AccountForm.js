@@ -4,6 +4,10 @@ import { Field } from "redux-form";
 import { Link } from "react-router-dom";
 import { accountTypes } from "../../models/AccountType";
 import { DropdownList } from "react-widgets";
+import * as currencies from "currency-formatter/currencies.json";
+
+const currencyCodes = Object.keys(currencies);
+currencyCodes.sort();
 
 const AccountTypeSelector = ({ input, meta: { touched, error, warning } }) => {
   const options = touched ? { ...input, valid: !error } : { ...input };
@@ -15,6 +19,23 @@ const AccountTypeSelector = ({ input, meta: { touched, error, warning } }) => {
         </Col>
         <Col xs="12" md="9">
           <DropdownList data={Object.keys(accountTypes)} {...options} />
+          <FormFeedback>{error}</FormFeedback>
+        </Col>
+      </FormGroup>
+    </div>
+  );
+};
+
+const AccountCurrencySelector = ({ input, meta: { touched, error, warning } }) => {
+  const options = touched ? { ...input, valid: !error } : { ...input };
+  return (
+    <div className="form-group">
+      <FormGroup row>
+        <Col md="3">
+          <Label htmlFor="type">Account Currency</Label>
+        </Col>
+        <Col xs="12" md="9">
+          <DropdownList allowCreate filter="contains" data={currencyCodes} textField={c => c ? `${currencies[c].symbol} - ${currencies[c].code}` : ""} {...options} />
           <FormFeedback>{error}</FormFeedback>
         </Col>
       </FormGroup>
@@ -69,6 +90,10 @@ const AccountForm = ({ editMode, onSubmit, handleSubmit, reset, account }) => {
         name="type"
         component={AccountTypeSelector}
         validate={[validAccountType]}
+      />
+      <Field
+        name="currency"
+        component={AccountCurrencySelector}
       />
       <Button type="submit" color="primary">
         {editMode ? "Save" : "Create"}

@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
 import * as actions from '../../actions';
+import Currency from "../../components/Currency/Currency";
 
 const NewAccountButton = ({ alignRight }) => {
   return (
@@ -34,6 +35,15 @@ const deleteAccountWithConfirmation = ({showGlobalModal, hideGlobalModal, delete
   })
 };
 
+const getLatestAccountBalance = (account) => {
+  const history = account.history || [];
+  if (history.length == 0) {
+    return "N/A";
+  }
+  const latest = history[history.length-1];
+  return <Currency amount={latest.balance} code={account.currency} />
+}
+
 const AccountCardBody = ({ accounts, ui, deleteAccount, showGlobalModal, hideGlobalModal, fetchAccounts }) => {
   if (ui.failed) {
     return <CardBody>
@@ -54,6 +64,7 @@ const AccountCardBody = ({ accounts, ui, deleteAccount, showGlobalModal, hideGlo
           <tr>
             <th>Name</th>
             <th>Financial Institution</th>
+            <th>Currency</th>
             <th>Type</th>
             <th>Current Balance</th>
             <th />
@@ -65,8 +76,9 @@ const AccountCardBody = ({ accounts, ui, deleteAccount, showGlobalModal, hideGlo
                 <Link to={`/accounts/${account._id}/view`}>{account.name}</Link>
               </td>
               <td>{account.financialInstitution}</td>
+              <td>{account.currency}</td>
               <td>{account.type}</td>
-              <td>$0.00</td>
+              <td>{getLatestAccountBalance(account)}</td>
               <td>
                 <ButtonGroup className="float-right">
                   <Link to={`/accounts/${account._id}/view`}>

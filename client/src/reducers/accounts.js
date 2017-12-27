@@ -8,6 +8,17 @@ export default (state = initState, action) => {
       return action.payload;
     case actionTypes.DELETE_ACCOUNT_SUCCEEDED:
       return state.filter(account => account.id !== action.accountId);
+    case actionTypes.UPDATE_ACCOUNT_SUCCEEDED:
+      let account = action.account;
+      const newState = [];
+      state.forEach(a => {
+        if (a._id !== account._id) {
+          newState.push(a);
+        } else {
+          newState.push(account);
+        }
+      })
+      return newState;
     default:
       return state;
   }
