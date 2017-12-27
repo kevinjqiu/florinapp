@@ -6,7 +6,6 @@ import { transactionTypes } from "../models/TransactionType";
 import moment from "moment";
 
 const OFX_TIME_FORMAT = "YYYYMMDDHHmmss.SSS";
-const OFX_TIME_FORMAT_WITH_TZ = "";
 
 export default class OfxAdapter {
   rawFileContent: string;
@@ -38,7 +37,7 @@ export default class OfxAdapter {
       return new Transaction({
         accountId: account._id,
         amount: t.TRNAMT,
-        date: moment(t.DTPOSTED, OFX_TIME_FORMAT).format(),
+        date: moment.utc(t.DTPOSTED, OFX_TIME_FORMAT).toJSON(),
         name: t.NAME,
         memo: t.MEMO,
         type:
@@ -47,5 +46,18 @@ export default class OfxAdapter {
             : transactionTypes.CREDIT
       });
     })
+  }
+
+  async getBalance(): Promise<{dateTime: string, amount: string}> {
+    const ofxObject = await this.getOfxObject();
+    const ledgerBalance = ofxObject.body.OFX.BANKMSGSRSV1.STMTTRNRS.STMTRS.LEDGERBAL;
+    const dt = ledgerBalance.DTASOF;
+    const matched = /([\d\.]+)\[([\d-]+).+\]/.exec(dt);
+    const dtString = matched[1];
+    const offset = parseInt(matched[2]) * 60;
+    return {
+      dateTime: moment.utc(dtString, OFX_TIME_FORMAT).utcOffset(offset).toJSON(),
+      amount: ledgerBalance.BALAMT
+    }
   }
 }
