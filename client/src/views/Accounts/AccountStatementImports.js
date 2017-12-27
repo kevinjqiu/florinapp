@@ -7,7 +7,7 @@ import Account from "../../models/Account";
 
 class AccountStatementImports extends Component {
   render() {
-    const { currentAccount, importAccountStatement } = this.props;
+    const { ui, currentAccount, importAccountStatement } = this.props;
     return (
       <div>
         <Col xs="3" lg="3">
@@ -19,11 +19,15 @@ class AccountStatementImports extends Component {
               });
             }}
           >
-            <i
-              className="fa fa-cloud-upload"
-              style={{ fontSize: "8em" }}
-              aria-hidden="true"
-            />
+            {ui.statementImport.loading ? (
+              <i className="fa fa-spinner fa-spin fa-3x fa-fw" style={{ fontSize: "8em" }}/>
+            ) : (
+              <i
+                className="fa fa-cloud-upload"
+                style={{ fontSize: "8em" }}
+                aria-hidden="true"
+              />
+            )}
             <div>Drop your account statements here (OFX/QFX)</div>
           </Dropzone>
         </Col>
@@ -33,8 +37,8 @@ class AccountStatementImports extends Component {
   }
 }
 
-const mapStateToProps = ({ currentAccount }) => {
-  return { currentAccount };
+const mapStateToProps = ({ currentAccount, ui }) => {
+  return { currentAccount, ui };
 };
 
 export default connect(mapStateToProps, actions)(AccountStatementImports);

@@ -13,6 +13,9 @@ const initState = {
   accounts: {
     loading: false,
     failed: false
+  },
+  statementImport: {
+    loading: false
   }
 };
 
@@ -51,6 +54,30 @@ export default (state = initState, action) => {
         globalModal: {
           ...initState.globalModal,
           isOpen: false
+        }
+      };
+    case actionTypes.IMPORT_ACCOUNT_STATEMENT_REQUESTED:
+      return {
+        ...state,
+        statementImport: {
+          ...state.statementImport,
+          loading: true
+        }
+      };
+    case actionTypes.IMPORT_ACCOUNT_STATEMENT_SUCCEEDED:
+      return {
+        ...state,
+        statementImport: {
+          ...state.statementImport,
+          loading: false
+        }
+      };
+    case actionTypes.IMPORT_ACCOUNT_STATEMENT_FAILED:
+      return {
+        ...state,
+        statementImport: {
+          ...state.statementImport,
+          loading: false
         }
       };
     default:
