@@ -3,6 +3,7 @@ import { push } from "react-router-redux";
 import * as actionCreators from "./creators";
 import db from "../db";
 import Account from "../models/Account";
+import Transaction from "../models/Transaction";
 import * as transactionService from "../services/transactionService";
 
 export const fetchAccounts = () => async dispatch => {
@@ -118,5 +119,24 @@ export const importAccountStatement = (
       actionCreators.showErrorNotification("Statement import failed", err)
     );
     dispatch(actionCreators.importAccountStatementFailed(err));
+  }
+};
+
+export const fetchTransactions = () => async dispatch => {
+  dispatch(actionCreators.fetchTransactionsRequested());
+  try {
+    const response = await db.find({
+      selector: { "metadata.type": "Transactions" }
+    });
+    dispatch(
+      actionCreators.fetchTransactionsSucceeded(
+        response.docs.map(doc => new Transaction(doc))
+      )
+    );
+  } catch (err) {
+    dispatch(
+      actionCreators.showErrorNotification("Cannot fetch transactions", err)
+    );
+    dispatch(actionCreators.fetchTransactionsFailed(err));
   }
 };

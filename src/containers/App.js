@@ -5,6 +5,7 @@ import { Container } from "reactstrap";
 import { Switch, Route, Redirect } from "react-router-dom";
 import Breadcrumb from "../components/Breadcrumb/Breadcrumb";
 import Accounts from "../views/Accounts/Accounts";
+import Transactions from "../views/Transactions/Transactions";
 import { connect } from "react-redux";
 import * as actions from "../actions";
 import GlobalModal from "../components/GlobalModal/GlobalModal";
@@ -22,8 +23,8 @@ class App extends Component {
             <Breadcrumb />
             <Container fluid>
               <Switch>
-                <Route path="/accounts" name="Accounts" component={Accounts} />
-                {/* <Route path="/dashboard" name="Dashboard" component={} /> */}
+                <Route path="/accounts" component={Accounts} />
+                <Route path="/transactions" component={Transactions} />
                 <Redirect from="/" to="/dashboard" />
               </Switch>
             </Container>
