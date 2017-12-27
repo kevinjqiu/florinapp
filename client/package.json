@@ -8,6 +8,7 @@
     "bootstrap": "^4.0.0-beta.2",
     "font-awesome": "^4.7.0",
     "history": "^4.7.2",
+    "moment": "^2.20.1",
     "pouchdb": "^6.4.1",
     "pouchdb-adapter-memory": "^6.4.1",
     "pouchdb-find": "^6.4.1",

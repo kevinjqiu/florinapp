@@ -41,12 +41,12 @@ describe("transactionService.importAccountStatement", () => {
       numImported,
       numSkipped
     } = await transactionService.importAccountStatement(account, file);
-    expect(numImported).toBe(11);
+    expect(numImported).toBe(3);
     expect(numSkipped).toBe(0);
     const response = await db.find({
       selector: { "metadata.type": "Transaction" }
     });
-    expect(response.docs.length).toBe(11);
+    expect(response.docs.length).toBe(3);
   });
 
   it("should existing transactions", async () => {
@@ -54,16 +54,16 @@ describe("transactionService.importAccountStatement", () => {
     const content = fs.readFileSync(`${__dirname}/fixtures/newtxns.ofx`);
     const file = new Blob([content]);
     expect(await transactionService.importAccountStatement(account, file), {
-      numImported: 11,
+      numImported: 3,
       numSkipped: 0
     });
     expect(await transactionService.importAccountStatement(account, file), {
       numImported: 0,
-      numSkipped: 11
+      numSkipped: 3
     });
     const response = await db.find({
       selector: { "metadata.type": "Transaction" }
     });
-    expect(response.docs.length).toBe(11);
+    expect(response.docs.length).toBe(3);
   });
 });

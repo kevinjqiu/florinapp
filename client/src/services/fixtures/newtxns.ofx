@@ -67,69 +67,6 @@ NEWFILEUID:NONE
             <NAME>FROM CREDIT CARD OR LINE
             <MEMO>OVERDRAFT XFER
           </STMTTRN>
-          <STMTTRN>
-            <TRNTYPE>DIRECTDEBIT
-            <DTPOSTED>20120105120000.000
-            <TRNAMT>-3408.83
-            <FITID>201201051
-            <NAME>CITY OF FAIRHOPE
-            <MEMO>UTILITIES 24-002394
-          </STMTTRN>
-          <STMTTRN>
-            <TRNTYPE>DIRECTDEBIT
-            <DTPOSTED>20120105120000.000
-            <TRNAMT>-48.36
-            <FITID>201201052
-            <NAME>CITY OF FAIRHOPE
-            <MEMO>UTILITIES 24-002393
-          </STMTTRN>
-          <STMTTRN>
-            <TRNTYPE>DIRECTDEBIT
-            <DTPOSTED>20120109120000.000
-            <TRNAMT>-114.70
-            <FITID>201201091
-            <NAME>ATT
-            <MEMO>Payment JUAN
-          </STMTTRN>
-          <STMTTRN>
-            <TRNTYPE>CREDIT
-            <DTPOSTED>20120109120000.000
-            <TRNAMT>114.70
-            <FITID>201201092
-            <NAME>FROM CREDIT CARD OR LINE
-            <MEMO>OVERDRAFT XFER
-          </STMTTRN>
-          <STMTTRN>
-            <TRNTYPE>CREDIT
-            <DTPOSTED>20120112120000.000
-            <TRNAMT>180.69
-            <FITID>201201122
-            <NAME>FROM CREDIT CARD OR LINE
-            <MEMO>OVERDRAFT XFER
-          </STMTTRN>
-          <STMTTRN>
-            <TRNTYPE>DIRECTDEBIT
-            <DTPOSTED>20120112120000.000
-            <TRNAMT>-180.69
-            <FITID>201201121
-            <NAME>VERIZON WIRELESS
-            <MEMO>PAYMENTS 120112
-          </STMTTRN>
-          <STMTTRN>
-            <TRNTYPE>FEE
-            <DTPOSTED>20120125120000.000
-            <TRNAMT>-9.00
-            <FITID>201201251
-            <NAME>MONTHLY SERVICE FEE
-          </STMTTRN>
-          <STMTTRN>
-            <TRNTYPE>CREDIT
-            <DTPOSTED>20120126120000.000
-            <TRNAMT>25.00
-            <FITID>201201261
-            <NAME>FROM CREDIT CARD OR LINE
-            <MEMO>OVERDRAFT XFER
-          </STMTTRN>
         </BANKTRANLIST>
         <LEDGERBAL>
           <BALAMT>16.00
