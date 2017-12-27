@@ -9,6 +9,7 @@ import * as actionCreators from "./creators";
 import * as actionTypes from "./types";
 import * as actions from "./index";
 import Account from "../models/Account";
+import Transaction from "../models/Transaction";
 import reducer from "../reducers";
 import { fetchAccounts } from "./index";
 
@@ -58,6 +59,7 @@ describe("fetchAccounts", () => {
     expect(accounts.length).toBe(0);
     const uiAccounts = store.getState().ui.accounts;
     expect(uiAccounts.failed).toBe(true);
+    mockDb.restore();
   });
 });
 
@@ -164,3 +166,36 @@ describe("fetchAccountById", async () => {
     expect(notifications[0].title).toBe("Failed to get account");
   })
 });
+
+describe("fetchTransactions", async () => {
+  let store;
+
+  beforeEach(() => {
+    store = setup();
+  });
+
+  it("should return empty when there's no transactions", async () => {
+    await store.dispatch(actions.fetchTransactions());
+    const { transactions } = store.getState();
+    expect(transactions.transactions).toEqual([]);
+  });
+
+  it("should return transactions when there are", async () => {
+    await db.post(new Transaction());
+    await store.dispatch(actions.fetchTransactions());
+    const { transactions } = store.getState();
+    expect(transactions.loading).toBe(false);
+    expect(transactions.failed).toBe(false);
+    expect(transactions.transactions.length).toEqual(1);
+  });
+
+  it("should signal failure when db.find fails", async () => {
+    const mockDb = sinon.stub(db, "find");
+    mockDb.throws();
+    await store.dispatch(actions.fetchTransactions());
+    const { transactions } = store.getState();
+    expect(transactions.loading).toBe(false);
+    expect(transactions.failed).toBe(true);
+    mockDb.restore();
+  });
+})

@@ -27,5 +27,7 @@ export default (state = initState, action) => {
         loading: false,
         failed: true
       };
+    default:
+      return state;
   }
 };

@@ -126,7 +126,7 @@ export const fetchTransactions = () => async dispatch => {
   dispatch(actionCreators.fetchTransactionsRequested());
   try {
     const response = await db.find({
-      selector: { "metadata.type": "Transactions" }
+      selector: { "metadata.type": "Transaction" }
     });
     dispatch(
       actionCreators.fetchTransactionsSucceeded(
