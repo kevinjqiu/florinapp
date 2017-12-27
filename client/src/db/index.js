@@ -9,9 +9,11 @@ const ENV = process.env.ENV;
 PouchDB.plugin(PouchDBFind);
 if (ENV === "test") {
   PouchDB.plugin(PouchDBMemoryAdapter);
-  db = new PouchDB("florin-test", {adapter: "memory"});
+  // PouchDB.debug.enable("*");
+  db = new PouchDB("florin-test", { adapter: "memory" });
 } else {
-  db = new PouchDB("florin-test");
+  // db = new PouchDB("florin-test", {adapter: "http"});
+  db = new PouchDB("http://localhost:5984/florin");
 }
 
 db.createIndex({

@@ -28,6 +28,7 @@
     "redux-form": "^7.2.0",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.2.0",
+    "sha.js": "^2.4.9",
     "simple-line-icons": "^2.4.1"
   },
   "scripts": {
@@ -42,6 +43,7 @@
   "devDependencies": {
     "@types/react": "^16",
     "@types/react-dom": "^16",
+    "add-cors-to-couchdb": "^0.0.6",
     "enzyme": "^3.2.0",
     "enzyme-adapter-react-16": "^1.0.5",
     "flow-bin": "^0.61.0",

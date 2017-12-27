@@ -1,13 +1,16 @@
 // @flow
 import FlorinBase from "./FlorinBase";
 import type { TransactionType } from "./TransactionType";
+import shajs from "sha.js";
+
+const FIELDS_TO_HASH = ["amount", "date", "name", "memo", "type"];
 
 export default class Transaction extends FlorinBase {
   _id: string;
   accountId: string;
   amount: string;
   date: string;
-  info: string;
+  info: ?string;
   name: string;
   memo: string;
   categoryId: ?string;
@@ -22,5 +25,17 @@ export default class Transaction extends FlorinBase {
   constructor(props: {}) {
     super("Transaction");
     Object.assign(this, props);
+    this.updateChecksum();
+  }
+
+  updateChecksum() {
+    const sha = shajs("sha256");
+    FIELDS_TO_HASH.forEach(field => {
+      const val = this[field];
+      if (val) {
+        sha.update(val);
+      }
+    });
+    this.checksum = `sha256:${sha.digest("hex")}`;
   }
 }
