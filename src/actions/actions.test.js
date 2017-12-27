@@ -14,13 +14,18 @@ import { fetchAccounts } from "./index";
 
 const mockStore = configureMockStore([thunk]);
 
+const setup = () => {
+    reset();
+    const flushThunks = FlushThunks.createMiddleware();
+    const store = createStore(reducer, applyMiddleware(flushThunks, thunk));
+    return store;
+}
+
 describe("fetchAccounts", () => {
-  let flushThunks, store;
+  let store;
 
   beforeEach(() => {
-    reset();
-    flushThunks = FlushThunks.createMiddleware();
-    store = createStore(reducer, applyMiddleware(flushThunks, thunk));
+    store = setup();
   });
 
   it("should set state to empty accounts when no accounts are loaded", async () => {
@@ -57,12 +62,10 @@ describe("fetchAccounts", () => {
 });
 
 describe("deleteAccount", () => {
-  let flushThunks, store;
+  let store;
 
   beforeEach(() => {
-    reset();
-    flushThunks = FlushThunks.createMiddleware();
-    store = createStore(reducer, applyMiddleware(flushThunks, thunk));
+    store = setup();
   });
 
   it("should signal failure when account to delete does not exist", async () => {
@@ -90,12 +93,10 @@ describe("deleteAccount", () => {
 });
 
 describe("createAccount", () => {
-  let flushThunks, store;
+  let store;
 
   beforeEach(() => {
-    reset();
-    flushThunks = FlushThunks.createMiddleware();
-    store = createStore(reducer, applyMiddleware(flushThunks, thunk));
+    store = setup();
   });
 
   it("should create account", async () => {
@@ -107,12 +108,10 @@ describe("createAccount", () => {
 });
 
 describe("udpateAccount", async () => {
-  let flushThunks, store;
+  let store;
 
   beforeEach(() => {
-    reset();
-    flushThunks = FlushThunks.createMiddleware();
-    store = createStore(reducer, applyMiddleware(flushThunks, thunk));
+    store = setup();
   });
 
   it("should update account", async () => {
@@ -136,12 +135,10 @@ describe("udpateAccount", async () => {
 });
 
 describe("fetchAccountById", async () => {
-  let flushThunks, store;
+  let store;
 
   beforeEach(() => {
-    reset();
-    flushThunks = FlushThunks.createMiddleware();
-    store = createStore(reducer, applyMiddleware(flushThunks, thunk));
+    store = setup();
   });
 
   it("should fetch account by id", async () => {
