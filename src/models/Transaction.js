@@ -10,7 +10,7 @@ const FIELDS_TO_HASH = ["amount", "date", "name", "memo", "type"];
 export default class Transaction extends FlorinBase {
   _id: string;
   accountId: string;
-  account: Account;
+  account: ?Account;
   amount: string;
   date: string;
   info: ?string;
