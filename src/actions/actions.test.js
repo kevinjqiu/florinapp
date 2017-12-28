@@ -109,7 +109,7 @@ describe("createAccount", () => {
   });
 });
 
-describe("udpateAccount", async () => {
+describe("udpateAccount", () => {
   let store;
 
   beforeEach(() => {
@@ -136,7 +136,7 @@ describe("udpateAccount", async () => {
   });
 });
 
-describe("fetchAccountById", async () => {
+describe("fetchAccountById", () => {
   let store;
 
   beforeEach(() => {
@@ -167,7 +167,7 @@ describe("fetchAccountById", async () => {
   })
 });
 
-describe("fetchTransactions", async () => {
+describe("fetchTransactions", () => {
   let store;
 
   beforeEach(() => {
@@ -198,4 +198,16 @@ describe("fetchTransactions", async () => {
     expect(transactions.failed).toBe(true);
     mockDb.restore();
   });
+
+  it("should fetch associated account when possible", async () => {
+    const response = await db.post(new Account());
+    await db.post(new Transaction({_id: "txn1", accountId: response.id}));
+    await db.post(new Transaction({_id: "txn2"}));
+    console.log(store.getState());
+    await store.dispatch(actions.fetchTransactions())
+    const { transactions } = store.getState().transactions;
+    console.log(transactions);
+    expect(transactions.length).toBe(2);
+    expect(transactions[0]._id).toBe("txn1");
+  })
 })
