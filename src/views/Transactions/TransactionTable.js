@@ -2,11 +2,12 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Table } from "reactstrap";
 import Currency from "../../components/Currency/Currency";
+import Date from "../../components/Date/Date";
 
 const Transaction = ({ transaction }) => {
   return (
     <tr>
-      <td>{transaction.date}</td>
+      <td><Date date={transaction.date} /></td>
       <td><Link to={`/accounts/${transaction.account._id}/view`}>{transaction.account.name}</Link></td>
       <td>{transaction.memo}</td>
       <td><Currency amount={transaction.amount} code={transaction.account.currency} /></td>

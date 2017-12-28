@@ -9,7 +9,9 @@ export const fetchTransactions = async (): Promise<Array<Transaction>> => {
   const response = await db.find({
     selector: {
       "metadata.type": "Transaction"
-    }
+    },
+    sort: ["date"],
+    limit: Number.MAX_SAFE_INTEGER  // A hack to temporarily get around the lack of no limit to db.find
   });
 
   const transactions = response.docs.map(doc => new Transaction(doc));

@@ -10,7 +10,8 @@ export const fetchAccounts = () => async dispatch => {
   dispatch(actionCreators.fetchAccountsRequested());
   try {
     const response = await db.find({
-      selector: { "metadata.type": "Account" }
+      selector: { "metadata.type": "Account" },
+      limit: Number.MAX_SAFE_INTEGER
     });
     dispatch(
       actionCreators.fetchAccountsSucceeded(

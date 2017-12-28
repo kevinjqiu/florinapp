@@ -25,4 +25,10 @@ db.createIndex({
   }
 });
 
+db.createIndex({
+  index: {
+    fields: ["date"]
+  }
+});
+
 export default db;
