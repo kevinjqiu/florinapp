@@ -5,12 +5,7 @@ import Transaction from "../models/Transaction";
 import db from "../db";
 import OfxAdapter from "./OfxAdapter";
 
-export const fetchTransactions = async (): Promise<Array<Transaction>> => {
-  await db.createIndex({
-    index: {
-      fields: ["date"]
-    }
-  });
+export const fetch = async (): Promise<Array<Transaction>> => {
   const response = await db.find({
     selector: {
       $and: [{ "metadata.type": "Transaction" }]

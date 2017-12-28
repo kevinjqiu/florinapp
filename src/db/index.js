@@ -34,6 +34,6 @@ const setupIndex = async (db) => {
   });
 };
 
-// await setupIndex(db);
+setupIndex(db);
 
 export default db;

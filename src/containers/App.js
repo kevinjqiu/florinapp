@@ -13,6 +13,7 @@ import Notifications from "react-notification-system-redux";
 
 class App extends Component {
   render() {
+    console.log(this);
     const { notifications } = this.props;
     return (
       <div className="app">

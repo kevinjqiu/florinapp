@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { Table } from "reactstrap";
+import { Table, Alert } from "reactstrap";
 import Currency from "../../components/Currency/Currency";
 import Date from "../../components/Date/Date";
 
@@ -24,6 +24,10 @@ class TransactionTable extends Component {
 
     if (loading) {
       return <i className="fa fa-spinner fa-spin fa-3x fa-fw" style={{ fontSize: "8em" }} />;
+    }
+
+    if (failed) {
+      return <Alert color="danger">Loading transactions failed. Try again later...</Alert>
     }
 
     if (transactions.length === 0 && !loading) {

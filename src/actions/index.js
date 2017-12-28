@@ -1,7 +1,6 @@
 // @flow
 import { push } from "react-router-redux";
 import * as actionCreators from "./creators";
-import db from "../db";
 import Account from "../models/Account";
 import * as transactionService from "../services/transactionService";
 import * as accountService from "../services/accountService";
@@ -111,7 +110,7 @@ export const importAccountStatement = (
 export const fetchTransactions = () => async dispatch => {
   dispatch(actionCreators.fetchTransactionsRequested());
   try {
-    const transactions = await transactionService.fetchTransactions();
+    const transactions = await transactionService.fetch();
     dispatch(
       actionCreators.fetchTransactionsSucceeded(transactions)
     );
