@@ -1,11 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "font-awesome/css/font-awesome.min.css";
-import "simple-line-icons/css/simple-line-icons.css";
 import registerServiceWorker from "./registerServiceWorker";
 import { Switch, Route } from "react-router-dom";
 import App from "./containers/App";
-import "./style.css";
 import reduxThunk from "redux-thunk";
 import { applyMiddleware, createStore } from "redux";
 import reducers from "./reducers";
@@ -14,6 +11,9 @@ import { createLogger } from "redux-logger";
 import { routerMiddleware, ConnectedRouter } from "react-router-redux";
 import createHistory from "history/createBrowserHistory";
 import 'react-widgets/dist/css/react-widgets.css';
+import "font-awesome/css/font-awesome.min.css";
+import "simple-line-icons/css/simple-line-icons.css";
+import "./style.css";
 
 const history = createHistory();
 
@@ -27,7 +27,7 @@ ReactDOM.render(
   <Provider store={store}>
     <ConnectedRouter history={history}>
       <Switch>
-        <Route path="/" name="Home" component={App} />
+        <Route path="/" component={App} />
       </Switch>
     </ConnectedRouter>
   </Provider>,

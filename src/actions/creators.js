@@ -127,3 +127,23 @@ export const importAccountStatementFailed = (error) => {
     error
   }
 }
+
+export const fetchTransactionsSucceeded = (payload: Array<Transaction>) => {
+  return {
+    type: actionTypes.FETCH_TRANSACTIONS_SUCCEEDED,
+    payload
+  }
+}
+
+export const fetchTransactionsRequested = () => {
+  return {
+    type: actionTypes.FETCH_TRANSACTIONS_REQUESTED
+  }
+}
+
+export const fetchTransactionsFailed = (error) => {
+  return {
+    type: actionTypes.FETCH_TRANSACTIONS_FAILED,
+    error
+  }
+}

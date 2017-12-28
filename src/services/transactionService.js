@@ -5,9 +5,35 @@ import Transaction from "../models/Transaction";
 import db from "../db";
 import OfxAdapter from "./OfxAdapter";
 
+export const fetch = async (): Promise<Array<Transaction>> => {
+  const response = await db.find({
+    selector: {
+      $and: [{ "metadata.type": "Transaction" }]
+    },
+    sort: ["date"],
+    limit: Number.MAX_SAFE_INTEGER // A hack to temporarily get around the lack of no limit to db.find
+  });
+
+  const transactions = response.docs.map(doc => new Transaction(doc));
+  const accountIds = new Set(transactions.map(t => t.accountId));
+  const promises = [...accountIds].filter(aid => !!aid).map(async aid => {
+    const doc = await db.get(aid);
+    return new Account(doc);
+  });
+  const accounts = await Promise.all(promises);
+  const accountMap = accounts.reduce((aggregate, current) => {
+    aggregate.set(current._id, current);
+    return aggregate;
+  }, new Map());
+
+  transactions.forEach(t => {
+    t.account = accountMap.get(t.accountId);
+  });
+
+  return transactions;
+};
+
 export const saveNewTransaction = async (transaction: Transaction) => {
-  // Verify db does not contain such checksum
-  // If checksum clash, throw error, otherwise, proceed to post
   const response = await db.find({
     selector: {
       "metadata.type": {
@@ -39,7 +65,7 @@ export const importAccountStatement = async (
       console.log(error);
       return false;
     }
-  })
+  });
 
   const resolvedResults = await Promise.all(dbPromises);
   const numImported = resolvedResults.filter(r => r === true).length;
@@ -47,7 +73,6 @@ export const importAccountStatement = async (
 
   const balance = await ofxAdapter.getBalance();
   account.addAccountBalanceRecord(balance.dateTime, balance.amount);
-  const response = await db.put(account);
-  console.log(response);
+  await db.put(account);
   return { numImported, numSkipped };
 };

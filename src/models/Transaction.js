@@ -1,13 +1,16 @@
 // @flow
 import FlorinBase from "./FlorinBase";
 import type { TransactionType } from "./TransactionType";
+import Account from "./Account";
 import shajs from "sha.js";
+import db from "../db";
 
 const FIELDS_TO_HASH = ["amount", "date", "name", "memo", "type"];
 
 export default class Transaction extends FlorinBase {
   _id: string;
   accountId: string;
+  account: ?Account;
   amount: string;
   date: string;
   info: ?string;
@@ -37,5 +40,9 @@ export default class Transaction extends FlorinBase {
       }
     });
     this.checksum = `sha256:${sha.digest("hex")}`;
+  }
+
+  async getAccount(): Promise<Account|null> {
+    return await db.get(this.accountId)
   }
 }

@@ -1,21 +1,15 @@
 // @flow
 import { push } from "react-router-redux";
 import * as actionCreators from "./creators";
-import db from "../db";
 import Account from "../models/Account";
 import * as transactionService from "../services/transactionService";
+import * as accountService from "../services/accountService";
 
 export const fetchAccounts = () => async dispatch => {
   dispatch(actionCreators.fetchAccountsRequested());
   try {
-    const response = await db.find({
-      selector: { "metadata.type": "Account" }
-    });
-    dispatch(
-      actionCreators.fetchAccountsSucceeded(
-        response.docs.map(doc => new Account(doc))
-      )
-    );
+    const accounts = await accountService.fetch();
+    dispatch(actionCreators.fetchAccountsSucceeded(accounts));
   } catch (err) {
     dispatch(
       actionCreators.showErrorNotification("Cannot fetch accounts", err)
@@ -27,8 +21,7 @@ export const fetchAccounts = () => async dispatch => {
 export const deleteAccount = (accountId: string) => async dispatch => {
   dispatch(actionCreators.deleteAccountRequested(accountId));
   try {
-    const doc = await db.get(accountId);
-    await db.remove(doc);
+    await accountService.del(accountId);
     dispatch(actionCreators.showSuccessNotification("The account was deleted"));
     dispatch(actionCreators.deleteAccountSucceeded(accountId));
   } catch (err) {
@@ -41,10 +34,8 @@ export const deleteAccount = (accountId: string) => async dispatch => {
 
 export const createAccount = (accountData: Account) => async dispatch => {
   try {
-    const response = await db.post(accountData);
-    dispatch(
-      actionCreators.createAccountSucceeded(new Account(response.account))
-    );
+    const account = await accountService.create(accountData);
+    dispatch(actionCreators.createAccountSucceeded(account));
     dispatch(push("/accounts"));
     dispatch(actionCreators.showSuccessNotification("Account created"));
   } catch (err) {
@@ -57,8 +48,8 @@ export const createAccount = (accountData: Account) => async dispatch => {
 
 export const fetchAccountById = (accountId: string) => async dispatch => {
   try {
-    const account = await db.get(accountId);
-    dispatch(actionCreators.fetchAccountByIdSucceeded(new Account(account)));
+    const account = await accountService.fetchById(accountId);
+    dispatch(actionCreators.fetchAccountByIdSucceeded(account));
   } catch (err) {
     dispatch(
       actionCreators.showErrorNotification("Failed to get account", err)
@@ -71,13 +62,8 @@ export const updateAccount = (
   accountData: Account
 ) => async dispatch => {
   try {
-    let account = {
-      ...(await db.get(accountId)),
-      ...accountData
-    };
-    await db.put(account);
-    account = await db.get(account._id);
-    dispatch(actionCreators.updateAccountSucceeded(new Account(account)));
+    const account = await accountService.update(accountId, accountData);
+    dispatch(actionCreators.updateAccountSucceeded(account));
     dispatch(push("/accounts"));
     dispatch(actionCreators.showSuccessNotification("Account updated"));
   } catch (err) {
@@ -118,5 +104,20 @@ export const importAccountStatement = (
       actionCreators.showErrorNotification("Statement import failed", err)
     );
     dispatch(actionCreators.importAccountStatementFailed(err));
+  }
+};
+
+export const fetchTransactions = () => async dispatch => {
+  dispatch(actionCreators.fetchTransactionsRequested());
+  try {
+    const transactions = await transactionService.fetch();
+    dispatch(
+      actionCreators.fetchTransactionsSucceeded(transactions)
+    );
+  } catch (err) {
+    dispatch(
+      actionCreators.showErrorNotification("Cannot fetch transactions", err)
+    );
+    dispatch(actionCreators.fetchTransactionsFailed(err));
   }
 };
