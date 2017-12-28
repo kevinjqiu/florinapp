@@ -13,7 +13,7 @@ if (ENV === "test") {
   db = new PouchDB("florin-test", { adapter: "memory" });
 } else {
   // db = new PouchDB("florin-test");
-  // db = new PouchDB("http://localhost:5984/florin");
+  db = new PouchDB("http://localhost:5984/florin");
 }
 
 if (DEBUG) {
