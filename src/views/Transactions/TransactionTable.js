@@ -6,9 +6,9 @@ const Transaction = ({ transaction }) => {
   return (
     <tr>
       <td>{transaction.date}</td>
-      <td>{transaction.accountId}</td>
+      <td>{transaction.account.name}</td>
       <td>{transaction.memo}</td>
-      <td><Currency amount={transaction.amount} code={"CAD"} /></td>
+      <td><Currency amount={transaction.amount} code={transaction.account.currency} /></td>
       <td>{transaction.categoryId}</td>
       <td />
     </tr>
@@ -24,7 +24,7 @@ class TransactionTable extends Component {
     }
 
     return (
-      <Table response striped>
+      <Table responsive striped>
         <thead>
           <tr>
             <th>Date</th>
@@ -35,7 +35,7 @@ class TransactionTable extends Component {
             <th>Actions</th>
           </tr>
         </thead>
-        <tbody>{transactions.map(t => <Transaction transaction={t} />)}</tbody>
+        <tbody>{transactions.map(t => <Transaction key={t._id} transaction={t} />)}</tbody>
       </Table>
     );
   }

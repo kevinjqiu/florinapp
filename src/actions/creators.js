@@ -128,7 +128,7 @@ export const importAccountStatementFailed = (error) => {
   }
 }
 
-export const fetchTransactionsSucceeded = (payload) => {
+export const fetchTransactionsSucceeded = (payload: Array<Transaction>) => {
   return {
     type: actionTypes.FETCH_TRANSACTIONS_SUCCEEDED,
     payload

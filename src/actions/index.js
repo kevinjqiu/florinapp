@@ -125,11 +125,9 @@ export const importAccountStatement = (
 export const fetchTransactions = () => async dispatch => {
   dispatch(actionCreators.fetchTransactionsRequested());
   try {
-    const response = await transactionService.fetchTransactions();
+    const transactions = await transactionService.fetchTransactions();
     dispatch(
-      actionCreators.fetchTransactionsSucceeded(
-        response.docs.map(doc => new Transaction(doc))
-      )
+      actionCreators.fetchTransactionsSucceeded(transactions)
     );
   } catch (err) {
     dispatch(

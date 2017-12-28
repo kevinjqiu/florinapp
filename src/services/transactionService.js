@@ -5,12 +5,30 @@ import Transaction from "../models/Transaction";
 import db from "../db";
 import OfxAdapter from "./OfxAdapter";
 
-export const fetchTransactions = async () => {
-  return await db.find({
+export const fetchTransactions = async (): Promise<Array<Transaction>> => {
+  const response = await db.find({
     selector: {
       "metadata.type": "Transaction"
     }
   });
+
+  const transactions = response.docs.map(doc => new Transaction(doc));
+  const accountIds = new Set(transactions.map(t => t.accountId));
+  const promises = [...accountIds].filter(aid => !!aid).map(async aid => {
+    const doc = await db.get(aid);
+    return new Account(doc);
+  });
+  const accounts = await Promise.all(promises);
+  const accountMap = accounts.reduce((aggregate, current) => {
+    aggregate.set(current._id, current);
+    return aggregate;
+  }, new Map());
+
+  transactions.forEach(t => {
+    t.account = accountMap.get(t.accountId);
+  });
+
+  return transactions;
 }
 
 export const saveNewTransaction = async (transaction: Transaction) => {

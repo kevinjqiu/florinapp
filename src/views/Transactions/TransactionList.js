@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Row, Col, Card, CardHeader, CardBody, ButtonGroup, Button } from "reactstrap";
+import { Row, Col, Card, CardHeader, CardBody, ButtonGroup } from "reactstrap";
 import { connect } from "react-redux";
 import * as actions from "../../actions";
 import TransactionTable from "./TransactionTable";
