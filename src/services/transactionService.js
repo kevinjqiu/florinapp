@@ -6,12 +6,17 @@ import db from "../db";
 import OfxAdapter from "./OfxAdapter";
 
 export const fetchTransactions = async (): Promise<Array<Transaction>> => {
+  await db.createIndex({
+    index: {
+      fields: ["date"]
+    }
+  });
   const response = await db.find({
     selector: {
-      "metadata.type": "Transaction"
+      $and: [{ "metadata.type": "Transaction" }]
     },
     sort: ["date"],
-    limit: Number.MAX_SAFE_INTEGER  // A hack to temporarily get around the lack of no limit to db.find
+    limit: Number.MAX_SAFE_INTEGER // A hack to temporarily get around the lack of no limit to db.find
   });
 
   const transactions = response.docs.map(doc => new Transaction(doc));
@@ -31,7 +36,7 @@ export const fetchTransactions = async (): Promise<Array<Transaction>> => {
   });
 
   return transactions;
-}
+};
 
 export const saveNewTransaction = async (transaction: Transaction) => {
   const response = await db.find({
@@ -65,7 +70,7 @@ export const importAccountStatement = async (
       console.log(error);
       return false;
     }
-  })
+  });
 
   const resolvedResults = await Promise.all(dbPromises);
   const numImported = resolvedResults.filter(r => r === true).length;

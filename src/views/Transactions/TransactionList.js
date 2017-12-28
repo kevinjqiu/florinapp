@@ -23,7 +23,7 @@ class TransactionList extends Component {
                 </ButtonGroup>
               </CardHeader>
               <CardBody>
-                <TransactionTable transactions={transactions} />
+                <TransactionTable transactions={transactions} ui={ui} />
               </CardBody>
             </Card>
           </Col>

@@ -3,7 +3,6 @@ import { push } from "react-router-redux";
 import * as actionCreators from "./creators";
 import db from "../db";
 import Account from "../models/Account";
-import Transaction from "../models/Transaction";
 import * as transactionService from "../services/transactionService";
 
 export const fetchAccounts = () => async dispatch => {
