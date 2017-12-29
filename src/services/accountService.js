@@ -1,7 +1,6 @@
 import Account from "../models/Account";
 import db from "../db";
-
-const MAX_NUMBER = 2 ** 32 - 1;
+import { MAX_NUMBER } from "./const";
 
 export const fetch = async (): Promise<Array<Account>> => {
   const response = await db.find({

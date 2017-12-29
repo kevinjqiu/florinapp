@@ -147,3 +147,23 @@ export const fetchTransactionsFailed = (error) => {
     error
   }
 }
+
+export const fetchCategoriesSucceeded = (payload: Array<Category>) => {
+  return {
+    type: actionTypes.FETCH_CATEGORIES_SUCCEEDED,
+    payload
+  }
+}
+
+export const fetchCategoriesRequested = () => {
+  return {
+    type: actionTypes.FETCH_CATEGORIES_REQUESTED
+  }
+}
+
+export const fetchCategoriesFailed = (error) => {
+  return {
+    type: actionTypes.FETCH_CATEGORIES_FAILED,
+    error
+  }
+}

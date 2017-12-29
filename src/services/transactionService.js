@@ -4,8 +4,7 @@ import Account from "../models/Account";
 import Transaction from "../models/Transaction";
 import db from "../db";
 import OfxAdapter from "./OfxAdapter";
-
-const MAX_NUMBER = 2 ** 32 - 1;
+import { MAX_NUMBER } from "./const";
 
 type FetchOptions = {
   orderBy: [string, string]

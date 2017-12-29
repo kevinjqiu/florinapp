@@ -1,12 +1,16 @@
 // @flow
 import Category from "../models/Category";
-import type {CategoryType} from "../models/CategoryType";
+import type { CategoryType } from "../models/CategoryType";
 import { categoryTypes } from "../models/CategoryType";
-import db from "./index";
 
-const newCategory = (_id: string, name: string, parent: ?string, allowTransactions: boolean = true, type: CategoryType = categoryTypes.EXPENSE) => {
-
-  return new Category({_id, name, parent, type, allowTransactions });
+const newCategory = (
+  _id: string,
+  name: string,
+  parent: ?string,
+  allowTransactions: boolean = true,
+  type: CategoryType = categoryTypes.EXPENSE
+) => {
+  return new Category({ _id, name, parent, type, allowTransactions });
 };
 
 const categorySeeds = (): Array<Category> => {
@@ -154,15 +158,15 @@ const categorySeeds = (): Array<Category> => {
   ];
 };
 
-export default () => {
-  categorySeeds().map(async doc => {
+export default async (db) => {
+  const promises = categorySeeds().map(async doc => {
     try {
       try {
         let existingDoc = await db.get(doc._id);
         console.log("Document exists. Updating...");
         doc._rev = existingDoc._rev;
       } catch (error) {
-        if (error.status != 404) {
+        if (error.status !== 404) {
           throw error;
         }
         console.log("Document does not exist. Creating...");
@@ -172,5 +176,6 @@ export default () => {
     } catch (error) {
       return { doc: doc, error };
     }
-  })
+  });
+  await Promise.all(promises);
 };
