@@ -15,8 +15,8 @@ import { fetchAccounts } from "./index";
 
 const mockStore = configureMockStore([thunk]);
 
-const setup = () => {
-  reset();
+const setup = async () => {
+  await reset()();
   const flushThunks = FlushThunks.createMiddleware();
   const store = createStore(reducer, applyMiddleware(flushThunks, thunk));
   return store;
@@ -25,8 +25,8 @@ const setup = () => {
 describe("Account", () => {
   let store;
 
-  beforeEach(() => {
-    store = setup();
+  beforeEach(async () => {
+    store = await setup();
   });
 
   describe("fetchAccounts", () => {
@@ -165,8 +165,8 @@ describe("Account", () => {
 describe("Transactions", () => {
   let store;
 
-  beforeEach(() => {
-    store = setup();
+  beforeEach(async () => {
+    store = await setup();
   });
 
   describe("fetchTransactions", async () => {

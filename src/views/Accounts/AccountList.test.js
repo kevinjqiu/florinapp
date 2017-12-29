@@ -15,9 +15,9 @@ import reset from "../../db/reset";
 configure({ adapter: new Adapter() });
 const mockStore = configureMockStore([thunk]);
 
-describe("Account List", () => {
-  beforeEach(() => {
-    reset();
+describe("Account List", async () => {
+  beforeEach(async () => {
+    await reset()();
   });
   let store;
 
