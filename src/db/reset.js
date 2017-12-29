@@ -1,6 +1,6 @@
 import db from "./index";
 
-export default () => async () => {
+export default async () => {
   const allDocs = await db.allDocs();                                                                                                                                                         
   const promises = allDocs.rows
     .filter(row => !(row.id.startsWith("_design/")))

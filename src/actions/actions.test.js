@@ -16,7 +16,7 @@ import { fetchAccounts } from "./index";
 const mockStore = configureMockStore([thunk]);
 
 const setup = async () => {
-  await reset()();
+  await reset();
   const flushThunks = FlushThunks.createMiddleware();
   const store = createStore(reducer, applyMiddleware(flushThunks, thunk));
   return store;

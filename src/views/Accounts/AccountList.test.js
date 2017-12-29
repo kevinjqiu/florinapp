@@ -17,7 +17,7 @@ const mockStore = configureMockStore([thunk]);
 
 describe("Account List", async () => {
   beforeEach(async () => {
-    await reset()();
+    await reset();
   });
   let store;
 

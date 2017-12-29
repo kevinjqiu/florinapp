@@ -7,7 +7,7 @@ import Transaction from "../models/Transaction";
 
 describe("transactionService.importAccountStatement", () => {
   beforeEach(async () => {
-    await reset()();
+    await reset();
   });
 
   const newAccount = async (): Account => {
@@ -71,7 +71,7 @@ describe("transactionService.importAccountStatement", () => {
 
 describe("transactionService.fetch", () => {
   beforeEach(async () => {
-    await reset()();
+    await reset();
   });
 
   it("should return transactions ordered by date by default", async () => {
