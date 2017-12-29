@@ -7,7 +7,15 @@ import OfxAdapter from "./OfxAdapter";
 
 const MAX_NUMBER = 2 ** 32 - 1;
 
-export const fetch = async (): Promise<Array<Transaction>> => {
+type FetchOptions = {
+  orderBy: [string, string];
+}
+
+const defaultFetchOptions = {
+  orderBy: ["date", "asc"],
+}
+
+export const fetch = async (options:FetchOptions=defaultFetchOptions): Promise<Array<Transaction>> => {
   const response = await db.find({
     selector: {
       "metadata.type": "Transaction"
@@ -18,12 +26,22 @@ export const fetch = async (): Promise<Array<Transaction>> => {
   const transactions = response.docs.map(doc => new Transaction(doc));
   const accountIds = new Set(transactions.map(t => t.accountId));
   const promises = [...accountIds].filter(aid => !!aid).map(async aid => {
-    const doc = await db.get(aid);
-    return new Account(doc);
+    try {
+      const doc = await db.get(aid);
+      return new Account(doc);
+    } catch (error) {
+      if (error.status == 404) {
+        return undefined;
+      }
+      throw error;
+    }
   });
   const accounts = await Promise.all(promises);
+  console.log(accounts);
   const accountMap = accounts.reduce((aggregate, current) => {
-    aggregate.set(current._id, current);
+    if (current !== undefined) {
+      aggregate.set(current._id, current);
+    }
     return aggregate;
   }, new Map());
 

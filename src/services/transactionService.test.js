@@ -3,10 +3,11 @@ import * as transactionService from "./transactionService";
 import db from "../db";
 import reset from "../db/reset";
 import Account from "../models/Account";
+import Transaction from "../models/Transaction";
 
 describe("transactionService.importAccountStatement", () => {
-  beforeEach(() => {
-    reset();
+  beforeEach(async () => {
+    await reset()();
   });
 
   const newAccount = async (): Account => {
@@ -65,5 +66,36 @@ describe("transactionService.importAccountStatement", () => {
       selector: { "metadata.type": "Transaction" }
     });
     expect(response.docs.length).toBe(3);
+  });
+});
+
+describe("transactionService.fetch", () => {
+  beforeEach(async () => {
+    await reset()();
+  });
+
+  it("should return transactions ordered by date by default", async () => {
+    await db.post(new Transaction({_id: "txn1", date: "2017-01-01"}));
+    await db.post(new Transaction({_id: "txn2", date: "2017-02-01"}));
+    await db.post(new Transaction({_id: "txn3", date: "2017-01-15"}));
+    const transactions = await transactionService.fetch();
+    expect(transactions.map(t => t._id)).toEqual(["txn1", "txn3", "txn2"]);
+  });
+
+  it("should fetch the associated account", async () => {
+    const accountId = (await db.post(new Account({name: "TEST"}))).id;
+    await db.post(new Transaction({_id: "txn1", date: "2017-01-01", accountId}));
+    const transactions = await transactionService.fetch();
+    expect(transactions.length).toEqual(1);
+    expect(transactions[0].account._id).toEqual(accountId);
+    expect(transactions[0].account.name).toEqual("TEST");
+  });
+
+  it("should set the associated account to undefined when accountId not found", async () => {
+    const accountId = "NONEXISTENT";
+    await db.post(new Transaction({_id: "txn1", date: "2017-01-01", accountId}));
+    const transactions = await transactionService.fetch();
+    expect(transactions.length).toEqual(1);
+    expect(transactions[0].account).toBe(undefined);
   });
 });

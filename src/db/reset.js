@@ -7,5 +7,6 @@ export default () => async () => {
     .map(async row => {
       await db.remove(row.id, row.value.rev);
     });
+  promises.push(db.compact());
   await Promise.all(promises);
 };
