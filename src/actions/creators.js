@@ -167,3 +167,27 @@ export const fetchCategoriesFailed = (error) => {
     error
   }
 }
+
+export const updateTransactionCategoryRequested = (transactionId: string, categoryId: string) => {
+  return {
+    type: actionTypes.UPDATE_TRANSACTION_CATEGORY_REQUESTED,
+    transactionId,
+    categoryId
+  }
+}
+
+export const updateTransactionCategorySucceeded = (transactionId: string, categoryId: string) => {
+  return {
+    type: actionTypes.UPDATE_TRANSACTION_CATEGORY_SUCCEEDED,
+    transactionId,
+    categoryId
+  }
+}
+
+export const updateTransactionCategoryFailed = (transactionId: string, categoryId: string) => {
+  return {
+    type: actionTypes.UPDATE_TRANSACTION_CATEGORY_FAILED,
+    transactionId,
+    categoryId
+  }
+}

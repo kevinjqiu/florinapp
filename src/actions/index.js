@@ -2,6 +2,7 @@
 import { push } from "react-router-redux";
 import * as actionCreators from "./creators";
 import Account from "../models/Account";
+import Transaction from "../models/Transaction";
 import * as transactionService from "../services/transactionService";
 import * as accountService from "../services/accountService";
 import * as categoryService from "../services/categoryService";
@@ -135,5 +136,15 @@ export const fetchCategories = () => async dispatch => {
       actionCreators.showErrorNotification("Cannot fetch categories", err)
     );
     dispatch(actionCreators.fetchCategoriesFailed(err));
+  }
+}
+
+export const updateTransactionCategory = (transactionId: string, categoryId: string) => async dispatch => {
+  dispatch(actionCreators.updateTransactionCategoryRequested(transactionId, categoryId));
+  try {
+    await transactionService.updateCategory(transactionId, categoryId);
+    dispatch(actionCreators.updateTransactionCategorySucceeded(transactionId, categoryId));
+  } catch (err) {
+    dispatch(actionCreators.updateTransactionCategoryFailed(transactionId, categoryId));
   }
 }

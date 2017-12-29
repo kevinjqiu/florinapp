@@ -54,6 +54,12 @@ export const fetch = async (
   return transactions;
 };
 
+export const updateCategory = async (transactionId: string, categoryId: string) => {
+  const txn = await db.get(transactionId);
+  txn.categoryId = categoryId;
+  await db.put(txn);
+}
+
 export const saveNewTransaction = async (transaction: Transaction) => {
   const response = await db.find({
     selector: {
