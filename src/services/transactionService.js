@@ -6,9 +6,14 @@ import db from "../db";
 import OfxAdapter from "./OfxAdapter";
 
 export const fetch = async (): Promise<Array<Transaction>> => {
+  await db.createIndex({
+    index: {
+      fields: ["date"]
+    }
+  });
   const response = await db.find({
     selector: {
-      $and: [{ "metadata.type": "Transaction" }]
+      "metadata.type": "Transaction"
     },
     sort: ["date"],
     limit: Number.MAX_SAFE_INTEGER // A hack to temporarily get around the lack of no limit to db.find

@@ -187,7 +187,6 @@ describe("Transactions", () => {
     });
 
     it.skip("should fetch associated account when possible", async () => {
-      console.log(await db.allDocs());
       const account = await db.post(new Account());
       await db.post(new Transaction({ _id: "txn1", accountId: account.id }));
       await db.post(new Transaction({ _id: "txn2" }));

@@ -35,7 +35,7 @@ const AccountCurrencySelector = ({ input, meta: { touched, error, warning } }) =
           <Label htmlFor="type">Account Currency</Label>
         </Col>
         <Col xs="12" md="9">
-          <DropdownList allowCreate filter="contains" data={currencyCodes} textField={c => c ? `${currencies[c].symbol} - ${currencies[c].code}` : ""} {...options} />
+          <DropdownList allowCreate filter="contains" data={currencyCodes} textField={c => c ? `${currencies[c].code} (${currencies[c].symbol})` : ""} {...options} />
           <FormFeedback>{error}</FormFeedback>
         </Col>
       </FormGroup>

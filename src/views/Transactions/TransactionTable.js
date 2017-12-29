@@ -9,6 +9,7 @@ const Transaction = ({ transaction }) => {
     <tr>
       <td><Date date={transaction.date} /></td>
       <td><Link to={`/accounts/${transaction.account._id}/view`}>{transaction.account.name}</Link></td>
+      <td>{transaction.name}</td>
       <td>{transaction.memo}</td>
       <td style={{textAlign: "right"}}><Currency amount={transaction.amount} code={transaction.account.currency} /></td>
       <td>{transaction.categoryId}</td>
@@ -40,6 +41,7 @@ class TransactionTable extends Component {
           <tr>
             <th>Date</th>
             <th>Account</th>
+            <th>Name</th>
             <th>Memo</th>
             <th style={{textAlign: "right"}}>Amount</th>
             <th>Category</th>

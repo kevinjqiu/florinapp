@@ -17,7 +17,6 @@ export default class Transaction extends FlorinBase {
   name: string;
   memo: string;
   categoryId: ?string;
-  isDeleted: boolean;
   checksum: string;
   type: TransactionType;
   // id of the transaction this transaction is split from
