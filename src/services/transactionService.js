@@ -5,18 +5,14 @@ import Transaction from "../models/Transaction";
 import db from "../db";
 import OfxAdapter from "./OfxAdapter";
 
+const MAX_NUMBER = 2 ** 32 - 1;
+
 export const fetch = async (): Promise<Array<Transaction>> => {
-  await db.createIndex({
-    index: {
-      fields: ["date"]
-    }
-  });
   const response = await db.find({
     selector: {
       "metadata.type": "Transaction"
     },
-    sort: ["date"],
-    limit: Number.MAX_SAFE_INTEGER // A hack to temporarily get around the lack of no limit to db.find
+    limit: MAX_NUMBER
   });
 
   const transactions = response.docs.map(doc => new Transaction(doc));
@@ -34,6 +30,8 @@ export const fetch = async (): Promise<Array<Transaction>> => {
   transactions.forEach(t => {
     t.account = accountMap.get(t.accountId);
   });
+
+  transactions.sort((a, b) => a.date < b.date ? -1 : 1);
 
   return transactions;
 };

@@ -186,10 +186,10 @@ describe("Transactions", () => {
       mockDb.restore();
     });
 
-    it.skip("should fetch associated account when possible", async () => {
+    it("should fetch associated account when possible", async () => {
       const account = await db.post(new Account());
-      await db.post(new Transaction({ _id: "txn1", accountId: account.id }));
-      await db.post(new Transaction({ _id: "txn2" }));
+      await db.post(new Transaction({ _id: "txn1", date: "2017-01-01", accountId: account.id }));
+      await db.post(new Transaction({ _id: "txn2", date: "2017-05-05"}));
       await store.dispatch(actions.fetchTransactions());
       const { transactions, loading, failed } = store.getState().transactions;
       expect(loading).toBe(false);

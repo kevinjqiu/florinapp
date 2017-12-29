@@ -1,10 +1,12 @@
 import Account from "../models/Account";
 import db from "../db";
 
+const MAX_NUMBER = 2 ** 32 - 1;
+
 export const fetch = async (): Promise<Array<Account>> => {
   const response = await db.find({
     selector: { "metadata.type": "Account" },
-    limit: Number.MAX_SAFE_INTEGER
+    limit: MAX_NUMBER
   });
   return response.docs.map(doc => new Account(doc));
 };
