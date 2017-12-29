@@ -74,7 +74,7 @@ describe("transactionService.fetch", () => {
     await reset();
   });
 
-  it("should return transactions ordered by date by default", async () => {
+  it("should return transactions ordered by date asc by default", async () => {
     await db.post(new Transaction({_id: "txn1", date: "2017-01-01"}));
     await db.post(new Transaction({_id: "txn2", date: "2017-02-01"}));
     await db.post(new Transaction({_id: "txn3", date: "2017-01-15"}));
@@ -98,4 +98,15 @@ describe("transactionService.fetch", () => {
     expect(transactions.length).toEqual(1);
     expect(transactions[0].account).toBe(undefined);
   });
+
+  it.skip("should return transactions ordered by desc when requested", async () => {
+    await db.post(new Transaction({_id: "txn1", date: "2017-01-01"}));
+    await db.post(new Transaction({_id: "txn2", date: "2017-02-01"}));
+    await db.post(new Transaction({_id: "txn3", date: "2017-01-15"}));
+    const transactions = await transactionService.fetch({
+      orderBy: ["date", "desc"]
+    });
+    expect(transactions.map(t => t._id)).toEqual(["txn2", "txn3", "txn1"]);
+  });
+
 });

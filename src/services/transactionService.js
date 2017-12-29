@@ -8,14 +8,16 @@ import OfxAdapter from "./OfxAdapter";
 const MAX_NUMBER = 2 ** 32 - 1;
 
 type FetchOptions = {
-  orderBy: [string, string];
-}
+  orderBy: [string, string]
+};
 
 const defaultFetchOptions = {
-  orderBy: ["date", "asc"],
-}
+  orderBy: ["date", "asc"]
+};
 
-export const fetch = async (options:FetchOptions=defaultFetchOptions): Promise<Array<Transaction>> => {
+export const fetch = async (
+  options: FetchOptions = defaultFetchOptions
+): Promise<Array<Transaction>> => {
   const response = await db.find({
     selector: {
       "metadata.type": "Transaction"
@@ -30,14 +32,13 @@ export const fetch = async (options:FetchOptions=defaultFetchOptions): Promise<A
       const doc = await db.get(aid);
       return new Account(doc);
     } catch (error) {
-      if (error.status == 404) {
+      if (error.status === 404) {
         return undefined;
       }
       throw error;
     }
   });
   const accounts = await Promise.all(promises);
-  console.log(accounts);
   const accountMap = accounts.reduce((aggregate, current) => {
     if (current !== undefined) {
       aggregate.set(current._id, current);
@@ -49,7 +50,7 @@ export const fetch = async (options:FetchOptions=defaultFetchOptions): Promise<A
     t.account = accountMap.get(t.accountId);
   });
 
-  transactions.sort((a, b) => a.date < b.date ? -1 : 1);
+  transactions.sort((a, b) => (a.date < b.date ? -1 : 1));
 
   return transactions;
 };
