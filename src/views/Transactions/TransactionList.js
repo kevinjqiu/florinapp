@@ -7,8 +7,9 @@ import RefreshButton from "../../components/RefreshButton/RefreshButton";
 
 class TransactionList extends Component {
   componentDidMount() {
-    this.props.fetchTransactions();
     this.props.fetchCategories();
+    const fetchOptions = this.props.transactionsState;
+    this.props.fetchTransactions(fetchOptions);
   }
 
   render() {

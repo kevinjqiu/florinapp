@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Table, Alert } from "reactstrap";
 import Currency from "../../components/Currency/Currency";
 import Date from "../../components/Date/Date";
+import TransactionsPagination from "./TransactionsPagination";
 
 import { DropdownList } from "react-widgets";
 import { categoryTypes } from "../../models/CategoryType";
@@ -43,6 +44,7 @@ class CategorySelector extends Component {
         disabled={disabled}
         onChange={onChange}
         value={value}
+        groupBy="type"
       />
     );
   }
@@ -137,6 +139,13 @@ class TransactionTable extends Component {
             />
           ))}
         </tbody>
+        <tfoot>
+          <tr>
+            <td colSpan="7">
+              <TransactionsPagination />
+            </td>
+          </tr>
+        </tfoot>
       </Table>
     );
   }

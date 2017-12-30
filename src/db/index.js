@@ -32,7 +32,7 @@ const setupIndex = async db => {
   }))
 };
 
-setupIndex(db);
-seed(db);
+// setupIndex(db);
+// seed(db);
 
 export default db;

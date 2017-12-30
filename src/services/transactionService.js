@@ -5,13 +5,14 @@ import Transaction from "../models/Transaction";
 import db from "../db";
 import OfxAdapter from "./OfxAdapter";
 import { MAX_NUMBER } from "./const";
+import type FetchOptions from "./FetchOptions";
 
-type FetchOptions = {
-  orderBy: [string, string]
-};
-
-const defaultFetchOptions = {
-  orderBy: ["date", "asc"]
+export const defaultFetchOptions = {
+  orderBy: ["date", "asc"],
+  pagination: {
+    perPage: 5,
+    page: 1
+  }
 };
 
 export const fetch = async (
@@ -51,7 +52,9 @@ export const fetch = async (
 
   transactions.sort((a, b) => (a.date < b.date ? -1 : 1));
 
-  return transactions;
+  const { perPage, page } = options.pagination;
+  // TODO: fix this and reconsolidate client side filter/sort/pagination
+  return transactions.slice(perPage * (page - 1), perPage * page - 1);
 };
 
 export const updateCategory = async (transactionId: string, categoryId: string) => {

@@ -2,7 +2,6 @@
 import { push } from "react-router-redux";
 import * as actionCreators from "./creators";
 import Account from "../models/Account";
-import Transaction from "../models/Transaction";
 import * as transactionService from "../services/transactionService";
 import * as accountService from "../services/accountService";
 import * as categoryService from "../services/categoryService";
