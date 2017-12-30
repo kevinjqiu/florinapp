@@ -77,10 +77,9 @@ describe("accountService", () => {
 
   describe("accountService.create", () => {
     it("should create a new account", async () => {
-      const account = new Account({name: "TEST"});
+      const account = new Account({ name: "TEST" });
       const response = await accountService.create(account);
       expect(response.name).toEqual("TEST");
     });
-
-  })
+  });
 });
