@@ -147,3 +147,47 @@ export const fetchTransactionsFailed = (error) => {
     error
   }
 }
+
+export const fetchCategoriesSucceeded = (payload: Array<Category>) => {
+  return {
+    type: actionTypes.FETCH_CATEGORIES_SUCCEEDED,
+    payload
+  }
+}
+
+export const fetchCategoriesRequested = () => {
+  return {
+    type: actionTypes.FETCH_CATEGORIES_REQUESTED
+  }
+}
+
+export const fetchCategoriesFailed = (error) => {
+  return {
+    type: actionTypes.FETCH_CATEGORIES_FAILED,
+    error
+  }
+}
+
+export const updateTransactionCategoryRequested = (transactionId: string, categoryId: string) => {
+  return {
+    type: actionTypes.UPDATE_TRANSACTION_CATEGORY_REQUESTED,
+    transactionId,
+    categoryId
+  }
+}
+
+export const updateTransactionCategorySucceeded = (transactionId: string, categoryId: string) => {
+  return {
+    type: actionTypes.UPDATE_TRANSACTION_CATEGORY_SUCCEEDED,
+    transactionId,
+    categoryId
+  }
+}
+
+export const updateTransactionCategoryFailed = (transactionId: string, categoryId: string) => {
+  return {
+    type: actionTypes.UPDATE_TRANSACTION_CATEGORY_FAILED,
+    transactionId,
+    categoryId
+  }
+}

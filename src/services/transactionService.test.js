@@ -109,4 +109,16 @@ describe("transactionService.fetch", () => {
     expect(transactions.map(t => t._id)).toEqual(["txn2", "txn3", "txn1"]);
   });
 
+  describe("transactionService.updateCategory", () => {
+    beforeEach(async () => {
+      await reset();
+    });
+
+    it("should update transaction category", async () => {
+      const response = await db.post(new Transaction());
+      await transactionService.updateCategory(response.id, "automobile-carpayment");
+      const transaction = await db.get(response.id);
+      expect(transaction.categoryId).toEqual("automobile-carpayment");
+    })
+  });
 });

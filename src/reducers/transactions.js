@@ -27,6 +27,19 @@ export default (state = initState, action) => {
         loading: false,
         failed: true
       };
+    case actionTypes.UPDATE_TRANSACTION_CATEGORY_SUCCEEDED:
+      const { transactionId, categoryId } = action;
+      const newTransactions = [];
+      state.transactions.forEach(t => {
+        if (t._id === transactionId) {
+          t.categoryId = categoryId;
+        }
+        newTransactions.push(t);
+      });
+      return {
+        ...state,
+        transactions: newTransactions
+      };
     default:
       return state;
   }

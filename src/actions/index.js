@@ -2,8 +2,10 @@
 import { push } from "react-router-redux";
 import * as actionCreators from "./creators";
 import Account from "../models/Account";
+import Transaction from "../models/Transaction";
 import * as transactionService from "../services/transactionService";
 import * as accountService from "../services/accountService";
+import * as categoryService from "../services/categoryService";
 
 export const fetchAccounts = () => async dispatch => {
   dispatch(actionCreators.fetchAccountsRequested());
@@ -121,3 +123,28 @@ export const fetchTransactions = () => async dispatch => {
     dispatch(actionCreators.fetchTransactionsFailed(err));
   }
 };
+
+export const fetchCategories = () => async dispatch => {
+  dispatch(actionCreators.fetchCategoriesRequested());
+  try {
+    const categories = await categoryService.fetch();
+    dispatch(
+      actionCreators.fetchCategoriesSucceeded(categories)
+    );
+  } catch (err) {
+    dispatch(
+      actionCreators.showErrorNotification("Cannot fetch categories", err)
+    );
+    dispatch(actionCreators.fetchCategoriesFailed(err));
+  }
+}
+
+export const updateTransactionCategory = (transactionId: string, categoryId: string) => async dispatch => {
+  dispatch(actionCreators.updateTransactionCategoryRequested(transactionId, categoryId));
+  try {
+    await transactionService.updateCategory(transactionId, categoryId);
+    dispatch(actionCreators.updateTransactionCategorySucceeded(transactionId, categoryId));
+  } catch (err) {
+    dispatch(actionCreators.updateTransactionCategoryFailed(transactionId, categoryId));
+  }
+}

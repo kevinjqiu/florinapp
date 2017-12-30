@@ -4,8 +4,7 @@ import Account from "../models/Account";
 import Transaction from "../models/Transaction";
 import db from "../db";
 import OfxAdapter from "./OfxAdapter";
-
-const MAX_NUMBER = 2 ** 32 - 1;
+import { MAX_NUMBER } from "./const";
 
 type FetchOptions = {
   orderBy: [string, string]
@@ -54,6 +53,12 @@ export const fetch = async (
 
   return transactions;
 };
+
+export const updateCategory = async (transactionId: string, categoryId: string) => {
+  const txn = await db.get(transactionId);
+  txn.categoryId = categoryId;
+  await db.put(txn);
+}
 
 export const saveNewTransaction = async (transaction: Transaction) => {
   const response = await db.find({
