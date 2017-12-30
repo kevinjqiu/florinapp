@@ -60,6 +60,7 @@ const Transaction = ({ transaction, categories, disabledCategories, updateTransa
         </Link>
       </td>
       <td>{transaction.name}</td>
+      <td>{transaction.memo}</td>
       <td style={{ textAlign: "right" }}>
         <Currency
           amount={transaction.amount}
@@ -114,9 +115,10 @@ class TransactionTable extends Component {
       <Table responsive striped>
         <thead>
           <tr>
-            <th width="10%">Date</th>
-            <th width="15%">Account</th>
-            <th width="30%">Name</th>
+            <th width="5%">Date</th>
+            <th width="10%">Account</th>
+            <th width="20%">Name</th>
+            <th width="20%">Memo</th>
             <th width="10%" style={{ textAlign: "right" }}>
               Amount
             </th>
