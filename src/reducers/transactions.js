@@ -15,7 +15,7 @@ export default (state = initState, action) => {
     case actionTypes.FETCH_TRANSACTIONS_SUCCEEDED:
       return {
         ...state,
-        transactions: action.payload,
+        transactions: action.payload.result,
         loading: false,
         failed: false
       };

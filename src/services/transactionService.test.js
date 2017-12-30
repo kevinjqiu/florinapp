@@ -78,14 +78,15 @@ describe("transactionService.fetch", () => {
     await db.post(new Transaction({_id: "txn1", date: "2017-01-01"}));
     await db.post(new Transaction({_id: "txn2", date: "2017-02-01"}));
     await db.post(new Transaction({_id: "txn3", date: "2017-01-15"}));
-    const transactions = await transactionService.fetch();
-    expect(transactions.map(t => t._id)).toEqual(["txn1", "txn3", "txn2"]);
+    const result = await transactionService.fetch();
+    expect(result.result.map(t => t._id)).toEqual(["txn1", "txn3", "txn2"]);
   });
 
   it("should fetch the associated account", async () => {
     const accountId = (await db.post(new Account({name: "TEST"}))).id;
     await db.post(new Transaction({_id: "txn1", date: "2017-01-01", accountId}));
-    const transactions = await transactionService.fetch();
+    const result = await transactionService.fetch();
+    const transactions = result.result;
     expect(transactions.length).toEqual(1);
     expect(transactions[0].account._id).toEqual(accountId);
     expect(transactions[0].account.name).toEqual("TEST");
@@ -94,7 +95,8 @@ describe("transactionService.fetch", () => {
   it("should set the associated account to undefined when accountId not found", async () => {
     const accountId = "NONEXISTENT";
     await db.post(new Transaction({_id: "txn1", date: "2017-01-01", accountId}));
-    const transactions = await transactionService.fetch();
+    const result = await transactionService.fetch();
+    const transactions = result.result;
     expect(transactions.length).toEqual(1);
     expect(transactions[0].account).toBe(undefined);
   });
@@ -103,9 +105,10 @@ describe("transactionService.fetch", () => {
     await db.post(new Transaction({_id: "txn1", date: "2017-01-01"}));
     await db.post(new Transaction({_id: "txn2", date: "2017-02-01"}));
     await db.post(new Transaction({_id: "txn3", date: "2017-01-15"}));
-    const transactions = await transactionService.fetch({
+    const result = await transactionService.fetch({
       orderBy: ["date", "desc"]
     });
+    const transactions = result.result;
     expect(transactions.map(t => t._id)).toEqual(["txn2", "txn3", "txn1"]);
   });
 
