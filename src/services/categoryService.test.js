@@ -1,11 +1,13 @@
 import * as categoryService from "./categoryService";
 import db from "../db";
 import reset from "../db/reset";
+import seed from "../db/seed";
 import Category from "../models/Category";
 
 describe("categoryService", () => {
   beforeEach(async () => {
     await reset();
+    await seed(db);
   });
 
   describe("categoryService.fetch", () => {
