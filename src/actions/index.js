@@ -5,6 +5,7 @@ import Account from "../models/Account";
 import * as transactionService from "../services/transactionService";
 import * as accountService from "../services/accountService";
 import * as categoryService from "../services/categoryService";
+import type FetchOptions from "../services/FetchOptions";
 
 export const fetchAccounts = () => async dispatch => {
   dispatch(actionCreators.fetchAccountsRequested());
@@ -108,10 +109,10 @@ export const importAccountStatement = (
   }
 };
 
-export const fetchTransactions = () => async dispatch => {
+export const fetchTransactions = (options: FetchOptions) => async dispatch => {
   dispatch(actionCreators.fetchTransactionsRequested());
   try {
-    const transactions = await transactionService.fetch();
+    const transactions = await transactionService.fetch(options);
     dispatch(
       actionCreators.fetchTransactionsSucceeded(transactions)
     );

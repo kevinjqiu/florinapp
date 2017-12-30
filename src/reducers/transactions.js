@@ -6,6 +6,7 @@ import * as queryString from "query-string";
 const initState = {
   fetchOptions: defaultFetchOptions,
   transactions: [],
+  total: null,
   loading: false,
   failed: false
 };
@@ -16,6 +17,7 @@ export default (state = initState, action) => {
       return {
         ...state,
         transactions: action.payload.result,
+        total: action.payload.total,
         loading: false,
         failed: false
       };

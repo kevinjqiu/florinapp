@@ -19,16 +19,16 @@ export const defaultFetchOptions = {
 export const fetch = async (
   options: FetchOptions = defaultFetchOptions
 ): Promise<PaginationResult<Transaction>> => {
-  const {pagination} = options;
+  const { pagination } = options;
   const response = await db.query(
     (doc, emit) => {
-      if (doc.metadata && doc.metadata.type) {
-        emit([doc.metadata.type, doc.date], null);
+      if (doc.metadata && doc.metadata.type === "Transaction") {
+        emit(doc.date, null);
       }
     },
     {
-      startkey: ["Transaction", ""],
-      endkey: ["Transaction", "9999"],
+      startkey: "",
+      endkey: "9999",
       include_docs: true,
       limit: pagination.perPage,
       skip: (pagination.page - 1) * pagination.perPage
@@ -36,6 +36,7 @@ export const fetch = async (
   );
 
   const transactions = response.rows.map(row => new Transaction(row.doc));
+  console.log(response);
   const accountIds = new Set(transactions.map(t => t.accountId));
   const promises = [...accountIds].filter(aid => !!aid).map(async aid => {
     try {
@@ -60,12 +61,7 @@ export const fetch = async (
     t.account = accountMap.get(t.accountId);
   });
 
-  // transactions.sort((a, b) => (a.date < b.date ? -1 : 1));
-
-  // const { perPage, page } = options.pagination;
-  // TODO: fix this and reconsolidate client side filter/sort/pagination
-  // return transactions.slice(perPage * (page - 1), perPage * page - 1);
-  return new PaginationResult(transactions, 100);
+  return new PaginationResult(transactions, response.total_rows);
 };
 
 export const updateCategory = async (

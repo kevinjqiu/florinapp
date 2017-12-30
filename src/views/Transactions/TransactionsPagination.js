@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Pagination, PaginationLink, PaginationItem } from "reactstrap";
 import { connect } from "react-redux";
 import * as queryString from "query-string";
+import { Link } from "react-router-dom";
 
 const FirstPage = ({ disabled, pathname, params }) => {
   params.page = 1;
@@ -28,7 +29,7 @@ const PageLink = ({ page, active, pathname, params }) => {
   const href = `${pathname}?${queryString.stringify(params)}`;
   return (
     <PaginationItem active={active}>
-      <PaginationLink href={href}>{page}</PaginationLink>
+      <Link to={href} className="page-link">{page}</Link>
     </PaginationItem>
   );
 };
@@ -69,7 +70,7 @@ class TransactionsPagination extends Component {
 }
 
 const mapStateToProps = ({ transactions, router }) => {
-  const total = transactions.transactions.length;
+  const total = transactions.total;
   const { pagination } = transactions.fetchOptions;
   const { location } = router;
   return {
