@@ -163,13 +163,11 @@ export default async (db) => {
     try {
       try {
         let existingDoc = await db.get(doc._id);
-        console.log("Document exists. Updating...");
         doc._rev = existingDoc._rev;
       } catch (error) {
         if (error.status !== 404) {
           throw error;
         }
-        console.log("Document does not exist. Creating...");
       }
       const response = await db.put(doc);
       return await db.get(response.id);

@@ -1,3 +1,5 @@
+// @flow
+
 import Account from "../models/Account";
 import db from "../db";
 import { MAX_NUMBER } from "./const";
@@ -17,10 +19,10 @@ export const del = async (accountId: string) => {
 
 export const create = async (accountData: Account): Promise<Account> => {
   const response = await db.post(accountData);
-  return new Account(response.account);
+  return new Account(await db.get(response.id))
 };
 
-export const fetchById = async (accountId: Account): Promise<Account> => {
+export const fetchById = async (accountId: string): Promise<Account> => {
   const account = await db.get(accountId);
   return new Account(account);
 };
