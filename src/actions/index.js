@@ -6,6 +6,7 @@ import * as transactionService from "../services/transactionService";
 import * as accountService from "../services/accountService";
 import * as categoryService from "../services/categoryService";
 import type FetchOptions from "../services/FetchOptions";
+import DateRange from "../models/DateRange";
 
 export const fetchAccounts = () => async dispatch => {
   dispatch(actionCreators.fetchAccountsRequested());
@@ -147,4 +148,9 @@ export const updateTransactionCategory = (transactionId: string, categoryId: str
   } catch (err) {
     dispatch(actionCreators.updateTransactionCategoryFailed(transactionId, categoryId));
   }
+}
+
+export const changeDateRange = (dateRange: DateRange) => async dispatch => {
+  dispatch(actionCreators.dateRangeChangedRequested());
+  dispatch(actionCreators.dateRangeChangedSucceeded(dateRange));
 }
