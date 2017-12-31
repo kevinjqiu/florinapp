@@ -193,7 +193,6 @@ describe("Transactions", () => {
       await store.dispatch(actions.fetchTransactions());
       const { transactions, loading, failed } = store.getState().transactions;
       expect(loading).toBe(false);
-      console.log(store.getState());
       expect(failed).toBe(false);
       expect(transactions.length).toBe(2);
       expect(transactions[0]._id).toEqual("txn1");

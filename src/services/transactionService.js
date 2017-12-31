@@ -11,7 +11,7 @@ import PaginationResult from "./PaginationResult";
 export const defaultFetchOptions = {
   orderBy: ["date", "asc"],
   pagination: {
-    perPage: 5,
+    perPage: 10,
     page: 1
   }
 };
@@ -36,7 +36,6 @@ export const fetch = async (
   );
 
   const transactions = response.rows.map(row => new Transaction(row.doc));
-  console.log(response);
   const accountIds = new Set(transactions.map(t => t.accountId));
   const promises = [...accountIds].filter(aid => !!aid).map(async aid => {
     try {

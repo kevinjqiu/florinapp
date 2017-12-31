@@ -14,7 +14,7 @@ export default class DateRange {
   setNormalizedDisplay() {
     const newEnd = this.end.clone();
     newEnd.subtract(1, "days");
-    this.normalizedDisplay = `${this.start.format(
+    this.normalizedDisplay = `from ${this.start.format(
       "MMM DD, YYYY"
     )} to ${newEnd.format("MMM DD, YYYY")}`;
   }
