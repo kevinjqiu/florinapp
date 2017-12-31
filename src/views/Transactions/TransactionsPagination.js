@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import * as queryString from "query-string";
 import { Link } from "react-router-dom";
 
-const FirstPage = ({ disabled, pathname, params }) => {
+const FirstPageLink = ({ disabled, pathname, params }) => {
   params.page = 1;
   const href = `${pathname}?${queryString.stringify(params)}`;
   return (
@@ -17,7 +17,7 @@ const FirstPage = ({ disabled, pathname, params }) => {
   );
 };
 
-const LastPage = ({ disabled, page, pathname, params }) => {
+const LastPageLink = ({ disabled, page, pathname, params }) => {
   params.page = page;
   const href = `${pathname}?${queryString.stringify(params)}`;
   return (
@@ -47,7 +47,7 @@ class TransactionsPagination extends Component {
     const params = queryString.parse(location.search);
     return (
       <Pagination>
-        <FirstPage
+        <FirstPageLink
           disabled={pagination.page === 1}
           pathname={location.pathname}
           params={params}
@@ -64,7 +64,7 @@ class TransactionsPagination extends Component {
             />
           );
         })}
-        <LastPage
+        <LastPageLink
           page={lastPage}
           disabled={pagination.page === lastPage}
           pathname={location.pathname}
