@@ -9,7 +9,10 @@ const FirstPage = ({ disabled, pathname, params }) => {
   const href = `${pathname}?${queryString.stringify(params)}`;
   return (
     <PaginationItem disabled={disabled}>
-      <PaginationLink previous href={href} />
+      <Link to={href} className="page-link" aria-label="First">
+        <span aria-hidden="true">«</span>
+        <span className="sr-only">First</span>
+      </Link>
     </PaginationItem>
   );
 };
@@ -19,7 +22,10 @@ const LastPage = ({ disabled, page, pathname, params }) => {
   const href = `${pathname}?${queryString.stringify(params)}`;
   return (
     <PaginationItem disabled={disabled}>
-      <PaginationLink next href={href} />
+      <Link to={href} className="page-link" aria-label="Last">
+        <span aria-hidden="true">»</span>
+        <span className="sr-only">Last</span>
+      </Link>
     </PaginationItem>
   );
 };

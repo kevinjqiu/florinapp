@@ -50,7 +50,12 @@ class CategorySelector extends Component {
   }
 }
 
-const Transaction = ({ transaction, categories, disabledCategories, updateTransactionCategory }) => {
+const Transaction = ({
+  transaction,
+  categories,
+  disabledCategories,
+  updateTransactionCategory
+}) => {
   return (
     <tr>
       <td>
@@ -74,7 +79,7 @@ const Transaction = ({ transaction, categories, disabledCategories, updateTransa
           categories={categories}
           value={transaction.categoryId}
           disabled={disabledCategories}
-          onChange={(c) => updateTransactionCategory(transaction._id, c._id) }
+          onChange={c => updateTransactionCategory(transaction._id, c._id)}
         />
       </td>
       <td />
@@ -84,7 +89,11 @@ const Transaction = ({ transaction, categories, disabledCategories, updateTransa
 
 class TransactionTable extends Component {
   render() {
-    const { transactionsState, categoriesState, updateTransactionCategory } = this.props;
+    const {
+      transactionsState,
+      categoriesState,
+      updateTransactionCategory
+    } = this.props;
     const { loading, failed, transactions } = transactionsState;
     const { categories } = categoriesState;
 
@@ -114,39 +123,42 @@ class TransactionTable extends Component {
       .map(c => c._id);
 
     return (
-      <Table responsive striped>
-        <thead>
-          <tr>
-            <th width="5%">Date</th>
-            <th width="10%">Account</th>
-            <th width="20%">Name</th>
-            <th width="20%">Memo</th>
-            <th width="10%" style={{ textAlign: "right" }}>
-              Amount
-            </th>
-            <th width="20%">Category</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {transactions.map(t => (
-            <Transaction
-              key={t._id}
-              transaction={t}
-              categories={categories}
-              disabledCategories={disabledCategories}
-              updateTransactionCategory={updateTransactionCategory}
-            />
-          ))}
-        </tbody>
-        <tfoot>
-          <tr>
-            <td colSpan="7">
-              <TransactionsPagination />
-            </td>
-          </tr>
-        </tfoot>
-      </Table>
+      <div>
+        <TransactionsPagination />
+        <Table responsive striped>
+          <thead>
+            <tr>
+              <th width="5%">Date</th>
+              <th width="10%">Account</th>
+              <th width="20%">Name</th>
+              <th width="20%">Memo</th>
+              <th width="10%" style={{ textAlign: "right" }}>
+                Amount
+              </th>
+              <th width="20%">Category</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {transactions.map(t => (
+              <Transaction
+                key={t._id}
+                transaction={t}
+                categories={categories}
+                disabledCategories={disabledCategories}
+                updateTransactionCategory={updateTransactionCategory}
+              />
+            ))}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colSpan="7">
+                <TransactionsPagination />
+              </td>
+            </tr>
+          </tfoot>
+        </Table>
+      </div>
     );
   }
 }
