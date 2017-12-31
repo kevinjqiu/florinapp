@@ -1,7 +1,12 @@
+// @flow
 import * as actionTypes from "../actions/types";
+import { defaultFetchOptions } from "../services/transactionService";
+import * as queryString from "query-string";
 
 const initState = {
+  fetchOptions: defaultFetchOptions,
   transactions: [],
+  total: null,
   loading: false,
   failed: false
 };
@@ -11,7 +16,8 @@ export default (state = initState, action) => {
     case actionTypes.FETCH_TRANSACTIONS_SUCCEEDED:
       return {
         ...state,
-        transactions: action.payload,
+        transactions: action.payload.result,
+        total: action.payload.total,
         loading: false,
         failed: false
       };
@@ -40,6 +46,20 @@ export default (state = initState, action) => {
         ...state,
         transactions: newTransactions
       };
+    case "@@router/LOCATION_CHANGE":
+      const routerPayload = action.payload;
+      const queryParams = queryString.parse(routerPayload.search);
+      const page = parseInt(queryParams.page || "1", 10);
+      return {
+        ...state,
+        fetchOptions: {
+          ...state.fetchOptions,
+          pagination: {
+            ...state.fetchOptions.pagination,
+            page
+          }
+        }
+      }
     default:
       return state;
   }

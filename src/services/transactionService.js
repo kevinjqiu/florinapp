@@ -5,26 +5,38 @@ import Transaction from "../models/Transaction";
 import db from "../db";
 import OfxAdapter from "./OfxAdapter";
 import { MAX_NUMBER } from "./const";
+import type FetchOptions from "./FetchOptions";
+import PaginationResult from "./PaginationResult";
 
-type FetchOptions = {
-  orderBy: [string, string]
-};
-
-const defaultFetchOptions = {
-  orderBy: ["date", "asc"]
+export const defaultFetchOptions = {
+  orderBy: ["date", "asc"],
+  pagination: {
+    perPage: 5,
+    page: 1
+  }
 };
 
 export const fetch = async (
   options: FetchOptions = defaultFetchOptions
-): Promise<Array<Transaction>> => {
-  const response = await db.find({
-    selector: {
-      "metadata.type": "Transaction"
+): Promise<PaginationResult<Transaction>> => {
+  const { pagination } = options;
+  const response = await db.query(
+    (doc, emit) => {
+      if (doc.metadata && doc.metadata.type === "Transaction") {
+        emit(doc.date, null);
+      }
     },
-    limit: MAX_NUMBER
-  });
+    {
+      startkey: "",
+      endkey: "9999",
+      include_docs: true,
+      limit: pagination.perPage,
+      skip: (pagination.page - 1) * pagination.perPage
+    }
+  );
 
-  const transactions = response.docs.map(doc => new Transaction(doc));
+  const transactions = response.rows.map(row => new Transaction(row.doc));
+  console.log(response);
   const accountIds = new Set(transactions.map(t => t.accountId));
   const promises = [...accountIds].filter(aid => !!aid).map(async aid => {
     try {
@@ -49,16 +61,17 @@ export const fetch = async (
     t.account = accountMap.get(t.accountId);
   });
 
-  transactions.sort((a, b) => (a.date < b.date ? -1 : 1));
-
-  return transactions;
+  return new PaginationResult(transactions, response.total_rows);
 };
 
-export const updateCategory = async (transactionId: string, categoryId: string) => {
+export const updateCategory = async (
+  transactionId: string,
+  categoryId: string
+) => {
   const txn = await db.get(transactionId);
   txn.categoryId = categoryId;
   await db.put(txn);
-}
+};
 
 export const saveNewTransaction = async (transaction: Transaction) => {
   const response = await db.find({
