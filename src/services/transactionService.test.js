@@ -5,6 +5,15 @@ import reset from "../db/reset";
 import Account from "../models/Account";
 import Transaction from "../models/Transaction";
 
+const defaultFetchOptions = {
+  pagination: {
+    perPage: 999,
+    page: 1
+  },
+  filters: {
+  }
+}
+
 describe("transactionService.importAccountStatement", () => {
   beforeEach(async () => {
     await reset();
@@ -78,14 +87,14 @@ describe("transactionService.fetch", () => {
     await db.post(new Transaction({_id: "txn1", date: "2017-01-01"}));
     await db.post(new Transaction({_id: "txn2", date: "2017-02-01"}));
     await db.post(new Transaction({_id: "txn3", date: "2017-01-15"}));
-    const result = await transactionService.fetch();
+    const result = await transactionService.fetch(defaultFetchOptions);
     expect(result.result.map(t => t._id)).toEqual(["txn1", "txn3", "txn2"]);
   });
 
   it("should fetch the associated account", async () => {
     const accountId = (await db.post(new Account({name: "TEST"}))).id;
     await db.post(new Transaction({_id: "txn1", date: "2017-01-01", accountId}));
-    const result = await transactionService.fetch();
+    const result = await transactionService.fetch(defaultFetchOptions);
     const transactions = result.result;
     expect(transactions.length).toEqual(1);
     expect(transactions[0].account._id).toEqual(accountId);
@@ -95,7 +104,7 @@ describe("transactionService.fetch", () => {
   it("should set the associated account to undefined when accountId not found", async () => {
     const accountId = "NONEXISTENT";
     await db.post(new Transaction({_id: "txn1", date: "2017-01-01", accountId}));
-    const result = await transactionService.fetch();
+    const result = await transactionService.fetch(defaultFetchOptions);
     const transactions = result.result;
     expect(transactions.length).toEqual(1);
     expect(transactions[0].account).toBe(undefined);
