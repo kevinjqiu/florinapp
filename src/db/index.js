@@ -35,4 +35,6 @@ const setupIndex = async db => {
 // setupIndex(db);
 // seed(db);
 
+// const target = new PouchDB("http://localhost:5984/florin");
+// db.sync(target);
 export default db;

@@ -10,6 +10,7 @@ export const thisMonth = now => {
   });
   const end = start.clone();
   end.add(moment.duration(1, "months"));
+  end.subtract(moment.duration(1, "days"));
   return new DateRange({
     start,
     end,
@@ -28,6 +29,7 @@ export const lastMonth = now => {
   start.subtract(moment.duration(1, "months"));
   const end = start.clone();
   end.add(moment.duration(1, "months"));
+  end.subtract(moment.duration(1, "days"));
   return new DateRange({
     start,
     end,
@@ -46,6 +48,7 @@ export const twoMonthsAgo = now => {
   start.subtract(moment.duration(2, "months"));
   const end = start.clone();
   end.add(moment.duration(1, "months"));
+  end.subtract(moment.duration(1, "days"));
   return new DateRange({
     start,
     end,
@@ -64,6 +67,7 @@ export const threeMonthsAgo = now => {
   start.subtract(moment.duration(3, "months"));
   const end = start.clone();
   end.add(moment.duration(1, "months"));
+  end.subtract(moment.duration(1, "days"));
   return new DateRange({
     start,
     end,
@@ -80,6 +84,7 @@ export const thisYear = now => {
   });
   const end = start.clone();
   end.add(moment.duration(1, "years"));
+  end.subtract(moment.duration(1, "days"));
   return new DateRange({
     start,
     end,
@@ -96,6 +101,7 @@ export const lastYear = now => {
   });
   const end = start.clone();
   end.add(moment.duration(1, "years"));
+  end.subtract(moment.duration(1, "days"));
   return new DateRange({
     start,
     end,
