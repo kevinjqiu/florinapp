@@ -41,23 +41,39 @@ class CustomDateSelectorModal extends Component {
       <Modal isOpen={isOpen}>
         <ModalHeader>Custom Date</ModalHeader>
         <ModalBody>
-          { error ? <Alert color="danger">{error}</Alert> : "" }
+          {error ? <Alert color="danger">{error}</Alert> : ""}
           <Row>
             <Col lg="3">From:</Col>
             <Col lg="12">
-              <DateTimePicker onChange={(c) => {this.dateFrom = c}} date={true} time={false} />
+              <DateTimePicker
+                onChange={c => {
+                  this.dateFrom = c;
+                }}
+                date={true}
+                time={false}
+              />
             </Col>
           </Row>
           <Row>
             <Col lg="3">To:</Col>
             <Col lg="12">
-              <DateTimePicker onChange={(c) => {this.dateTo = c}} date={true} time={false} />
+              <DateTimePicker
+                onChange={c => {
+                  this.dateTo = c;
+                }}
+                date={true}
+                time={false}
+              />
             </Col>
           </Row>
         </ModalBody>
         <ModalFooter>
           <ButtonGroup>
-            <Button name="apply" color="success" onClick={() => onApply(this.dateFrom, this.dateTo)}>
+            <Button
+              name="apply"
+              color="success"
+              onClick={() => onApply(this.dateFrom, this.dateTo)}
+            >
               Apply
             </Button>
             <Button name="close" color="danger" onClick={onClose}>
@@ -117,14 +133,14 @@ class DateSelector extends Component {
 
       const dateRange = new DateRange({
         start: moment(dateFrom),
-        end: moment(moment(dateTo) + moment.duration(1, "days")),
-      })
+        end: moment(dateTo)
+      });
 
       this.props.changeDateRange(dateRange);
 
       this.setState({
         modalOpen: false
-      })
+      });
     };
     const onClose = () => {
       this.setState({ modalOpen: false });
@@ -140,12 +156,19 @@ class DateSelector extends Component {
           <DropdownMenu right>
             {dateRanges.map(dr => {
               return (
-                <DropdownItem key={dr.display} onClick={() => this.onDateRangeClicked(dr)}>
+                <DropdownItem
+                  key={dr.display}
+                  onClick={() => this.onDateRangeClicked(dr)}
+                >
                   {dr.display}
                 </DropdownItem>
               );
             })}
-            <DropdownItem onClick={() => this.setState({ modalOpen: true, datePickerError: null })}>
+            <DropdownItem
+              onClick={() =>
+                this.setState({ modalOpen: true, datePickerError: null })
+              }
+            >
               Custom...
               <CustomDateSelectorModal
                 isOpen={this.state.modalOpen}

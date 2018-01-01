@@ -10,9 +10,8 @@ const defaultFetchOptions = {
     perPage: 999,
     page: 1
   },
-  filters: {
-  }
-}
+  filters: {}
+};
 
 describe("transactionService.importAccountStatement", () => {
   beforeEach(async () => {
@@ -84,16 +83,18 @@ describe("transactionService.fetch", () => {
   });
 
   it("should return transactions ordered by date asc by default", async () => {
-    await db.post(new Transaction({_id: "txn1", date: "2017-01-01"}));
-    await db.post(new Transaction({_id: "txn2", date: "2017-02-01"}));
-    await db.post(new Transaction({_id: "txn3", date: "2017-01-15"}));
+    await db.post(new Transaction({ _id: "txn1", date: "2017-01-01" }));
+    await db.post(new Transaction({ _id: "txn2", date: "2017-02-01" }));
+    await db.post(new Transaction({ _id: "txn3", date: "2017-01-15" }));
     const result = await transactionService.fetch(defaultFetchOptions);
     expect(result.result.map(t => t._id)).toEqual(["txn1", "txn3", "txn2"]);
   });
 
   it("should fetch the associated account", async () => {
-    const accountId = (await db.post(new Account({name: "TEST"}))).id;
-    await db.post(new Transaction({_id: "txn1", date: "2017-01-01", accountId}));
+    const accountId = (await db.post(new Account({ name: "TEST" }))).id;
+    await db.post(
+      new Transaction({ _id: "txn1", date: "2017-01-01", accountId })
+    );
     const result = await transactionService.fetch(defaultFetchOptions);
     const transactions = result.result;
     expect(transactions.length).toEqual(1);
@@ -103,7 +104,9 @@ describe("transactionService.fetch", () => {
 
   it("should set the associated account to undefined when accountId not found", async () => {
     const accountId = "NONEXISTENT";
-    await db.post(new Transaction({_id: "txn1", date: "2017-01-01", accountId}));
+    await db.post(
+      new Transaction({ _id: "txn1", date: "2017-01-01", accountId })
+    );
     const result = await transactionService.fetch(defaultFetchOptions);
     const transactions = result.result;
     expect(transactions.length).toEqual(1);
@@ -111,26 +114,52 @@ describe("transactionService.fetch", () => {
   });
 
   it.skip("should return transactions ordered by desc when requested", async () => {
-    await db.post(new Transaction({_id: "txn1", date: "2017-01-01"}));
-    await db.post(new Transaction({_id: "txn2", date: "2017-02-01"}));
-    await db.post(new Transaction({_id: "txn3", date: "2017-01-15"}));
+    await db.post(new Transaction({ _id: "txn1", date: "2017-01-01" }));
+    await db.post(new Transaction({ _id: "txn2", date: "2017-02-01" }));
+    await db.post(new Transaction({ _id: "txn3", date: "2017-01-15" }));
     const result = await transactionService.fetch({
-      orderBy: ["date", "desc"]
+      orderBy: ["date", "desc"],
+      pagination: {
+        perPage: 999,
+        page: 1
+      },
+      filters: {}
     });
     const transactions = result.result;
     expect(transactions.map(t => t._id)).toEqual(["txn2", "txn3", "txn1"]);
   });
 
-  describe("transactionService.updateCategory", () => {
-    beforeEach(async () => {
-      await reset();
-    });
+  it("should return transactions filtered by date", async () => {
+    await db.post(new Transaction({ _id: "txn1", date: "2017-01-01" }));
+    await db.post(new Transaction({ _id: "txn2", date: "2017-01-15" }));
+    await db.post(new Transaction({ _id: "txn3", date: "2017-02-01" }));
 
-    it("should update transaction category", async () => {
-      const response = await db.post(new Transaction());
-      await transactionService.updateCategory(response.id, "automobile-carpayment");
-      const transaction = await db.get(response.id);
-      expect(transaction.categoryId).toEqual("automobile-carpayment");
-    })
+    const result = await transactionService.fetch({
+      pagination: {
+        perPage: 999,
+        page: 1
+      },
+      filters: {
+        dateFrom: "2017-01-01",
+        dateTo: "2017-01-31"
+      }
+    });
+    const transactions = result.result;
+    expect(transactions.map(t => t._id)).toEqual(["txn1", "txn2"]);
+  })
+});
+describe("transactionService.updateCategory", () => {
+  beforeEach(async () => {
+    await reset();
+  });
+
+  it("should update transaction category", async () => {
+    const response = await db.post(new Transaction());
+    await transactionService.updateCategory(
+      response.id,
+      "automobile-carpayment"
+    );
+    const transaction = await db.get(response.id);
+    expect(transaction.categoryId).toEqual("automobile-carpayment");
   });
 });
