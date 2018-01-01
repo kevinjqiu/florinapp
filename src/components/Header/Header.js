@@ -7,6 +7,7 @@ import {
   NavLink,
   Badge
 } from "reactstrap";
+import DateRangeSelector from "../DateRangeSelector/DateRangeSelector";
 
 class Header extends Component {
   sidebarToggle(e) {
@@ -40,6 +41,9 @@ class Header extends Component {
           <span className="navbar-toggler-icon" />
         </NavbarToggler>
         <Nav className="ml-auto" navbar>
+          <NavItem className="d-md-down-none">
+            <DateRangeSelector />
+          </NavItem>
           <NavItem className="d-md-down-none">
             <NavLink href="#">
               <i className="icon-bell" />

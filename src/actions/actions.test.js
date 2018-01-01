@@ -188,12 +188,22 @@ describe("Transactions", () => {
 
     it("should fetch associated account when possible", async () => {
       const account = await db.post(new Account());
-      await db.post(new Transaction({ _id: "txn1", date: "2017-01-01", accountId: account.id }));
-      await db.post(new Transaction({ _id: "txn2", date: "2017-05-05"}));
-      await store.dispatch(actions.fetchTransactions());
+      await db.post(
+        new Transaction({
+          _id: "txn1",
+          date: "2017-01-01",
+          accountId: account.id
+        })
+      );
+      await db.post(new Transaction({ _id: "txn2", date: "2017-05-05" }));
+      await store.dispatch(
+        actions.fetchTransactions({
+          pagination: { perPage: 999, page: 1 },
+          filters: {}
+        })
+      );
       const { transactions, loading, failed } = store.getState().transactions;
       expect(loading).toBe(false);
-      console.log(store.getState());
       expect(failed).toBe(false);
       expect(transactions.length).toBe(2);
       expect(transactions[0]._id).toEqual("txn1");

@@ -6409,6 +6409,10 @@ react-transition-group@2.2.1, react-transition-group@^2.2.0:
     prop-types "^15.5.8"
     warning "^3.0.0"
 
+react-widgets-moment@^4.0.4:
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/react-widgets-moment/-/react-widgets-moment-4.0.4.tgz#4dbb037f9c460ec4e77b6bf26724649019723d27"
+
 react-widgets@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/react-widgets/-/react-widgets-4.1.1.tgz#6d94e96f2595639677d348639aac1026abf56bae"

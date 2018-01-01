@@ -134,7 +134,6 @@ describe("TransactionPagination", () => {
 
     const pageLinks = element.find("PageLink");
     expect(pageLinks.length).toBe(5);
-    console.log(pageLinks.debug());
     pageLinks.forEach((link, idx) => {
       assertLinkHref(link, `/transactions?foo=bar&page=${idx + 1}&quux=derp`);
       if (idx + 1 === state.transactions.fetchOptions.pagination.page) {

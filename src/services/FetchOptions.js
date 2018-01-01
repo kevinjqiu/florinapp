@@ -5,4 +5,8 @@ export default type FetchOptions = {
   pagination: {
     page: Number, perPage: Number
   }
+  filters: {
+    dateFrom: string,
+    dateTo: string
+  }
 };
