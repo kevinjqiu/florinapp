@@ -23,7 +23,8 @@ import {
   lastMonth,
   twoMonthsAgo,
   threeMonthsAgo,
-  thisYear
+  thisYear,
+  lastYear
 } from "../../models/presetDateRanges";
 import { DateTimePicker } from "react-widgets";
 import momentLocalizer from "react-widgets-moment";
@@ -114,7 +115,8 @@ class DateSelector extends Component {
       lastMonth(now),
       twoMonthsAgo(now),
       threeMonthsAgo(now),
-      thisYear(now)
+      thisYear(now),
+      lastYear(now)
     ];
 
     const onApply = (dateFrom, dateTo) => {
@@ -152,7 +154,7 @@ class DateSelector extends Component {
           isOpen={this.state.dropdownOpen}
           toggle={this.toggle.bind(this)}
         >
-          <DropdownToggle>{dateRange.normalizedDisplay}</DropdownToggle>
+          <DropdownToggle caret>{dateRange.normalizedDisplay}</DropdownToggle>
           <DropdownMenu right>
             {dateRanges.map(dr => {
               return (

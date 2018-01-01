@@ -86,3 +86,19 @@ export const thisYear = now => {
     display: "This year"
   });
 };
+
+export const lastYear = now => {
+  if (!now) now = moment.utc();
+  const start = moment({
+    year: now.year() - 1,
+    month: 0,
+    day: 1
+  });
+  const end = start.clone();
+  end.add(moment.duration(1, "years"));
+  return new DateRange({
+    start,
+    end,
+    display: "Last year"
+  });
+}
