@@ -4,31 +4,41 @@ import Account from "../models/Account";
 import Transaction from "../models/Transaction";
 import db from "../db";
 import OfxAdapter from "./OfxAdapter";
-import { MAX_NUMBER } from "./const";
 import type FetchOptions from "./FetchOptions";
 import PaginationResult from "./PaginationResult";
+import { thisMonth } from "../models/presetDateRanges";
+
+const thisMonthDateRange = thisMonth();
 
 export const defaultFetchOptions = {
   orderBy: ["date", "asc"],
   pagination: {
     perPage: 10,
     page: 1
+  },
+  filters: {
+    dateFrom: thisMonthDateRange.start.format("YYYY-MM-DD"),
+    dateTo: thisMonthDateRange.end.format("YYYY-MM-DD")
   }
 };
 
 export const fetch = async (
   options: FetchOptions = defaultFetchOptions
 ): Promise<PaginationResult<Transaction>> => {
+  const mapFun = (doc, emit) => {
+    if (doc.metadata && doc.metadata.type === "Transaction") {
+      emit(doc.date, null);
+    }
+  };
   const { pagination } = options;
-  const response = await db.query(
-    (doc, emit) => {
-      if (doc.metadata && doc.metadata.type === "Transaction") {
-        emit(doc.date, null);
-      }
-    },
+  const { filters } = options;
+  const startkey = filters.dateFrom ? filters.dateFrom : "";
+  const endkey = filters.dateTo ? filters.dateTo : "9999";
+  const totalRows = (await db.query(mapFun, { startkey, endkey })).rows.length;
+  const response = await db.query(mapFun,
     {
-      startkey: "",
-      endkey: "9999",
+      startkey,
+      endkey,
       include_docs: true,
       limit: pagination.perPage,
       skip: (pagination.page - 1) * pagination.perPage
@@ -60,7 +70,7 @@ export const fetch = async (
     t.account = accountMap.get(t.accountId);
   });
 
-  return new PaginationResult(transactions, response.total_rows);
+  return new PaginationResult(transactions, totalRows);
 };
 
 export const updateCategory = async (

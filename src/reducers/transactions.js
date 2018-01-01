@@ -46,6 +46,19 @@ export default (state = initState, action) => {
         ...state,
         transactions: newTransactions
       };
+    case actionTypes.DATERANGE_CHANGE_SUCCEEDED:
+      const { dateRange } = action;
+      return {
+        ...state,
+        fetchOptions: {
+          ...state.fetchOptions,
+          filters: {
+            ...state.fetchOptions.filters,
+            dateFrom: dateRange.start.format("YYYY-MM-DD"),
+            dateTo: dateRange.end.format("YYYY-MM-DD")
+          }
+        }
+      };
     case "@@router/LOCATION_CHANGE":
       const routerPayload = action.payload;
       const queryParams = queryString.parse(routerPayload.search);
@@ -59,7 +72,7 @@ export default (state = initState, action) => {
             page
           }
         }
-      }
+      };
     default:
       return state;
   }

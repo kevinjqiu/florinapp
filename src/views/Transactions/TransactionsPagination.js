@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Pagination, PaginationLink, PaginationItem } from "reactstrap";
+import { Pagination, PaginationItem } from "reactstrap";
 import { connect } from "react-redux";
 import * as queryString from "query-string";
 import { Link } from "react-router-dom";

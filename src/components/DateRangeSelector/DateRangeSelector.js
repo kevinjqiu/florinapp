@@ -140,7 +140,7 @@ class DateSelector extends Component {
           <DropdownMenu right>
             {dateRanges.map(dr => {
               return (
-                <DropdownItem onClick={() => this.onDateRangeClicked(dr)}>
+                <DropdownItem key={dr.display} onClick={() => this.onDateRangeClicked(dr)}>
                   {dr.display}
                 </DropdownItem>
               );

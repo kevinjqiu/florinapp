@@ -115,7 +115,7 @@ class TransactionTable extends Component {
     }
 
     if (transactions.length === 0 && !loading) {
-      return <h2>No transactions. Upload some.</h2>;
+      return <h2>No transactions found for the specified criteria.</h2>;
     }
 
     const disabledCategories = categories
