@@ -41,7 +41,7 @@ class TransactionList extends Component {
                 <span />
               )}
               <ButtonGroup className="float-right">
-                <RefreshButton onClick={fetchTransactions} />
+                <RefreshButton onClick={() => {fetchTransactions(this.props.transactionsState.fetchOptions)}} />
               </ButtonGroup>
             </CardHeader>
             <CardBody>
