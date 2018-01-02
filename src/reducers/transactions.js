@@ -11,6 +11,17 @@ const initState = {
   failed: false
 };
 
+const createFiltersFromQueryParams = (queryParams) => {
+  let filters = {};
+  if (queryParams["filters.dateFrom"] && queryParams["filters.dateTo"]) {
+    filters["dateFrom"] = queryParams["filters.dateFrom"];
+    filters["dateTo"] = queryParams["filters.dateTo"];
+  } else {
+    filters = defaultFetchOptions.filters;
+  }
+  return filters;
+};
+
 export default (state = initState, action) => {
   switch (action.type) {
     case actionTypes.FETCH_TRANSACTIONS_SUCCEEDED:
@@ -63,6 +74,7 @@ export default (state = initState, action) => {
       const routerPayload = action.payload;
       const queryParams = queryString.parse(routerPayload.search);
       const page = parseInt(queryParams.page || "1", 10);
+      const filters = createFiltersFromQueryParams(queryParams);
       return {
         ...state,
         fetchOptions: {
@@ -70,7 +82,8 @@ export default (state = initState, action) => {
           pagination: {
             ...state.fetchOptions.pagination,
             page
-          }
+          },
+          filters
         }
       };
     default:

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Row, Col, Card, CardHeader, CardBody, ButtonGroup } from "reactstrap";
+import { Badge, Row, Col, Card, CardHeader, CardBody, ButtonGroup } from "reactstrap";
 import { connect } from "react-redux";
 import * as actions from "../../actions";
 import TransactionTable from "./TransactionTable";
@@ -29,6 +29,7 @@ class TransactionList extends Component {
       transactionsState,
       categoriesState
     } = this.props;
+    const { fetchOptions } = transactionsState;
     return (
       <Row>
         <Col xs="12" lg="12">
@@ -45,6 +46,8 @@ class TransactionList extends Component {
               </ButtonGroup>
             </CardHeader>
             <CardBody>
+              <Badge color="primary" pill> Date: from { fetchOptions.filters.dateFrom } to { fetchOptions.filters.dateTo } </Badge>
+              <hr />
               <TransactionTable
                 transactionsState={transactionsState}
                 categoriesState={categoriesState}

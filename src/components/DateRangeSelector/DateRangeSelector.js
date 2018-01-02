@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import {
   Alert,
   Button,
@@ -28,6 +29,7 @@ import {
 } from "../../models/presetDateRanges";
 import { DateTimePicker } from "react-widgets";
 import momentLocalizer from "react-widgets-moment";
+import * as queryString from "query-string";
 
 class CustomDateSelectorModal extends Component {
   constructor(props) {
@@ -87,6 +89,27 @@ class CustomDateSelectorModal extends Component {
   }
 }
 
+const DateRangeDropdownItem = ({ dateRange, isOnTransactionsPage, onDateRangeClicked, location }) => {
+  if (!isOnTransactionsPage) {
+    return (
+      <DropdownItem
+        onClick={() => onDateRangeClicked(dateRange)}
+      >
+        {dateRange.display}
+      </DropdownItem>
+    );
+  } else {
+    const params = queryString.parse(location.search || "");
+    params["filters.dateFrom"] = dateRange.start.format("YYYY-MM-DD");
+    params["filters.dateTo"] = dateRange.end.format("YYYY-MM-DD");
+    return (
+      <Link to={`${location.pathname}?${queryString.stringify(params)}`}>
+        <DropdownItem>{dateRange.display}</DropdownItem>
+      </Link>
+    )
+  }
+};
+
 class DateSelector extends Component {
   constructor(props) {
     super(props);
@@ -109,7 +132,7 @@ class DateSelector extends Component {
 
   render() {
     const now = moment.utc();
-    const { dateRange } = this.props;
+    const { dateRange, location } = this.props;
     const dateRanges = [
       thisMonth(now),
       lastMonth(now),
@@ -118,6 +141,8 @@ class DateSelector extends Component {
       thisYear(now),
       lastYear(now)
     ];
+
+    const isOnTransactionsPage = location.pathname.startsWith("/transactions");
 
     const onApply = (dateFrom, dateTo) => {
       if (!dateFrom || !dateTo) {
@@ -147,49 +172,40 @@ class DateSelector extends Component {
     const onClose = () => {
       this.setState({ modalOpen: false });
     };
-    return (
-      <span>
-        <Dropdown
-          nav
-          isOpen={this.state.dropdownOpen}
-          toggle={this.toggle.bind(this)}
-        >
-          <DropdownToggle caret>{dateRange.normalizedDisplay}</DropdownToggle>
+    return <span>
+        <Dropdown nav isOpen={this.state.dropdownOpen} toggle={this.toggle.bind(this)}>
+          <DropdownToggle caret>
+            {dateRange.normalizedDisplay}
+          </DropdownToggle>
           <DropdownMenu right>
-            {dateRanges.map(dr => {
-              return (
-                <DropdownItem
-                  key={dr.display}
-                  onClick={() => this.onDateRangeClicked(dr)}
-                >
-                  {dr.display}
-                </DropdownItem>
-              );
-            })}
-            <DropdownItem
-              onClick={() =>
-                this.setState({ modalOpen: true, datePickerError: null })
-              }
-            >
-              Custom...
-              <CustomDateSelectorModal
-                isOpen={this.state.modalOpen}
-                onApply={onApply}
-                onClose={onClose}
-                error={this.state.datePickerError}
+            {dateRanges.map(dr => (
+              <DateRangeDropdownItem
+                key={dr.display}
+                dateRange={dr}
+                isOnTransactionsPage={isOnTransactionsPage}
+                onDateRangeClicked={() => this.onDateRangeClicked(dr)}
+                location={location}
               />
+            ))}
+            <DropdownItem onClick={() => this.setState({
+                  modalOpen: true,
+                  datePickerError: null
+                })}>
+              Custom...
+              <CustomDateSelectorModal isOpen={this.state.modalOpen} onApply={onApply} onClose={onClose} error={this.state.datePickerError} />
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
-      </span>
-    );
+      </span>;
   }
 }
 
-const mapStateToProps = ({ globals }) => {
+const mapStateToProps = ({ globals, router }) => {
   const { dateRange } = globals;
+  const { location } = router;
   return {
-    dateRange
+    dateRange,
+    location
   };
 };
 
