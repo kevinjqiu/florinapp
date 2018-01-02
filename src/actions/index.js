@@ -7,6 +7,8 @@ import * as accountService from "../services/accountService";
 import * as categoryService from "../services/categoryService";
 import type FetchOptions from "../services/FetchOptions";
 import DateRange from "../models/DateRange";
+import { Location } from "react-router";
+import * as queryString from "query-string";
 
 export const fetchAccounts = () => async dispatch => {
   dispatch(actionCreators.fetchAccountsRequested());
@@ -114,9 +116,7 @@ export const fetchTransactions = (options: FetchOptions) => async dispatch => {
   dispatch(actionCreators.fetchTransactionsRequested());
   try {
     const transactions = await transactionService.fetch(options);
-    dispatch(
-      actionCreators.fetchTransactionsSucceeded(transactions)
-    );
+    dispatch(actionCreators.fetchTransactionsSucceeded(transactions));
   } catch (err) {
     dispatch(
       actionCreators.showErrorNotification("Cannot fetch transactions", err)
@@ -129,28 +129,46 @@ export const fetchCategories = () => async dispatch => {
   dispatch(actionCreators.fetchCategoriesRequested());
   try {
     const categories = await categoryService.fetch();
-    dispatch(
-      actionCreators.fetchCategoriesSucceeded(categories)
-    );
+    dispatch(actionCreators.fetchCategoriesSucceeded(categories));
   } catch (err) {
     dispatch(
       actionCreators.showErrorNotification("Cannot fetch categories", err)
     );
     dispatch(actionCreators.fetchCategoriesFailed(err));
   }
-}
+};
 
-export const updateTransactionCategory = (transactionId: string, categoryId: string) => async dispatch => {
-  dispatch(actionCreators.updateTransactionCategoryRequested(transactionId, categoryId));
+export const updateTransactionCategory = (
+  transactionId: string,
+  categoryId: string
+) => async dispatch => {
+  dispatch(
+    actionCreators.updateTransactionCategoryRequested(transactionId, categoryId)
+  );
   try {
     await transactionService.updateCategory(transactionId, categoryId);
-    dispatch(actionCreators.updateTransactionCategorySucceeded(transactionId, categoryId));
+    dispatch(
+      actionCreators.updateTransactionCategorySucceeded(
+        transactionId,
+        categoryId
+      )
+    );
   } catch (err) {
-    dispatch(actionCreators.updateTransactionCategoryFailed(transactionId, categoryId));
+    dispatch(
+      actionCreators.updateTransactionCategoryFailed(transactionId, categoryId)
+    );
   }
-}
+};
 
 export const changeDateRange = (dateRange: DateRange) => async dispatch => {
   dispatch(actionCreators.dateRangeChangedRequested());
   dispatch(actionCreators.dateRangeChangedSucceeded(dateRange));
-}
+};
+
+export const changeTransactionPageDateRange = (dateRange: DateRange, location: Location) => dispatch => {
+  const queryParams = queryString.parse(location.search || "");
+  queryParams["filters.dateFrom"] = dateRange.start.format("YYYY-MM-DD");
+  queryParams["filters.dateTo"] = dateRange.end.format("YYYY-MM-DD");
+  const newUrl = `${location.pathname}?${queryString.stringify(queryParams)}`;
+  dispatch(push(newUrl));
+};

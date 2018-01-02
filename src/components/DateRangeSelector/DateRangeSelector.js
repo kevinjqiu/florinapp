@@ -163,11 +163,16 @@ class DateSelector extends Component {
         end: moment(dateTo)
       });
 
-      this.props.changeDateRange(dateRange);
-
       this.setState({
         modalOpen: false
       });
+
+      if (isOnTransactionsPage) {
+        this.props.changeTransactionPageDateRange(dateRange, location);
+      } else {
+        this.props.changeDateRange(dateRange);
+      }
+
     };
     const onClose = () => {
       this.setState({ modalOpen: false });
