@@ -178,7 +178,6 @@ export const createSync = (sync: Sync) => dispatch => {
   try {
     syncService.create(sync);
     dispatch(actionCreators.createSyncSucceeded(sync));
-    fetchSyncs();
   } catch (err) {
     dispatch(actionCreators.createSyncFailed(err));
   }

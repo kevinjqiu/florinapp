@@ -4,6 +4,7 @@ import {
   CardHeader,
   CardBody,
   Button,
+  ButtonGroup,
   Row,
   Col,
   Alert,
@@ -16,6 +17,7 @@ import { connect } from "react-redux";
 import * as actions from "../../../actions";
 import * as vu from "valid-url";
 import Sync from "../../../models/Sync";
+import RefreshButton from "../../../components/RefreshButton/RefreshButton";
 
 const sync = () => {
   db
@@ -46,7 +48,7 @@ const required = value => (value ? undefined : "This field is required");
 const validUrl = value =>
   vu.isWebUri(value) ? undefined : "Must be a valid url";
 
-let SyncSetupForm = ({ handleSubmit, onSubmit }) => {
+let SyncSetupForm = ({ handleSubmit, onSubmit, reset }) => {
   return (
     <form className="form-horizontal" onSubmit={handleSubmit(onSubmit)}>
       <Field
@@ -60,6 +62,9 @@ let SyncSetupForm = ({ handleSubmit, onSubmit }) => {
       />
       <Button type="submit" color="success">
         Start Sync!
+      </Button>
+      <Button color="secondary" onClick={reset}>
+        Reset
       </Button>
     </form>
   );
@@ -75,7 +80,7 @@ class SyncView extends Component {
   render() {
     const syncsState = this.props.syncs;
     const { syncs } = syncsState;
-    const { createSync } = this.props;
+    const { createSync, fetchSyncs } = this.props;
     return (
       <Row>
         <Col xs="12" lg="12">
@@ -84,12 +89,25 @@ class SyncView extends Component {
               <strong>Add New Sync</strong>
             </CardHeader>
             <CardBody>
-              <SyncSetupForm onSubmit={props => createSync(new Sync(props))} />
+              <SyncSetupForm
+                onSubmit={props => {
+                  createSync(new Sync(props));
+                  fetchSyncs();
+                }}
+              />
             </CardBody>
           </Card>
           <Card>
             <CardHeader>
               <strong>Current Syncs</strong>
+              {syncsState.loading ? (
+                <i className="fa fa-refresh fa-spin fa-1x fa-fw" />
+              ) : (
+                <span />
+              )}
+              <ButtonGroup className="float-right">
+                <RefreshButton onClick={fetchSyncs} />
+              </ButtonGroup>
             </CardHeader>
             <CardBody>
               <Table responsive>
@@ -97,6 +115,7 @@ class SyncView extends Component {
                   <tr>
                     <th>Remote URL</th>
                     <th>Status</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -105,6 +124,7 @@ class SyncView extends Component {
                       <tr key={sync.remote}>
                         <td>{sync.remote}</td>
                         <td />
+                        <td></td>
                       </tr>
                     );
                   })}

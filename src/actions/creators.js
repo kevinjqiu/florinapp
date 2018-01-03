@@ -3,6 +3,15 @@ import { success, error } from "react-notification-system-redux";
 import Account from "../models/Account";
 import Sync from "../models/Sync";
 
+const actionFailed = (actionType: string) => {
+  return error => {
+    return {
+      type: actionType,
+      error
+    };
+  };
+};
+
 export const showSuccessNotification = (title: string, message = "") => {
   return success({
     title,
@@ -47,12 +56,9 @@ export const fetchAccountsSucceeded = payload => {
   };
 };
 
-export const fetchAccountsFailed = error => {
-  return {
-    type: actionTypes.FETCH_ACCOUNTS_FAILED,
-    error
-  };
-};
+export const fetchAccountsFailed = actionFailed(
+  actionTypes.FETCH_ACCOUNTS_FAILED
+);
 
 export const deleteAccountRequested = accountId => {
   return {
@@ -68,12 +74,9 @@ export const deleteAccountSucceeded = accountId => {
   };
 };
 
-export const deleteAccountFailed = error => {
-  return {
-    type: actionTypes.DELETE_ACCOUNT_FAILED,
-    error
-  };
-};
+export const deleteAccountFailed = actionFailed(
+  actionTypes.DELETE_ACCOUNT_FAILED
+);
 
 export const createAccountSucceeded = account => {
   return {
@@ -82,12 +85,9 @@ export const createAccountSucceeded = account => {
   };
 };
 
-export const createAccountFailed = error => {
-  return {
-    type: actionTypes.CREATE_ACCOUNT_FAILED,
-    error
-  };
-};
+export const createAccountFailed = actionFailed(
+  actionTypes.CREATE_ACCOUNT_FAILED
+);
 
 export const fetchAccountByIdSucceeded = account => {
   return {
@@ -103,12 +103,9 @@ export const updateAccountSucceeded = (account: Account) => {
   };
 };
 
-export const updateAccountFailed = () => {
-  return {
-    type: actionTypes.UPDATE_ACCOUNT_FAILED,
-    error
-  };
-};
+export const updateAccountFailed = actionFailed(
+  actionTypes.UPDATE_ACCOUNT_FAILED
+);
 
 export const importAccountStatementRequested = () => {
   return {
@@ -122,12 +119,9 @@ export const importAccountStatementSucceeded = () => {
   };
 };
 
-export const importAccountStatementFailed = error => {
-  return {
-    type: actionTypes.IMPORT_ACCOUNT_STATEMENT_FAILED,
-    error
-  };
-};
+export const importAccountStatementFailed = actionFailed(
+  actionTypes.IMPORT_ACCOUNT_STATEMENT_FAILED
+);
 
 export const fetchTransactionsSucceeded = (payload: Array<Transaction>) => {
   return {
@@ -142,12 +136,9 @@ export const fetchTransactionsRequested = () => {
   };
 };
 
-export const fetchTransactionsFailed = error => {
-  return {
-    type: actionTypes.FETCH_TRANSACTIONS_FAILED,
-    error
-  };
-};
+export const fetchTransactionsFailed = actionFailed(
+  actionTypes.FETCH_TRANSACTIONS_FAILED
+);
 
 export const fetchCategoriesSucceeded = (payload: Array<Category>) => {
   return {
@@ -162,12 +153,9 @@ export const fetchCategoriesRequested = () => {
   };
 };
 
-export const fetchCategoriesFailed = error => {
-  return {
-    type: actionTypes.FETCH_CATEGORIES_FAILED,
-    error
-  };
-};
+export const fetchCategoriesFailed = actionFailed(
+  actionTypes.FETCH_CATEGORIES_FAILED
+);
 
 export const updateTransactionCategoryRequested = (
   transactionId: string,
@@ -228,12 +216,7 @@ export const fetchSyncsSucceeded = (payload: Array<Sync>) => {
   };
 };
 
-export const fetchSyncFailed = error => {
-  return {
-    type: actionTypes.FETCH_SYNCS_FAILED,
-    error
-  };
-};
+export const fetchSyncFailed = actionFailed(actionTypes.FETCH_SYNCS_FAILED);
 
 export const createSyncSucceeded = (sync: Sync) => {
   return {
@@ -242,9 +225,4 @@ export const createSyncSucceeded = (sync: Sync) => {
   };
 };
 
-export const createSyncFailed = error => {
-  return {
-    type: actionTypes.CREATE_SYNC_FAILED,
-    error
-  };
-};
+export const createSyncFailed = actionFailed(actionTypes.CREATE_SYNC_FAILED);
