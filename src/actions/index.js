@@ -1,13 +1,14 @@
 // @flow
 import { push } from "react-router-redux";
 import * as actionCreators from "./creators";
-import Account from "../models/Account";
 import * as transactionService from "../services/transactionService";
 import * as accountService from "../services/accountService";
 import * as categoryService from "../services/categoryService";
 import * as syncService from "../services/syncService";
 import type FetchOptions from "../services/FetchOptions";
 import DateRange from "../models/DateRange";
+import Account from "../models/Account";
+import Sync from "../models/Sync";
 import { Location } from "react-router";
 import * as queryString from "query-string";
 
