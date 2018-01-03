@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { accountTypes } from "../../models/AccountType";
 import { DropdownList } from "react-widgets";
 import * as currencies from "currency-formatter/currencies.json";
+import InputField from "../../components/InputField/InputField";
 
 const currencyCodes = Object.keys(currencies);
 currencyCodes.sort();
@@ -47,28 +48,6 @@ const required = value => (value ? undefined : "This field is required");
 
 const validAccountType = value => {
   return value in accountTypes ? undefined : "Not a valid account type";
-};
-
-const InputField = ({
-  input,
-  label,
-  type,
-  meta: { touched, error, warning }
-}) => {
-  const options = touched ? { ...input, valid: !error } : { ...input };
-  return (
-    <div className="form-group">
-      <FormGroup row>
-        <Col md="3">
-          <Label htmlFor="{input.name}">{label}</Label>
-        </Col>
-        <Col xs="12" md="9">
-          <Input {...options} />
-          <FormFeedback>{error}</FormFeedback>
-        </Col>
-      </FormGroup>
-    </div>
-  );
 };
 
 const AccountForm = ({ editMode, onSubmit, handleSubmit, reset, account }) => {
