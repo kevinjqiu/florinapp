@@ -39,8 +39,15 @@ describe("syncService.create", () => {
   });
 
   it("should create new syncs", () => {
-    syncService.create({remote: "http://localhost/foo"}, localStorage);
+    syncService.create({ remote: "http://localhost/foo" }, localStorage);
     const syncs = syncService.fetch(localStorage);
-    expect(syncs).toEqual([{remote: "http://localhost/foo"}]);
-  })
+    expect(syncs).toEqual([{ remote: "http://localhost/foo" }]);
+  });
+
+  it("should not create new syncs when remote already exists", () => {
+    syncService.create({ remote: "http://localhost/foo" }, localStorage);
+    expect(() =>
+      syncService.create({ remote: "http://localhost/foo" }, localStorage)
+    ).toThrow();
+  });
 });

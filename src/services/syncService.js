@@ -6,7 +6,10 @@ export const SYNC_KEY = "florin-syncs";
 
 export const create = (sync: Sync, localStorage: Storage =window.localStorage) => {
   const syncs = fetch(localStorage);
-  // TODO: make sure remote are unique
+  const existingRemotes = new Set(syncs.map(sync => sync.remote))
+  if (existingRemotes.has(sync.remote)) {
+    throw {error: "The sync target is already setup"};
+  }
   syncs.push(sync)
   localStorage.setItem(SYNC_KEY, JSON.stringify(syncs));
 }
