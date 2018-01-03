@@ -226,3 +226,48 @@ export const createSyncSucceeded = (sync: Sync) => {
 };
 
 export const createSyncFailed = actionFailed(actionTypes.CREATE_SYNC_FAILED);
+
+export const deleteSyncRequested = () => {
+  return {
+    type: actionTypes.DELETE_SYNC_REQUESTED
+  };
+};
+
+export const deleteSyncSucceeded = () => {
+  return {
+    type: actionTypes.DELETE_SYNC_SUCCEEDED
+  };
+};
+
+export const deleteSyncFailed = actionFailed(actionTypes.DELETE_SYNC_FAILED);
+
+export const syncStarted = (sync: Sync) => {
+  return {
+    type: actionTypes.SYNC_STARTED,
+    sync
+  };
+};
+
+export const syncPaused = (sync: Sync, error) => {
+  return {
+    type: actionTypes.SYNC_PAUSED,
+    sync,
+    error
+  };
+}
+
+export const syncDenied = (sync: Sync, error) => {
+  return {
+    type: actionTypes.SYNC_DENIED,
+    sync,
+    error
+  };
+}
+
+export const syncErrored = (sync: Sync, error) => {
+  return {
+    type: actionTypes.SYNC_ERRORED,
+    sync,
+    error
+  };
+}

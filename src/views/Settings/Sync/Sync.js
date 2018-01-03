@@ -3,6 +3,7 @@ import {
   Card,
   CardHeader,
   CardBody,
+  Badge,
   Button,
   ButtonGroup,
   Row,
@@ -18,32 +19,7 @@ import * as actions from "../../../actions";
 import * as vu from "valid-url";
 import Sync from "../../../models/Sync";
 import RefreshButton from "../../../components/RefreshButton/RefreshButton";
-
-const sync = () => {
-  db
-    .sync("http://admin:password@localhost:5984/florin", {
-      live: true,
-      retry: true
-    })
-    .on("change", info => {
-      console.log(info);
-    })
-    .on("paused", err => {
-      console.log(err);
-    })
-    .on("active", () => {})
-    .on("denied", err => {
-      console.log(err);
-    })
-    .on("complete", info => {
-      console.log(info);
-    })
-    .on("error", err => {
-      console.log(err);
-    });
-};
-
-const required = value => (value ? undefined : "This field is required");
+import { syncStatuses } from "../../../models/SyncStatus";
 
 const validUrl = value =>
   vu.isWebUri(value) ? undefined : "Must be a valid url";
@@ -61,7 +37,7 @@ let SyncSetupForm = ({ handleSubmit, onSubmit, reset }) => {
         validate={[validUrl]}
       />
       <Button type="submit" color="success">
-        Start Sync!
+        Add
       </Button>
       <Button color="secondary" onClick={reset}>
         Reset
@@ -72,6 +48,21 @@ let SyncSetupForm = ({ handleSubmit, onSubmit, reset }) => {
 
 SyncSetupForm = reduxForm({ form: "syncSetup" })(SyncSetupForm);
 
+const renderStatus = sync => {
+  const {status} = sync;
+  if (status === syncStatuses.FAILED) {
+    return <Badge pill color="danger">Failed</Badge>
+  }
+  if (status === syncStatuses.ACTIVE) {
+    return <Badge pill color="success">Active</Badge>
+  }
+  if (status === syncStatuses.CANCELED) {
+    return <Badge pill color="secondary">Canceled</Badge>
+  }
+
+  return <Badge pill color="secondary">Not Started</Badge>
+};
+
 class SyncView extends Component {
   componentDidMount() {
     this.props.fetchSyncs();
@@ -80,7 +71,7 @@ class SyncView extends Component {
   render() {
     const syncsState = this.props.syncs;
     const { syncs } = syncsState;
-    const { createSync, fetchSyncs } = this.props;
+    const { startSync, createSync, fetchSyncs, deleteSync } = this.props;
     return (
       <Row>
         <Col xs="12" lg="12">
@@ -110,26 +101,53 @@ class SyncView extends Component {
               </ButtonGroup>
             </CardHeader>
             <CardBody>
-              <Table responsive>
-                <thead>
-                  <tr>
-                    <th>Remote URL</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {syncs.map(sync => {
-                    return (
-                      <tr key={sync.remote}>
-                        <td>{sync.remote}</td>
-                        <td />
-                        <td></td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </Table>
+              {syncs.length == 0 ? (
+                <h2>Not sync'ing with any remotes.</h2>
+              ) : (
+                <Table responsive>
+                  <thead>
+                    <tr>
+                      <th>Remote URL</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {syncs.map(sync => {
+                      return (
+                        <tr key={sync.remote}>
+                          <td>{sync.remote}</td>
+                          <td>
+                            {renderStatus(sync)}
+                          </td>
+                          <td>
+                            <ButtonGroup>
+                              <Button
+                                color="success"
+                                size="sm"
+                                onClick={() => {
+                                  startSync(sync);
+                                }}>
+                                <i className="fa fa-refresh" aria-hidden="true" />
+                              </Button>
+                              <Button
+                                color="danger"
+                                size="sm"
+                                onClick={() => {
+                                  deleteSync(sync);
+                                  fetchSyncs();
+                                }}
+                              >
+                                <i className="fa fa-trash" aria-hidden="true" />
+                              </Button>
+                            </ButtonGroup>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </Table>
+              )}
             </CardBody>
           </Card>
         </Col>

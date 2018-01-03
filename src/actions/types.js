@@ -88,3 +88,8 @@ export const {
   DELETE_SYNC_SUCCEEDED,
   DELETE_SYNC_FAILED
 } = createCommonActionTypes("DELETE_SYNC");
+
+export const SYNC_STARTED = "SYNC_STARTED";
+export const SYNC_PAUSED = "SYNC_PAUSED";
+export const SYNC_ERRORED = "SYNC_ERRORED";
+export const SYNC_DENIED = "SYNC_DENIED";

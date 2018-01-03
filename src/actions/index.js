@@ -167,7 +167,10 @@ export const changeDateRange = (dateRange: DateRange) => async dispatch => {
   dispatch(actionCreators.dateRangeChangedSucceeded(dateRange));
 };
 
-export const changeTransactionPageDateRange = (dateRange: DateRange, location: Location) => dispatch => {
+export const changeTransactionPageDateRange = (
+  dateRange: DateRange,
+  location: Location
+) => dispatch => {
   const queryParams = queryString.parse(location.search || "");
   queryParams["filters.dateFrom"] = dateRange.start.format("YYYY-MM-DD");
   queryParams["filters.dateTo"] = dateRange.end.format("YYYY-MM-DD");
@@ -182,7 +185,7 @@ export const createSync = (sync: Sync) => dispatch => {
   } catch (err) {
     dispatch(actionCreators.createSyncFailed(err));
   }
-}
+};
 
 export const fetchSyncs = () => dispatch => {
   dispatch(actionCreators.fetchSyncsRequested());
@@ -192,4 +195,41 @@ export const fetchSyncs = () => dispatch => {
   } catch (err) {
     dispatch(actionCreators.fetchSyncFailed(err));
   }
-}
+};
+
+export const deleteSync = (sync: Sync) => dispatch => {
+  dispatch(actionCreators.deleteSyncRequested());
+  try {
+    syncService.del(sync);
+    dispatch(actionCreators.deleteSyncSucceeded());
+  } catch (error) {
+    dispatch(actionCreators.deleteSyncFailed(error));
+  }
+};
+
+export const startSync = (sync: Sync) => dispatch => {
+  const syncState = syncService.start(sync);
+  syncState
+    .on("change", info => {
+      console.log("changed");
+      console.log(info);
+    })
+    .on("paused", err => {
+      dispatch(actionCreators.syncPaused(sync, err));
+    })
+    .on("active", () => {
+      console.log("active");
+    })
+    .on("denied", err => {
+      dispatch(actionCreators.syncDenied(sync, err));
+    })
+    .on("complete", info => {
+      console.log("complete");
+      console.log(info);
+    })
+    .on("error", err => {
+      dispatch(actionCreators.syncErrored(sync, err));
+    });
+
+  dispatch(actionCreators.syncStarted(sync));
+};
