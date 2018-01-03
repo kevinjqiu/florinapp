@@ -5,6 +5,7 @@ import transactions from "./transactions";
 import ui from "./ui";
 import categories from "./categories";
 import globals from "./globals";
+import syncs from "./syncs";
 import { reducer as notifications } from "react-notification-system-redux";
 import { reducer as form } from "redux-form";
 import { routerReducer as router } from "react-router-redux";
@@ -13,9 +14,10 @@ export default combineReducers({
   router,
   globals,
   accounts,
+  currentAccount,
   transactions,
   categories,
-  currentAccount,
+  syncs,
   ui,
   notifications,
   form

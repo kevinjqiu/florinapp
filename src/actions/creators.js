@@ -1,6 +1,7 @@
 import * as actionTypes from "./types";
 import { success, error } from "react-notification-system-redux";
 import Account from "../models/Account";
+import Sync from "../models/Sync";
 
 export const showSuccessNotification = (title: string, message = "") => {
   return success({
@@ -207,9 +208,43 @@ export const dateRangeChangedRequested = () => {
   };
 };
 
-export const dateRangeChangedSucceeded = (dateRange) => {
+export const dateRangeChangedSucceeded = dateRange => {
   return {
     type: actionTypes.DATERANGE_CHANGE_SUCCEEDED,
     dateRange
-  }
-}
+  };
+};
+
+export const fetchSyncsRequested = () => {
+  return {
+    type: actionTypes.FETCH_SYNCS_REQUESTED
+  };
+};
+
+export const fetchSyncsSucceeded = (payload: Array<Sync>) => {
+  return {
+    type: actionTypes.FETCH_SYNCS_SUCCEEDED,
+    payload
+  };
+};
+
+export const fetchSyncFailed = error => {
+  return {
+    type: actionTypes.FETCH_SYNCS_FAILED,
+    error
+  };
+};
+
+export const createSyncSucceeded = (sync: Sync) => {
+  return {
+    type: actionTypes.CREATE_SYNC_SUCCEEDED,
+    sync
+  };
+};
+
+export const createSyncFailed = error => {
+  return {
+    type: actionTypes.CREATE_SYNC_FAILED,
+    error
+  };
+};

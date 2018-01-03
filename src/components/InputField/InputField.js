@@ -5,7 +5,8 @@ export default ({
   input,
   label,
   type,
-  meta: { touched, error, warning }
+  meta: { touched, error, warning },
+  otherProps = {}
 }) => {
   const options = touched ? { ...input, valid: !error } : { ...input };
   return (
@@ -15,7 +16,7 @@ export default ({
           <Label htmlFor="{input.name}">{label}</Label>
         </Col>
         <Col xs="12" md="9">
-          <Input {...options} />
+          <Input {...options} {...otherProps} />
           <FormFeedback>{error}</FormFeedback>
         </Col>
       </FormGroup>

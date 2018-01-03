@@ -5,6 +5,7 @@ import Account from "../models/Account";
 import * as transactionService from "../services/transactionService";
 import * as accountService from "../services/accountService";
 import * as categoryService from "../services/categoryService";
+import * as syncService from "../services/syncService";
 import type FetchOptions from "../services/FetchOptions";
 import DateRange from "../models/DateRange";
 import { Location } from "react-router";
@@ -172,3 +173,23 @@ export const changeTransactionPageDateRange = (dateRange: DateRange, location: L
   const newUrl = `${location.pathname}?${queryString.stringify(queryParams)}`;
   dispatch(push(newUrl));
 };
+
+export const createSync = (sync: Sync) => dispatch => {
+  try {
+    syncService.create(sync);
+    dispatch(actionCreators.createSyncSucceeded(sync));
+    fetchSyncs();
+  } catch (err) {
+    dispatch(actionCreators.createSyncFailed(err));
+  }
+}
+
+export const fetchSyncs = () => dispatch => {
+  dispatch(actionCreators.fetchSyncsRequested());
+  try {
+    const syncs = syncService.fetch();
+    dispatch(actionCreators.fetchSyncsSucceeded(syncs));
+  } catch (err) {
+    dispatch(actionCreators.fetchSyncFailed(err));
+  }
+}
