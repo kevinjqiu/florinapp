@@ -30,6 +30,11 @@ export default {
       icon: 'icon-options',
       children: [
         {
+          name: 'General',
+          url: '/settings/general',
+          icon: 'icon-settings'
+        },
+        {
           name: 'Categories',
           url: '/settings/categories',
           icon: 'icon-pie-chart'
@@ -39,6 +44,11 @@ export default {
           url: '/settings/tags',
           icon: 'icon-tag'
         },
+        {
+          name: 'Sync',
+          url: '/settings/sync',
+          icon: 'icon-refresh'
+        }
       ]
     }
   ]
