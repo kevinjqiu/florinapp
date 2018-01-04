@@ -209,6 +209,7 @@ export const deleteSync = (sync: Sync) => dispatch => {
 
 export const startSync = (sync: Sync) => dispatch => {
   const syncState = syncService.start(sync);
+  console.log(syncState);
   syncState
     .on("change", info => {
       console.log("changed");
@@ -229,6 +230,9 @@ export const startSync = (sync: Sync) => dispatch => {
     })
     .on("error", err => {
       dispatch(actionCreators.syncErrored(sync, err));
+    })
+    .catch((err) => {
+      console.log(err);
     });
 
   dispatch(actionCreators.syncStarted(sync));

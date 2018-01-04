@@ -1,6 +1,7 @@
 // @flow
 import db from "../db";
 import Sync from "../models/Sync";
+import { syncStatuses } from "../models/SyncStatus";
 
 const DEFAULT_SYNC_OPTIONS = { live: true, retry: true };
 export const SYNC_KEY = "florin-syncs";
@@ -37,7 +38,7 @@ export const start = (
   sync: Sync,
   localStorage: Storage = window.localStorage
 ) => {
-  return db.sync(sync.remote, DEFAULT_SYNC_OPTIONS);
+    return db.sync(sync.remote, DEFAULT_SYNC_OPTIONS);
 };
 
 export const save = (
@@ -46,3 +47,10 @@ export const save = (
 ) => {
   localStorage.setItem(SYNC_KEY, JSON.stringify(syncs));
 };
+
+export const startAllActive = (localStorage: Storage = window.localStorage) => {
+const activeSyncs = fetch().filter(sync => sync.status !== syncStatuses.CANCELED);
+activeSyncs.forEach((activeSync) => {
+  start(activeSync);
+});
+}
