@@ -1,4 +1,4 @@
-import { Button, Col, Label, FormGroup, Input, FormFeedback } from "reactstrap";
+import { Button, Col, Label, FormGroup, FormFeedback } from "reactstrap";
 import React from "react";
 import { Field } from "redux-form";
 import { Link } from "react-router-dom";

@@ -8,12 +8,10 @@ import {
   ButtonGroup,
   Row,
   Col,
-  Alert,
   Table
 } from "reactstrap";
 import { Field, reduxForm } from "redux-form";
 import InputField from "../../../components/InputField/InputField";
-import db from "../../../db";
 import { connect } from "react-redux";
 import * as actions from "../../../actions";
 import * as vu from "valid-url";
@@ -117,7 +115,7 @@ class SyncView extends Component {
               </ButtonGroup>
             </CardHeader>
             <CardBody>
-              {syncs.length == 0 ? (
+              {syncs.length === 0 ? (
                 <h2>Not sync'ing with any remotes.</h2>
               ) : (
                 <Table responsive striped>
@@ -129,7 +127,7 @@ class SyncView extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {syncs.map(sync => {
+                    {syncs.map((sync, idx) => {
                       return (
                         <tr key={sync.remote}>
                           <td>{sync.remote}</td>
