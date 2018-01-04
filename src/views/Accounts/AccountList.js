@@ -1,8 +1,18 @@
-import { Alert, Row, Col, Card, CardHeader, CardBody, Table, Button, ButtonGroup } from "reactstrap";
 import React, { Component } from "react";
+import {
+  Alert,
+  Row,
+  Col,
+  Card,
+  CardHeader,
+  CardBody,
+  Table,
+  Button,
+  ButtonGroup
+} from "reactstrap";
 import { connect } from "react-redux";
-import { Link } from 'react-router-dom';
-import * as actions from '../../actions';
+import { Link } from "react-router-dom";
+import * as actions from "../../actions";
 import Currency from "../../components/Currency/Currency";
 import RefreshButton from "../../components/RefreshButton/RefreshButton";
 
@@ -22,7 +32,13 @@ const NewAccountButton = ({ alignRight }) => {
   );
 };
 
-const deleteAccountWithConfirmation = ({showGlobalModal, hideGlobalModal, deleteAccount, accountId, fetchAccounts}) => {
+const deleteAccountWithConfirmation = ({
+  showGlobalModal,
+  hideGlobalModal,
+  deleteAccount,
+  accountId,
+  fetchAccounts
+}) => {
   showGlobalModal({
     title: "Are you sure?",
     body: "Do you want to delete this account?",
@@ -33,23 +49,34 @@ const deleteAccountWithConfirmation = ({showGlobalModal, hideGlobalModal, delete
       fetchAccounts();
     },
     negativeActionLabel: "No"
-  })
+  });
 };
 
-const getLatestAccountBalance = (account) => {
+const getLatestAccountBalance = account => {
   const history = account.history || [];
   if (history.length === 0) {
     return "N/A";
   }
-  const latest = history[history.length-1];
-  return <Currency amount={latest.balance} code={account.currency} />
-}
+  const latest = history[history.length - 1];
+  return <Currency amount={latest.balance} code={account.currency} />;
+};
 
-const AccountCardBody = ({ accounts, ui, deleteAccount, showGlobalModal, hideGlobalModal, fetchAccounts }) => {
+const AccountCardBody = ({
+  accounts,
+  ui,
+  deleteAccount,
+  showGlobalModal,
+  hideGlobalModal,
+  fetchAccounts
+}) => {
   if (ui.failed) {
-    return <CardBody>
-        <Alert color="danger">Loading accounts failed. Try again later...</Alert>
-      </CardBody>;
+    return (
+      <CardBody>
+        <Alert color="danger">
+          Loading accounts failed. Try again later...
+        </Alert>
+      </CardBody>
+    );
   }
   if (accounts.length === 0) {
     return (
@@ -59,8 +86,9 @@ const AccountCardBody = ({ accounts, ui, deleteAccount, showGlobalModal, hideGlo
     );
   }
 
-  return <CardBody>
-      <Table responsive>
+  return (
+    <CardBody>
+      <Table responsive striped>
         <thead>
           <tr>
             <th>Name</th>
@@ -72,7 +100,8 @@ const AccountCardBody = ({ accounts, ui, deleteAccount, showGlobalModal, hideGlo
           </tr>
         </thead>
         <tbody>
-          {accounts.map(account => <tr key={account._id}>
+          {accounts.map(account => (
+            <tr key={account._id}>
               <td>
                 <Link to={`/accounts/${account._id}/view`}>{account.name}</Link>
               </td>
@@ -87,15 +116,29 @@ const AccountCardBody = ({ accounts, ui, deleteAccount, showGlobalModal, hideGlo
                       <i className="fa fa-pencil-square-o" aria-hidden="true" />
                     </Button>
                   </Link>
-                  <Button color="danger" size="sm" onClick={() => deleteAccountWithConfirmation({accountId: account._id, showGlobalModal, hideGlobalModal, deleteAccount, fetchAccounts})}>
+                  <Button
+                    color="danger"
+                    size="sm"
+                    onClick={() =>
+                      deleteAccountWithConfirmation({
+                        accountId: account._id,
+                        showGlobalModal,
+                        hideGlobalModal,
+                        deleteAccount,
+                        fetchAccounts
+                      })
+                    }
+                  >
                     <i className="fa fa-trash" aria-hidden="true" />
                   </Button>
                 </ButtonGroup>
               </td>
-            </tr>)}
+            </tr>
+          ))}
         </tbody>
       </Table>
-    </CardBody>;
+    </CardBody>
+  );
 };
 
 class AccountList extends Component {
@@ -105,26 +148,32 @@ class AccountList extends Component {
   render() {
     const { accounts, ui } = this.props;
     const { fetchAccounts } = this.props;
-    return <Row>
-          <Col xs="12" lg="12">
-            <Card>
-              <CardHeader>
-                <strong>Current Accounts</strong>
-                {ui.loading ? <i className="fa fa-refresh fa-spin fa-1x fa-fw" /> : <span />}
-                <ButtonGroup className="float-right">
-                  <NewAccountButton alignRight />
-                  <RefreshButton onClick={fetchAccounts} />
-                </ButtonGroup>
-              </CardHeader>
-              <AccountCardBody accounts={accounts} {...this.props} />
-            </Card>
-          </Col>
-        </Row>
+    return (
+      <Row>
+        <Col xs="12" lg="12">
+          <Card>
+            <CardHeader>
+              <strong>Current Accounts</strong>
+              {ui.loading ? (
+                <i className="fa fa-refresh fa-spin fa-1x fa-fw" />
+              ) : (
+                <span />
+              )}
+              <ButtonGroup className="float-right">
+                <NewAccountButton alignRight />
+                <RefreshButton onClick={fetchAccounts} />
+              </ButtonGroup>
+            </CardHeader>
+            <AccountCardBody accounts={accounts} {...this.props} />
+          </Card>
+        </Col>
+      </Row>
+    );
   }
 }
 
-const mapStateToProps = ({accounts, ui}) => {
+const mapStateToProps = ({ accounts, ui }) => {
   return { accounts, ui: ui.accounts };
-}
+};
 
 export default connect(mapStateToProps, actions)(AccountList);
