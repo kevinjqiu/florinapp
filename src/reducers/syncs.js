@@ -12,7 +12,7 @@ const initState = {
 const newSyncsState = (syncs, sync) => {
   const newState = [];
   syncs.forEach(s => {
-    if (s.remote === sync) {
+    if (s.remote === sync.remote) {
       newState.push(sync);
     } else {
       newState.push(s);
@@ -35,6 +35,7 @@ const handleSyncAction = (state, action) => {
         syncs: newSyncs
       }
     case actionTypes.SYNC_DENIED:
+      // FALLTHROUGH
     case actionTypes.SYNC_ERRORED:
       sync.status = syncStatuses.FAILED;
       sync.error = error;
@@ -82,8 +83,11 @@ export default (state = initState, action) => {
         syncs: action.payload
       };
     case actionTypes.SYNC_STARTED:
+      // FALLTHROUGH
     case actionTypes.SYNC_DENIED:
+      // FALLTHROUGH
     case actionTypes.SYNC_ERRORED:
+      // FALLTHROUGH
     case actionTypes.SYNC_PAUSED:
       return handleSyncAction(state, action);
     default:

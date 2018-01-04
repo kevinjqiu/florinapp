@@ -61,8 +61,8 @@ describe("syncService.del", () => {
     syncService.create({ remote: "http://localhost/foo" }, localStorage);
     syncService.del({ remote: "http://localhost/bar" }, localStorage);
     const syncs = syncService.fetch(localStorage);
-    expect(syncs).toEqual([{remote: "http://localhost/foo"}]);
-  })
+    expect(syncs).toEqual([{ remote: "http://localhost/foo" }]);
+  });
 
   it("should delete existing sync config", () => {
     syncService.create({ remote: "http://localhost/foo" }, localStorage);
@@ -70,4 +70,34 @@ describe("syncService.del", () => {
     const syncs = syncService.fetch(localStorage);
     expect(syncs).toEqual([]);
   });
-})
+});
+
+describe("syncService.save", () => {
+  beforeEach(() => {
+    reset();
+  });
+
+  it("should save the list of syncs with the new value", () => {
+    syncService.create({ remote: "http://localhost/foo" }, localStorage);
+    syncService.create({ remote: "http://localhost/bar" }, localStorage);
+    syncService.create({ remote: "http://localhost/quux" }, localStorage);
+
+    let syncs = syncService.fetch(localStorage);
+    syncs[1].status = "pending";
+    syncService.save(syncs, localStorage);
+
+    syncs = syncService.fetch(localStorage);
+    expect(syncs).toEqual([
+      {
+        remote: "http://localhost/foo"
+      },
+      {
+        remote: "http://localhost/bar",
+        status: "pending"
+      },
+      {
+        remote: "http://localhost/quux"
+      }
+    ]);
+  });
+});
