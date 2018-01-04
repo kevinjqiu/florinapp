@@ -49,18 +49,34 @@ let SyncSetupForm = ({ handleSubmit, onSubmit, reset }) => {
 SyncSetupForm = reduxForm({ form: "syncSetup" })(SyncSetupForm);
 
 const renderStatus = sync => {
-  const {status} = sync;
+  const { status } = sync;
   if (status === syncStatuses.FAILED) {
-    return <Badge pill color="danger">Failed</Badge>
+    return (
+      <Badge pill color="danger">
+        Failed
+      </Badge>
+    );
   }
   if (status === syncStatuses.ACTIVE) {
-    return <Badge pill color="success">Active</Badge>
+    return (
+      <Badge pill color="success">
+        Active
+      </Badge>
+    );
   }
   if (status === syncStatuses.CANCELED) {
-    return <Badge pill color="secondary">Canceled</Badge>
+    return (
+      <Badge pill color="secondary">
+        Canceled
+      </Badge>
+    );
   }
 
-  return <Badge pill color="secondary">Not Started</Badge>
+  return (
+    <Badge pill color="secondary">
+      Not Started
+    </Badge>
+  );
 };
 
 class SyncView extends Component {
@@ -104,7 +120,7 @@ class SyncView extends Component {
               {syncs.length == 0 ? (
                 <h2>Not sync'ing with any remotes.</h2>
               ) : (
-                <Table responsive>
+                <Table responsive striped>
                   <thead>
                     <tr>
                       <th>Remote URL</th>
@@ -117,9 +133,7 @@ class SyncView extends Component {
                       return (
                         <tr key={sync.remote}>
                           <td>{sync.remote}</td>
-                          <td>
-                            {renderStatus(sync)}
-                          </td>
+                          <td>{renderStatus(sync)}</td>
                           <td>
                             <ButtonGroup>
                               <Button
@@ -127,8 +141,12 @@ class SyncView extends Component {
                                 size="sm"
                                 onClick={() => {
                                   startSync(sync);
-                                }}>
-                                <i className="fa fa-refresh" aria-hidden="true" />
+                                }}
+                              >
+                                <i
+                                  className="fa fa-refresh"
+                                  aria-hidden="true"
+                                />
                               </Button>
                               <Button
                                 color="danger"
