@@ -26,7 +26,7 @@ class CategoryTable extends Component {
       [categoryTypes.EXPENSE]: "danger",
       [categoryTypes.INCOME]: "success",
       [categoryTypes.TRANSFER]: "secondary"
-    }
+    };
 
     if (loading) {
       return (
@@ -61,14 +61,15 @@ class CategoryTable extends Component {
         </thead>
         <tbody>
           {categories.map(category => {
-            return <tr id={category._id}>
+            return (
+              <tr id={category._id}>
                 <td>
                   <Link to={`/settings/categories/${category._id}/view`}>
-                  {category.parent ? (
-                    category.name
-                  ) : (
-                    <strong>{category.name}</strong>
-                  )}
+                    {category.parent ? (
+                      category.name
+                    ) : (
+                      <strong>{category.name}</strong>
+                    )}
                   </Link>
                 </td>
                 <td>
@@ -78,34 +79,28 @@ class CategoryTable extends Component {
                 </td>
                 <td style={{ textAlign: "center" }}>
                   {category.allowTransactions ? (
-                    <i
-                      className="fa fa-check-square-o"
-                      aria-hidden="true"
-                    />
+                    <i className="fa fa-check-square-o" aria-hidden="true" />
                   ) : (
-                    <i
-                      className="fa fa-square-o"
-                      aria-hidden="true"
-                    />
+                    <i className="fa fa-square-o" aria-hidden="true" />
                   )}
                 </td>
                 <td>
-                <ButtonGroup>
-                  <Link to={`/settings/categories/${categories._id}/view`}>
-                    <Button color="primary" size="sm">
-                      <i className="fa fa-pencil-square-o" aria-hidden="true" />
+                  <ButtonGroup>
+                    <Link to={`/settings/categories/${categories._id}/view`}>
+                      <Button color="primary" size="sm">
+                        <i
+                          className="fa fa-pencil-square-o"
+                          aria-hidden="true"
+                        />
+                      </Button>
+                    </Link>
+                    <Button color="danger" size="sm" onClick={() => {}}>
+                      <i className="fa fa-trash" aria-hidden="true" />
                     </Button>
-                  </Link>
-                  <Button
-                    color="danger"
-                    size="sm"
-                    onClick={() => {}}
-                  >
-                    <i className="fa fa-trash" aria-hidden="true" />
-                  </Button>
-                </ButtonGroup>
+                  </ButtonGroup>
                 </td>
-              </tr>;
+              </tr>
+            );
           })}
         </tbody>
       </Table>
@@ -132,6 +127,10 @@ class CategoryList extends Component {
                 <span />
               )}
               <ButtonGroup className="float-right">
+                <Button color="success" size="sm" outline>
+                  <i className="fa fa-magic" aria-hidden="true" />
+                  {"\u00A0"}Seed
+                </Button>
                 <RefreshButton onClick={fetchCategories} />
               </ButtonGroup>
             </CardHeader>
