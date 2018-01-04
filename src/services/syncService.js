@@ -38,7 +38,7 @@ export const start = (
   sync: Sync,
   localStorage: Storage = window.localStorage
 ) => {
-    return db.sync(sync.remote, DEFAULT_SYNC_OPTIONS);
+  return db.sync(sync.remote, DEFAULT_SYNC_OPTIONS);
 };
 
 export const save = (
@@ -49,8 +49,10 @@ export const save = (
 };
 
 export const startAllActive = (localStorage: Storage = window.localStorage) => {
-const activeSyncs = fetch().filter(sync => sync.status !== syncStatuses.CANCELED);
-activeSyncs.forEach((activeSync) => {
-  start(activeSync);
-});
-}
+  const activeSyncs = fetch(localStorage).filter(
+    sync => sync.status !== syncStatuses.CANCELED
+  );
+  activeSyncs.forEach(activeSync => {
+    start(activeSync);
+  });
+};

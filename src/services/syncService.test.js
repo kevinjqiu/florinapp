@@ -51,3 +51,23 @@ describe("syncService.create", () => {
     ).toThrow();
   });
 });
+
+describe("syncService.del", () => {
+  beforeEach(() => {
+    reset();
+  });
+
+  it("should do nothing if remote url does not match anything", () => {
+    syncService.create({ remote: "http://localhost/foo" }, localStorage);
+    syncService.del({ remote: "http://localhost/bar" }, localStorage);
+    const syncs = syncService.fetch(localStorage);
+    expect(syncs).toEqual([{remote: "http://localhost/foo"}]);
+  })
+
+  it("should delete existing sync config", () => {
+    syncService.create({ remote: "http://localhost/foo" }, localStorage);
+    syncService.del({ remote: "http://localhost/foo" }, localStorage);
+    const syncs = syncService.fetch(localStorage);
+    expect(syncs).toEqual([]);
+  });
+})
