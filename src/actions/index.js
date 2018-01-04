@@ -1,12 +1,14 @@
 // @flow
 import { push } from "react-router-redux";
 import * as actionCreators from "./creators";
-import Account from "../models/Account";
 import * as transactionService from "../services/transactionService";
 import * as accountService from "../services/accountService";
 import * as categoryService from "../services/categoryService";
+import * as syncService from "../services/syncService";
 import type FetchOptions from "../services/FetchOptions";
 import DateRange from "../models/DateRange";
+import Account from "../models/Account";
+import Sync from "../models/Sync";
 import { Location } from "react-router";
 import * as queryString from "query-string";
 
@@ -165,10 +167,73 @@ export const changeDateRange = (dateRange: DateRange) => async dispatch => {
   dispatch(actionCreators.dateRangeChangedSucceeded(dateRange));
 };
 
-export const changeTransactionPageDateRange = (dateRange: DateRange, location: Location) => dispatch => {
+export const changeTransactionPageDateRange = (
+  dateRange: DateRange,
+  location: Location
+) => dispatch => {
   const queryParams = queryString.parse(location.search || "");
   queryParams["filters.dateFrom"] = dateRange.start.format("YYYY-MM-DD");
   queryParams["filters.dateTo"] = dateRange.end.format("YYYY-MM-DD");
   const newUrl = `${location.pathname}?${queryString.stringify(queryParams)}`;
   dispatch(push(newUrl));
+};
+
+export const createSync = (sync: Sync) => dispatch => {
+  try {
+    syncService.create(sync);
+    dispatch(actionCreators.createSyncSucceeded(sync));
+  } catch (err) {
+    dispatch(actionCreators.createSyncFailed(err));
+  }
+};
+
+export const fetchSyncs = () => dispatch => {
+  dispatch(actionCreators.fetchSyncsRequested());
+  try {
+    const syncs = syncService.fetch();
+    dispatch(actionCreators.fetchSyncsSucceeded(syncs));
+  } catch (err) {
+    dispatch(actionCreators.fetchSyncFailed(err));
+  }
+};
+
+export const deleteSync = (sync: Sync) => dispatch => {
+  dispatch(actionCreators.deleteSyncRequested());
+  try {
+    syncService.del(sync);
+    dispatch(actionCreators.deleteSyncSucceeded());
+  } catch (error) {
+    dispatch(actionCreators.deleteSyncFailed(error));
+  }
+};
+
+export const startSync = (sync: Sync) => dispatch => {
+  const syncState = syncService.start(sync);
+  console.log(syncState);
+  syncState
+    .on("change", info => {
+      console.log("changed");
+      console.log(info);
+    })
+    .on("paused", err => {
+      dispatch(actionCreators.syncPaused(sync, err));
+    })
+    .on("active", () => {
+      console.log("active");
+    })
+    .on("denied", err => {
+      dispatch(actionCreators.syncDenied(sync, err));
+    })
+    .on("complete", info => {
+      console.log("complete");
+      console.log(info);
+    })
+    .on("error", err => {
+      dispatch(actionCreators.syncErrored(sync, err));
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+  dispatch(actionCreators.syncStarted(sync));
 };

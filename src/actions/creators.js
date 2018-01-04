@@ -1,6 +1,16 @@
 import * as actionTypes from "./types";
 import { success, error } from "react-notification-system-redux";
 import Account from "../models/Account";
+import Sync from "../models/Sync";
+
+const actionFailed = (actionType: string) => {
+  return error => {
+    return {
+      type: actionType,
+      error
+    };
+  };
+};
 
 export const showSuccessNotification = (title: string, message = "") => {
   return success({
@@ -46,12 +56,9 @@ export const fetchAccountsSucceeded = payload => {
   };
 };
 
-export const fetchAccountsFailed = error => {
-  return {
-    type: actionTypes.FETCH_ACCOUNTS_FAILED,
-    error
-  };
-};
+export const fetchAccountsFailed = actionFailed(
+  actionTypes.FETCH_ACCOUNTS_FAILED
+);
 
 export const deleteAccountRequested = accountId => {
   return {
@@ -67,12 +74,9 @@ export const deleteAccountSucceeded = accountId => {
   };
 };
 
-export const deleteAccountFailed = error => {
-  return {
-    type: actionTypes.DELETE_ACCOUNT_FAILED,
-    error
-  };
-};
+export const deleteAccountFailed = actionFailed(
+  actionTypes.DELETE_ACCOUNT_FAILED
+);
 
 export const createAccountSucceeded = account => {
   return {
@@ -81,12 +85,9 @@ export const createAccountSucceeded = account => {
   };
 };
 
-export const createAccountFailed = error => {
-  return {
-    type: actionTypes.CREATE_ACCOUNT_FAILED,
-    error
-  };
-};
+export const createAccountFailed = actionFailed(
+  actionTypes.CREATE_ACCOUNT_FAILED
+);
 
 export const fetchAccountByIdSucceeded = account => {
   return {
@@ -102,12 +103,9 @@ export const updateAccountSucceeded = (account: Account) => {
   };
 };
 
-export const updateAccountFailed = () => {
-  return {
-    type: actionTypes.UPDATE_ACCOUNT_FAILED,
-    error
-  };
-};
+export const updateAccountFailed = actionFailed(
+  actionTypes.UPDATE_ACCOUNT_FAILED
+);
 
 export const importAccountStatementRequested = () => {
   return {
@@ -121,12 +119,9 @@ export const importAccountStatementSucceeded = () => {
   };
 };
 
-export const importAccountStatementFailed = error => {
-  return {
-    type: actionTypes.IMPORT_ACCOUNT_STATEMENT_FAILED,
-    error
-  };
-};
+export const importAccountStatementFailed = actionFailed(
+  actionTypes.IMPORT_ACCOUNT_STATEMENT_FAILED
+);
 
 export const fetchTransactionsSucceeded = (payload: Array<Transaction>) => {
   return {
@@ -141,12 +136,9 @@ export const fetchTransactionsRequested = () => {
   };
 };
 
-export const fetchTransactionsFailed = error => {
-  return {
-    type: actionTypes.FETCH_TRANSACTIONS_FAILED,
-    error
-  };
-};
+export const fetchTransactionsFailed = actionFailed(
+  actionTypes.FETCH_TRANSACTIONS_FAILED
+);
 
 export const fetchCategoriesSucceeded = (payload: Array<Category>) => {
   return {
@@ -161,12 +153,9 @@ export const fetchCategoriesRequested = () => {
   };
 };
 
-export const fetchCategoriesFailed = error => {
-  return {
-    type: actionTypes.FETCH_CATEGORIES_FAILED,
-    error
-  };
-};
+export const fetchCategoriesFailed = actionFailed(
+  actionTypes.FETCH_CATEGORIES_FAILED
+);
 
 export const updateTransactionCategoryRequested = (
   transactionId: string,
@@ -207,9 +196,78 @@ export const dateRangeChangedRequested = () => {
   };
 };
 
-export const dateRangeChangedSucceeded = (dateRange) => {
+export const dateRangeChangedSucceeded = dateRange => {
   return {
     type: actionTypes.DATERANGE_CHANGE_SUCCEEDED,
     dateRange
-  }
+  };
+};
+
+export const fetchSyncsRequested = () => {
+  return {
+    type: actionTypes.FETCH_SYNCS_REQUESTED
+  };
+};
+
+export const fetchSyncsSucceeded = (payload: Array<Sync>) => {
+  return {
+    type: actionTypes.FETCH_SYNCS_SUCCEEDED,
+    payload
+  };
+};
+
+export const fetchSyncFailed = actionFailed(actionTypes.FETCH_SYNCS_FAILED);
+
+export const createSyncSucceeded = (sync: Sync) => {
+  return {
+    type: actionTypes.CREATE_SYNC_SUCCEEDED,
+    sync
+  };
+};
+
+export const createSyncFailed = actionFailed(actionTypes.CREATE_SYNC_FAILED);
+
+export const deleteSyncRequested = () => {
+  return {
+    type: actionTypes.DELETE_SYNC_REQUESTED
+  };
+};
+
+export const deleteSyncSucceeded = () => {
+  return {
+    type: actionTypes.DELETE_SYNC_SUCCEEDED
+  };
+};
+
+export const deleteSyncFailed = actionFailed(actionTypes.DELETE_SYNC_FAILED);
+
+export const syncStarted = (sync: Sync) => {
+  return {
+    type: actionTypes.SYNC_STARTED,
+    sync
+  };
+};
+
+export const syncPaused = (sync: Sync, error) => {
+  return {
+    type: actionTypes.SYNC_PAUSED,
+    sync,
+    error
+  };
+}
+
+export const syncDenied = (sync: Sync, error) => {
+  return {
+    type: actionTypes.SYNC_DENIED,
+    sync,
+    error
+  };
+}
+
+export const syncErrored = (sync: Sync, error) => {
+  return {
+    type: actionTypes.SYNC_ERRORED,
+    sync,
+    error
+  };
 }

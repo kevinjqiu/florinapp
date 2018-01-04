@@ -10,7 +10,8 @@ import { Provider } from "react-redux";
 import { createLogger } from "redux-logger";
 import { routerMiddleware, ConnectedRouter } from "react-router-redux";
 import createHistory from "history/createBrowserHistory";
-import 'react-widgets/dist/css/react-widgets.css';
+import * as syncService from "./services/syncService";
+import "react-widgets/dist/css/react-widgets.css";
 import "font-awesome/css/font-awesome.min.css";
 import "simple-line-icons/css/simple-line-icons.css";
 import "./style.css";
@@ -22,6 +23,8 @@ const store = createStore(
   {},
   applyMiddleware(reduxThunk, createLogger(), routerMiddleware(history))
 );
+
+syncService.startAllActive();
 
 ReactDOM.render(
   <Provider store={store}>
