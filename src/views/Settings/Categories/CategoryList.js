@@ -113,7 +113,7 @@ class CategoryList extends Component {
   }
 
   render() {
-    const { categoriesState, fetchCategories } = this.props;
+    const { categoriesState, fetchCategories, seedCategories } = this.props;
     const { loading, categories } = categoriesState;
     return (
       <Row>
@@ -127,7 +127,15 @@ class CategoryList extends Component {
                 <span />
               )}
               <ButtonGroup className="float-right">
-                <Button color="success" size="sm" outline>
+                <Button
+                  color="success"
+                  size="sm"
+                  outline
+                  onClick={() => {
+                    seedCategories();
+                    fetchCategories();
+                  }}
+                >
                   <i className="fa fa-magic" aria-hidden="true" />
                   {"\u00A0"}Seed
                 </Button>

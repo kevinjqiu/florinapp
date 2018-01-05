@@ -13,7 +13,7 @@ describe("categoryService", () => {
   describe("categoryService.fetch", () => {
     it("should fetch seeded categories", async () => {
       const categories = await categoryService.fetch();
-      expect(categories.length).toEqual(56);
+      expect(categories.length).toEqual(57);
     });
   });
 });

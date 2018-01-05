@@ -18,7 +18,7 @@ const categorySeeds = (): Array<Category> => {
     newCategory("automobile", "Automobile", null, false),
     newCategory(
       "automobile-carinsurance",
-      "Automobile::Car Insurance",
+      "Car Insurance",
       "automobile"
     ),
     newCategory(
@@ -56,19 +56,19 @@ const categorySeeds = (): Array<Category> => {
     newCategory("bills", "Bills", null, false),
     newCategory(
       "bills-cablesatellitetv",
-      "Bills:Cable/Satellite Television",
+      "Bills::Cable/Satellite Television",
       "bills"
     ),
-    newCategory("bills-cellphone", "Bills:Cell Phone", "bills"),
-    newCategory("bills-hydro", "Bills:Hydro", "bills"),
-    newCategory("bills-gas", "Bills:Gas", "bills"),
+    newCategory("bills-cellphone", "Bills::Cell Phone", "bills"),
+    newCategory("bills-hydro", "Bills::Hydro", "bills"),
+    newCategory("bills-gas", "Bills::Gas", "bills"),
     newCategory(
       "bills-onlineservice",
-      "Bills:Online/Internet Service",
+      "Bills::Online/Internet Service",
       "bills"
     ),
-    newCategory("bills-telephone", "Bills:Telephone", "bills"),
-    newCategory("bills-other", "Bills:Other", "bills"),
+    newCategory("bills-telephone", "Bills::Telephone", "bills"),
+    newCategory("bills-other", "Bills::Other", "bills"),
 
     newCategory("donations", "Donations", null, false),
     newCategory("donations-charity", "Donations::Charity", "donations"),
@@ -104,6 +104,7 @@ const categorySeeds = (): Array<Category> => {
     ),
     newCategory("shopping-hobbies", "Shopping::Hobbies", "shopping"),
     newCategory("shopping-pets", "Shopping::Pets", "shopping"),
+    newCategory("shopping-gifts", "Shopping::Gifts", "shopping"),
     newCategory("shopping-other", "Shopping::Other", "shopping"),
 
     newCategory("travel", "Travel/Vacation", null, false),

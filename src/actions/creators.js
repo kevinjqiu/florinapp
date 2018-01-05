@@ -157,6 +157,22 @@ export const fetchCategoriesFailed = actionFailed(
   actionTypes.FETCH_CATEGORIES_FAILED
 );
 
+export const seedCategoriesRequested = () => {
+  return {
+    type: actionTypes.SEED_CATEGORIES_REQUESTED
+  };
+};
+
+export const seedCategoriesSucceeded = () => {
+  return {
+    type: actionTypes.SEED_CATEGORIES_SUCCEEDED
+  };
+};
+
+export const seedCategoriesFailed = actionFailed(
+  actionTypes.SEED_CATEGORIES_FAILED
+);
+
 export const updateTransactionCategoryRequested = (
   transactionId: string,
   categoryId: string
@@ -254,7 +270,7 @@ export const syncPaused = (sync: Sync, error) => {
     sync,
     error
   };
-}
+};
 
 export const syncDenied = (sync: Sync, error) => {
   return {
@@ -262,7 +278,7 @@ export const syncDenied = (sync: Sync, error) => {
     sync,
     error
   };
-}
+};
 
 export const syncErrored = (sync: Sync, error) => {
   return {
@@ -270,4 +286,4 @@ export const syncErrored = (sync: Sync, error) => {
     sync,
     error
   };
-}
+};

@@ -11,6 +11,8 @@ import Account from "../models/Account";
 import Sync from "../models/Sync";
 import { Location } from "react-router";
 import * as queryString from "query-string";
+import seed from "../db/seed";
+import db from "../db";
 
 export const fetchAccounts = () => async dispatch => {
   dispatch(actionCreators.fetchAccountsRequested());
@@ -137,6 +139,16 @@ export const fetchCategories = () => async dispatch => {
       actionCreators.showErrorNotification("Cannot fetch categories", err)
     );
     dispatch(actionCreators.fetchCategoriesFailed(err));
+  }
+};
+
+export const seedCategories = () => async dispatch => {
+  dispatch(actionCreators.seedCategoriesRequested());
+  try {
+    await seed(db);
+    dispatch(actionCreators.seedCategoriesSucceeded());
+  } catch (err) {
+    dispatch(actionCreators.seedCategoriesFailed(err));
   }
 };
 
