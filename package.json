@@ -24,6 +24,7 @@
     "react-router-dom": "^4.2.2",
     "react-router-redux": "^5.0.0-alpha.9",
     "react-scripts": "1.0.17",
+    "react-tooltip": "^3.4.0",
     "react-transition-group": "2.2.1",
     "react-widgets": "^4.1.1",
     "react-widgets-moment": "^4.0.4",

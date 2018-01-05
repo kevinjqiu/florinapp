@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import * as actions from "../../actions";
 import Currency from "../../components/Currency/Currency";
 import RefreshButton from "../../components/RefreshButton/RefreshButton";
+import ListActionButton from "../../components/ListActionButton/ListActionButton";
 
 const NewAccountButton = ({ alignRight }) => {
   return (
@@ -92,34 +93,24 @@ const AccountCardBody = ({
     <Table responsive striped>
       <thead>
         <tr>
+          <th />
           <th>Name</th>
           <th>Financial Institution</th>
           <th>Currency</th>
           <th>Type</th>
           <th>Current Balance</th>
-          <th />
         </tr>
       </thead>
       <tbody>
         {accounts.map(account => (
           <tr key={account._id}>
             <td>
-              <Link to={`/accounts/${account._id}/view`}>{account.name}</Link>
-            </td>
-            <td>{account.financialInstitution}</td>
-            <td>{account.currency}</td>
-            <td>{account.type}</td>
-            <td>{getLatestAccountBalance(account)}</td>
-            <td>
               <ButtonGroup className="float-right">
                 <Link to={`/accounts/${account._id}/view`}>
-                  <Button color="primary" size="sm">
-                    <i className="fa fa-pencil-square-o" aria-hidden="true" />
-                  </Button>
+                  <ListActionButton color="primary" icon="fa-pencil-square-o" tooltip="View" />
                 </Link>
-                <Button
+                <ListActionButton color="danger" icon="fa-trash" tooltip="Delete this account"
                   color="danger"
-                  size="sm"
                   onClick={() =>
                     deleteAccountWithConfirmation({
                       accountId: account._id,
@@ -129,11 +120,16 @@ const AccountCardBody = ({
                       fetchAccounts
                     })
                   }
-                >
-                  <i className="fa fa-trash" aria-hidden="true" />
-                </Button>
+                />
               </ButtonGroup>
             </td>
+            <td>
+              <Link to={`/accounts/${account._id}/view`}>{account.name}</Link>
+            </td>
+            <td>{account.financialInstitution}</td>
+            <td>{account.currency}</td>
+            <td>{account.type}</td>
+            <td>{getLatestAccountBalance(account)}</td>
           </tr>
         ))}
       </tbody>
