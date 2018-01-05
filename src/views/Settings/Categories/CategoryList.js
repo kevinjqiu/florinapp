@@ -14,6 +14,8 @@ import { connect } from "react-redux";
 import * as actions from "../../../actions";
 import RefreshButton from "../../../components/RefreshButton/RefreshButton";
 import { categoryTypes } from "../../../models/CategoryType";
+import DeleteButton from "../../../components/ListActionButton/DeleteButton";
+import ViewButton from "../../../components/ListActionButton/ViewButton";
 
 class CategoryTable extends Component {
   render() {
@@ -58,20 +60,13 @@ class CategoryTable extends Component {
         <tbody>
           {categories.map(category => {
             return (
-              <tr id={category._id}>
+              <tr key={category._id}>
                 <td style={{ textAlign: "right" }}>
                   <ButtonGroup>
-                    <Link to={`/settings/categories/${categories._id}/view`}>
-                      <Button color="primary" size="sm">
-                        <i
-                          className="fa fa-pencil-square-o"
-                          aria-hidden="true"
-                        />
-                      </Button>
+                    <Link to={`/settings/categories/${category._id}/view`}>
+                      <ViewButton objectId={category._id} />
                     </Link>
-                    <Button color="danger" size="sm" onClick={() => {}}>
-                      <i className="fa fa-trash" aria-hidden="true" />
-                    </Button>
+                    <DeleteButton objectId={category._id} onClick={() => { console.log("TODO") }} />
                   </ButtonGroup>
                 </td>
                 <td>

@@ -13,7 +13,8 @@ import { Link } from "react-router-dom";
 import * as actions from "../../actions";
 import Currency from "../../components/Currency/Currency";
 import RefreshButton from "../../components/RefreshButton/RefreshButton";
-import ListActionButton from "../../components/ListActionButton/ListActionButton";
+import ViewButton from "../../components/ListActionButton/ViewButton";
+import DeleteButton from "../../components/ListActionButton/DeleteButton";
 
 const NewAccountButton = ({ alignRight }) => {
   return (
@@ -107,10 +108,10 @@ const AccountCardBody = ({
             <td>
               <ButtonGroup className="float-right">
                 <Link to={`/accounts/${account._id}/view`}>
-                  <ListActionButton color="primary" icon="fa-pencil-square-o" tooltip="View" />
+                  <ViewButton objectId={account._id} />
                 </Link>
-                <ListActionButton color="danger" icon="fa-trash" tooltip="Delete this account"
-                  color="danger"
+                <DeleteButton
+                  objectId={account._id}
                   onClick={() =>
                     deleteAccountWithConfirmation({
                       accountId: account._id,

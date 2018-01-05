@@ -18,6 +18,8 @@ import * as vu from "valid-url";
 import Sync from "../../../models/Sync";
 import RefreshButton from "../../../components/RefreshButton/RefreshButton";
 import { syncStatuses } from "../../../models/SyncStatus";
+import ListActionButton from "../../../components/ListActionButton/ListActionButton";
+import DeleteButton from "../../../components/ListActionButton/DeleteButton";
 
 const validUrl = value =>
   vu.isWebUri(value) ? undefined : "Must be a valid url";
@@ -134,28 +136,22 @@ class SyncView extends Component {
                           <td>{renderStatus(sync)}</td>
                           <td>
                             <ButtonGroup>
-                              <Button
+                              <ListActionButton
+                                objectId={`sync-${idx}`}
                                 color="success"
-                                size="sm"
+                                tooltip="Start synchronization with this remote"
                                 onClick={() => {
                                   startSync(sync);
                                 }}
-                              >
-                                <i
-                                  className="fa fa-refresh"
-                                  aria-hidden="true"
-                                />
-                              </Button>
-                              <Button
-                                color="danger"
-                                size="sm"
+                                icon="fa-refresh"
+                              />
+                              <DeleteButton
+                                objectId={`sync-${idx}`}
                                 onClick={() => {
                                   deleteSync(sync);
                                   fetchSyncs();
                                 }}
-                              >
-                                <i className="fa fa-trash" aria-hidden="true" />
-                              </Button>
+                              />
                             </ButtonGroup>
                           </td>
                         </tr>

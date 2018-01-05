@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { Table, Alert, Button, ButtonGroup } from "reactstrap";
+import { Table, Alert, ButtonGroup } from "reactstrap";
 import Currency from "../../components/Currency/Currency";
 import Date from "../../components/Date/Date";
 import TransactionsPagination from "./TransactionsPagination";
@@ -8,6 +8,7 @@ import { DropdownList } from "react-widgets";
 import { categoryTypes } from "../../models/CategoryType";
 import { connect } from "react-redux";
 import ListActionButton from "../../components/ListActionButton/ListActionButton";
+import DeleteButton from "../../components/ListActionButton/DeleteButton";
 import * as actions from "../../actions";
 
 const CategoryItemComponent = ({ item }) => {
@@ -60,8 +61,13 @@ const Transaction = ({
     <tr>
       <td>
         <ButtonGroup>
-          <ListActionButton id={`btn-link-${transaction._id}`} color="primary" icon="fa-link" tooltip="Link to another transaction" />
-          <ListActionButton id={`btn-delete-${transaction._id}`} color="danger" icon="fa-trash" tooltip="Delete this transaction" />
+          <ListActionButton
+            id={`btn-link-${transaction._id}`}
+            color="primary"
+            icon="fa-link"
+            tooltip="Link to another transaction"
+          />
+          <DeleteButton objectId={transaction._id} onClick={() => {console.log("TODO")}} />
         </ButtonGroup>
       </td>
       <td>
