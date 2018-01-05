@@ -1,7 +1,6 @@
 import PouchDB from "pouchdb";
 import PouchDBFind from "pouchdb-find";
 import PouchDBMemoryAdapter from "pouchdb-adapter-memory";
-import seed from "./seed";
 
 let db;
 

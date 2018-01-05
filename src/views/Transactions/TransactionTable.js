@@ -58,6 +58,7 @@ const Transaction = ({
 }) => {
   return (
     <tr>
+      <td />
       <td>
         <Date date={transaction.date} />
       </td>
@@ -82,7 +83,6 @@ const Transaction = ({
           onChange={c => updateTransactionCategory(transaction._id, c._id)}
         />
       </td>
-      <td />
     </tr>
   );
 };
@@ -128,15 +128,15 @@ class TransactionTable extends Component {
         <Table responsive striped>
           <thead>
             <tr>
-              <th width="5%">Date</th>
+              <th width="5%" />
+              <th width="10%">Date</th>
               <th width="10%">Account</th>
               <th width="20%">Name</th>
-              <th width="20%">Memo</th>
+              <th>Memo</th>
               <th width="10%" style={{ textAlign: "right" }}>
                 Amount
               </th>
               <th width="20%">Category</th>
-              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
