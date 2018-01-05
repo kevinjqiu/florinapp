@@ -3,9 +3,7 @@ import {
   Alert,
   Row,
   Col,
-  Card,
-  CardHeader,
-  CardBody,
+  Container,
   Table,
   Button,
   ButtonGroup
@@ -69,75 +67,77 @@ const AccountCardBody = ({
   hideGlobalModal,
   fetchAccounts
 }) => {
+  if (ui.loading) {
+    return (
+      <i
+        className="fa fa-spinner fa-spin fa-3x fa-fw"
+        style={{ fontSize: "8em" }}
+      />
+    );
+  }
   if (ui.failed) {
     return (
-      <CardBody>
-        <Alert color="danger">
-          Loading accounts failed. Try again later...
-        </Alert>
-      </CardBody>
+      <Alert color="danger">Loading accounts failed. Try again later...</Alert>
     );
   }
   if (accounts.length === 0) {
     return (
-      <CardBody>
+      <span>
         There are currently no existing accounts. <NewAccountButton />
-      </CardBody>
+      </span>
     );
   }
 
   return (
-    <CardBody>
-      <Table responsive striped>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Financial Institution</th>
-            <th>Currency</th>
-            <th>Type</th>
-            <th>Current Balance</th>
-            <th />
-          </tr>
-        </thead>
-        <tbody>
-          {accounts.map(account => (
-            <tr key={account._id}>
-              <td>
-                <Link to={`/accounts/${account._id}/view`}>{account.name}</Link>
-              </td>
-              <td>{account.financialInstitution}</td>
-              <td>{account.currency}</td>
-              <td>{account.type}</td>
-              <td>{getLatestAccountBalance(account)}</td>
-              <td>
-                <ButtonGroup className="float-right">
-                  <Link to={`/accounts/${account._id}/view`}>
-                    <Button color="primary" size="sm">
-                      <i className="fa fa-pencil-square-o" aria-hidden="true" />
-                    </Button>
-                  </Link>
-                  <Button
-                    color="danger"
-                    size="sm"
-                    onClick={() =>
-                      deleteAccountWithConfirmation({
-                        accountId: account._id,
-                        showGlobalModal,
-                        hideGlobalModal,
-                        deleteAccount,
-                        fetchAccounts
-                      })
-                    }
-                  >
-                    <i className="fa fa-trash" aria-hidden="true" />
+    <Table responsive striped>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Financial Institution</th>
+          <th>Currency</th>
+          <th>Type</th>
+          <th>Current Balance</th>
+          <th />
+        </tr>
+      </thead>
+      <tbody>
+        {accounts.map(account => (
+          <tr key={account._id}>
+            <td>
+              <Link to={`/accounts/${account._id}/view`}>{account.name}</Link>
+            </td>
+            <td>{account.financialInstitution}</td>
+            <td>{account.currency}</td>
+            <td>{account.type}</td>
+            <td>{getLatestAccountBalance(account)}</td>
+            <td>
+              <ButtonGroup className="float-right">
+                <Link to={`/accounts/${account._id}/view`}>
+                  <Button color="primary" size="sm">
+                    <i className="fa fa-pencil-square-o" aria-hidden="true" />
                   </Button>
-                </ButtonGroup>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-    </CardBody>
+                </Link>
+                <Button
+                  color="danger"
+                  size="sm"
+                  onClick={() =>
+                    deleteAccountWithConfirmation({
+                      accountId: account._id,
+                      showGlobalModal,
+                      hideGlobalModal,
+                      deleteAccount,
+                      fetchAccounts
+                    })
+                  }
+                >
+                  <i className="fa fa-trash" aria-hidden="true" />
+                </Button>
+              </ButtonGroup>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </Table>
   );
 };
 
@@ -146,28 +146,26 @@ class AccountList extends Component {
     this.props.fetchAccounts();
   }
   render() {
-    const { accounts, ui } = this.props;
+    const { accounts } = this.props;
     const { fetchAccounts } = this.props;
     return (
-      <Row>
-        <Col xs="12" lg="12">
-          <Card>
-            <CardHeader>
-              <strong>Current Accounts</strong>
-              {ui.loading ? (
-                <i className="fa fa-refresh fa-spin fa-1x fa-fw" />
-              ) : (
-                <span />
-              )}
-              <ButtonGroup className="float-right">
-                <NewAccountButton alignRight />
-                <RefreshButton onClick={fetchAccounts} />
-              </ButtonGroup>
-            </CardHeader>
+      <Container fluid>
+        <Row>
+          <Col xs="12" lg="12">
+            <h2 className="float-left">Accounts</h2>
+            <ButtonGroup className="float-right">
+              <NewAccountButton alignRight />
+              <RefreshButton onClick={fetchAccounts} />
+            </ButtonGroup>
+          </Col>
+        </Row>
+        <hr />
+        <Row>
+          <Col xs="12" lg="12">
             <AccountCardBody accounts={accounts} {...this.props} />
-          </Card>
-        </Col>
-      </Row>
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }
