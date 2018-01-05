@@ -1,13 +1,10 @@
 import React from "react";
 import { Route } from "react-router-dom";
 import Sync from "./Sync/Sync";
+import Categories from "./Categories/Categories";
 
 const General = () => {
   return <div>General</div>
-}
-
-const Categories = () => {
-  return <div>Categories</div>
 }
 
 const Tags = () => {
