@@ -72,10 +72,10 @@ describe("Account List", async () => {
         expect(links.at(0).prop("to")).toEqual(
           `/accounts/${accounts[idx]._id}/view`
         );
-        expect(tds.at(1).text()).toEqual(accounts[idx].financialInstitution);
-        expect(tds.at(2).text()).toEqual(accounts[idx].currency);
-        expect(tds.at(3).text()).toEqual(accounts[idx].type);
-        expect(tds.at(4).text()).toEqual("N/A");
+        expect(tds.at(2).text()).toEqual(accounts[idx].financialInstitution);
+        expect(tds.at(3).text()).toEqual(accounts[idx].currency);
+        expect(tds.at(4).text()).toEqual(accounts[idx].type);
+        expect(tds.at(5).text()).toEqual("N/A");
       });
   });
 
