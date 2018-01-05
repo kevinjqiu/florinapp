@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { Badge, Row, Col, Card, CardHeader, CardBody, ButtonGroup } from "reactstrap";
+import {
+  Container,
+  Badge,
+  Row,
+  Col,
+  ButtonGroup
+} from "reactstrap";
 import { connect } from "react-redux";
 import * as actions from "../../actions";
 import TransactionTable from "./TransactionTable";
@@ -31,31 +37,35 @@ class TransactionList extends Component {
     } = this.props;
     const { fetchOptions } = transactionsState;
     return (
-      <Row>
-        <Col xs="12" lg="12">
-          <Card>
-            <CardHeader>
-              <strong>Transactions</strong>
-              {transactionsState.loading ? (
-                <i className="fa fa-refresh fa-spin fa-1x fa-fw" />
-              ) : (
-                <span />
-              )}
-              <ButtonGroup className="float-right">
-                <RefreshButton onClick={() => {fetchTransactions(this.props.transactionsState.fetchOptions)}} />
-              </ButtonGroup>
-            </CardHeader>
-            <CardBody>
-              <Badge color="primary" pill> Date: from { fetchOptions.filters.dateFrom } to { fetchOptions.filters.dateTo } </Badge>
-              <hr />
-              <TransactionTable
-                transactionsState={transactionsState}
-                categoriesState={categoriesState}
+      <Container fluid>
+        <Row>
+          <Col xs="12" lg="12">
+            <h2 className="float-left">Transactions</h2>
+            <ButtonGroup className="float-right">
+              <RefreshButton
+                onClick={() => {
+                  fetchTransactions(this.props.transactionsState.fetchOptions);
+                }}
               />
-            </CardBody>
-          </Card>
-        </Col>
-      </Row>
+            </ButtonGroup>
+          </Col>
+        </Row>
+        <hr />
+        <Row>
+          <Col xs="12" lg="12">
+            <Badge color="primary" pill>
+              {" "}
+              Date: from {fetchOptions.filters.dateFrom} to{" "}
+              {fetchOptions.filters.dateTo}{" "}
+            </Badge>
+            <hr />
+            <TransactionTable
+              transactionsState={transactionsState}
+              categoriesState={categoriesState}
+            />
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }

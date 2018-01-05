@@ -7,9 +7,7 @@ import {
   Table,
   Badge,
   Button,
-  ButtonGroup,
-  Label,
-  Input
+  ButtonGroup
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
@@ -112,7 +110,6 @@ class CategoryList extends Component {
 
   render() {
     const { categoriesState, fetchCategories, seedCategories } = this.props;
-    const { loading, categories } = categoriesState;
     return (
       <Container fluid>
         <Row>
