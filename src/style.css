@@ -124,7 +124,7 @@ body {
   line-height: 1.5;
   color: #151b1e;
   text-align: left;
-  background-color: #e4e5e6; }
+  background-color: #ffffff; }
 
 [tabindex="-1"]:focus {
   outline: none !important; }
@@ -469,7 +469,7 @@ mark,
 
 .img-thumbnail {
   padding: 0.25rem;
-  background-color: #e4e5e6;
+  background-color: #ffffff;
   border: 1px solid #ddd;
   transition: all 0.2s ease-in-out;
   max-width: 100%;
@@ -1111,7 +1111,7 @@ pre {
   .table tbody + tbody {
     border-top: 2px solid #c2cfd6; }
   .table .table {
-    background-color: #e4e5e6; }
+    background-color: #ffffff; }
 
 .table-sm th,
 .table-sm td {
@@ -1232,7 +1232,7 @@ pre {
     background-color: rgba(0, 0, 0, 0.075); }
 
 .table .thead-dark th {
-  color: #e4e5e6;
+  color: #ffffff;
   background-color: #151b1e;
   border-color: #252f35; }
 
@@ -1242,7 +1242,7 @@ pre {
   border-color: #c2cfd6; }
 
 .table-dark {
-  color: #e4e5e6;
+  color: #ffffff;
   background-color: #151b1e; }
   .table-dark th,
   .table-dark td,
@@ -2304,7 +2304,7 @@ tbody.collapse.show {
     color: #fff;
     background-color: #20a8d8; }
   .custom-control-input:focus ~ .custom-control-indicator {
-    box-shadow: 0 0 0 1px #e4e5e6, 0 0 0 0.2rem rgba(32, 168, 216, 0.25); }
+    box-shadow: 0 0 0 1px #ffffff, 0 0 0 0.2rem rgba(32, 168, 216, 0.25); }
   .custom-control-input:active ~ .custom-control-indicator {
     color: #fff;
     background-color: #b6e4f4; }
@@ -2462,8 +2462,8 @@ tbody.collapse.show {
   .nav-tabs .nav-item.show .navbar .dropdown-toggle, .navbar
   .nav-tabs .nav-item.show .dropdown-toggle {
     color: #3e515b;
-    background-color: #e4e5e6;
-    border-color: #ddd #ddd #e4e5e6; }
+    background-color: #ffffff;
+    border-color: #ddd #ddd #ffffff; }
   .nav-tabs .dropdown-menu {
     margin-top: -1px; }
 

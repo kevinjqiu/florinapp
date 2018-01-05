@@ -2,10 +2,8 @@ import React, { Component } from "react";
 import {
   Alert,
   Row,
+  Container,
   Col,
-  Card,
-  CardHeader,
-  CardBody,
   Table,
   Badge,
   Button,
@@ -53,16 +51,31 @@ class CategoryTable extends Component {
       <Table responsive>
         <thead>
           <tr>
+            <th></th>
             <th>Name</th>
             <th>Type</th>
             <th style={{ textAlign: "center" }}>Allow Transactions</th>
-            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {categories.map(category => {
             return (
               <tr id={category._id}>
+                <td style={{ textAlign: "right" }}>
+                  <ButtonGroup>
+                    <Link to={`/settings/categories/${categories._id}/view`}>
+                      <Button color="primary" size="sm">
+                        <i
+                          className="fa fa-pencil-square-o"
+                          aria-hidden="true"
+                        />
+                      </Button>
+                    </Link>
+                    <Button color="danger" size="sm" onClick={() => {}}>
+                      <i className="fa fa-trash" aria-hidden="true" />
+                    </Button>
+                  </ButtonGroup>
+                </td>
                 <td>
                   <Link to={`/settings/categories/${category._id}/view`}>
                     {category.parent ? (
@@ -84,21 +97,6 @@ class CategoryTable extends Component {
                     <i className="fa fa-square-o" aria-hidden="true" />
                   )}
                 </td>
-                <td>
-                  <ButtonGroup>
-                    <Link to={`/settings/categories/${categories._id}/view`}>
-                      <Button color="primary" size="sm">
-                        <i
-                          className="fa fa-pencil-square-o"
-                          aria-hidden="true"
-                        />
-                      </Button>
-                    </Link>
-                    <Button color="danger" size="sm" onClick={() => {}}>
-                      <i className="fa fa-trash" aria-hidden="true" />
-                    </Button>
-                  </ButtonGroup>
-                </td>
               </tr>
             );
           })}
@@ -116,38 +114,34 @@ class CategoryList extends Component {
     const { categoriesState, fetchCategories, seedCategories } = this.props;
     const { loading, categories } = categoriesState;
     return (
-      <Row>
-        <Col xs="12" lg="12">
-          <Card>
-            <CardHeader>
-              <strong>Categories</strong>
-              {loading ? (
-                <i className="fa fa-refresh fa-spin fa-1x fa-fw" />
-              ) : (
-                <span />
-              )}
-              <ButtonGroup className="float-right">
-                <Button
-                  color="success"
-                  size="sm"
-                  outline
-                  onClick={() => {
-                    seedCategories();
-                    fetchCategories();
-                  }}
-                >
-                  <i className="fa fa-magic" aria-hidden="true" />
-                  {"\u00A0"}Seed
-                </Button>
-                <RefreshButton onClick={fetchCategories} />
-              </ButtonGroup>
-            </CardHeader>
-            <CardBody>
-              <CategoryTable {...categoriesState} />
-            </CardBody>
-          </Card>
-        </Col>
-      </Row>
+      <Container fluid>
+        <Row>
+          <Col xs="12" lg="12">
+            <h2 className="float-left">Categories</h2>
+            <ButtonGroup className="float-right">
+              <Button
+                color="success"
+                size="sm"
+                outline
+                onClick={() => {
+                  seedCategories();
+                  fetchCategories();
+                }}
+              >
+                <i className="fa fa-magic" aria-hidden="true" />
+                {"\u00A0"}Seed
+              </Button>
+              <RefreshButton onClick={fetchCategories} />
+            </ButtonGroup>
+          </Col>
+        </Row>
+        <hr />
+        <Row>
+          <Col xs="12" lg="12">
+            <CategoryTable {...categoriesState} />
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }
