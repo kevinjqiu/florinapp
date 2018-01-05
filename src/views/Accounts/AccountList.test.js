@@ -30,11 +30,10 @@ describe("Account List", async () => {
         </BrowserRouter>
       </Provider>
     );
-    const cardBody = wrapper.find("CardBody");
-    expect(cardBody.find(".card-body").text()).toContain(
+    expect(wrapper.text()).toContain(
       "There are currently no existing accounts."
     );
-    expect(cardBody.find("NewAccountButton").length).toBe(1);
+    expect(wrapper.find("NewAccountButton").length).toBe(2);
   });
 
   it("should populate accounts table with accounts from stored accounts", () => {
@@ -62,9 +61,8 @@ describe("Account List", async () => {
         </BrowserRouter>
       </Provider>
     );
-    const cardBody = wrapper.find("CardBody");
-    expect(cardBody.find("tbody").find("tr").length).toBe(accounts.length);
-    cardBody
+    expect(wrapper.find("tbody").find("tr").length).toBe(accounts.length);
+    wrapper
       .find("tbody")
       .find("tr")
       .forEach((tr, idx) => {
