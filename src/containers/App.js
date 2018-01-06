@@ -10,11 +10,11 @@ import Settings from "../views/Settings/Settings";
 import { connect } from "react-redux";
 import * as actions from "../actions";
 import GlobalModal from "../components/GlobalModal/GlobalModal";
+import Aside from "../components/Aside/Aside";
 import Notifications from "react-notification-system-redux";
 
 class App extends Component {
   render() {
-    console.log(this);
     const { notifications } = this.props;
     return (
       <div className="app">
@@ -32,6 +32,7 @@ class App extends Component {
               </Switch>
             </Container>
           </main>
+          <Aside />
         </div>
         <GlobalModal />
         <Notifications notifications={notifications} />

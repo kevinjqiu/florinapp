@@ -1,102 +1,9 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import { Table, Alert, ButtonGroup } from "reactstrap";
-import Currency from "../../components/Currency/Currency";
-import Date from "../../components/Date/Date";
+import { Table, Alert } from "reactstrap";
 import TransactionsPagination from "./TransactionsPagination";
-import { DropdownList } from "react-widgets";
-import { categoryTypes } from "../../models/CategoryType";
 import { connect } from "react-redux";
-import ListActionButton from "../../components/ListActionButton/ListActionButton";
-import DeleteButton from "../../components/ListActionButton/DeleteButton";
 import * as actions from "../../actions";
-
-const CategoryItemComponent = ({ item }) => {
-  let color;
-  switch (item.type) {
-    case categoryTypes.EXPENSE:
-      color = "red";
-      break;
-
-    case categoryTypes.INCOME:
-      color = "green";
-      break;
-
-    case categoryTypes.TRANSFER:
-      color = "blue";
-      break;
-
-    default:
-      color = "black";
-  }
-  return <span style={{ color }}>{item.name}</span>;
-};
-
-class CategorySelector extends Component {
-  render() {
-    const { categories, disabled, value, onChange } = this.props;
-    return (
-      <DropdownList
-        data={categories}
-        filter="contains"
-        textField="name"
-        valueField="_id"
-        itemComponent={CategoryItemComponent}
-        disabled={disabled}
-        onChange={onChange}
-        value={value}
-        groupBy="type"
-      />
-    );
-  }
-}
-
-const Transaction = ({
-  transaction,
-  categories,
-  disabledCategories,
-  updateTransactionCategory
-}) => {
-  return (
-    <tr>
-      <td>
-        <ButtonGroup>
-          <ListActionButton
-            id={`btn-link-${transaction._id}`}
-            color="primary"
-            icon="fa-link"
-            tooltip="Link to another transaction"
-          />
-          <DeleteButton objectId={transaction._id} onClick={() => {console.log("TODO")}} />
-        </ButtonGroup>
-      </td>
-      <td>
-        <Date date={transaction.date} />
-      </td>
-      <td>
-        <Link to={`/accounts/${transaction.account._id}/view`}>
-          {transaction.account.name}
-        </Link>
-      </td>
-      <td>{transaction.name}</td>
-      <td>{transaction.memo}</td>
-      <td style={{ textAlign: "right" }}>
-        <Currency
-          amount={transaction.amount}
-          code={transaction.account.currency}
-        />
-      </td>
-      <td>
-        <CategorySelector
-          categories={categories}
-          value={transaction.categoryId}
-          disabled={disabledCategories}
-          onChange={c => updateTransactionCategory(transaction._id, c._id)}
-        />
-      </td>
-    </tr>
-  );
-};
+import TransactionRow from "./TransactionRow";
 
 class TransactionTable extends Component {
   render() {
@@ -136,7 +43,7 @@ class TransactionTable extends Component {
     return (
       <div>
         <TransactionsPagination />
-        <Table responsive striped>
+        <Table responsive>
           <thead>
             <tr>
               <th width="5%" />
@@ -150,17 +57,15 @@ class TransactionTable extends Component {
               <th width="20%">Category</th>
             </tr>
           </thead>
-          <tbody>
-            {transactions.map(t => (
-              <Transaction
-                key={t._id}
-                transaction={t}
-                categories={categories}
-                disabledCategories={disabledCategories}
-                updateTransactionCategory={updateTransactionCategory}
-              />
-            ))}
-          </tbody>
+          {transactions.map(t => (
+            <TransactionRow
+              key={t._id}
+              transaction={t}
+              categories={categories}
+              disabledCategories={disabledCategories}
+              updateTransactionCategory={updateTransactionCategory}
+            />
+          ))}
           <tfoot>
             <tr>
               <td colSpan="7">
