@@ -4,6 +4,7 @@ import TransactionsPagination from "./TransactionsPagination";
 import { connect } from "react-redux";
 import * as actions from "../../actions";
 import TransactionRow from "./TransactionRow";
+import LinkTransactions from "./LinkTransactions";
 
 class TransactionTable extends Component {
   render() {
@@ -74,6 +75,7 @@ class TransactionTable extends Component {
             </tr>
           </tfoot>
         </Table>
+        <LinkTransactions />
       </div>
     );
   }

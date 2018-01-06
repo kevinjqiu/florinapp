@@ -129,3 +129,19 @@ export const importAccountStatement = async (
   await db.put(account);
   return { numImported, numSkipped };
 };
+
+export const fetchTransactionLinkCandidates = async (transaction: Transaction): Promise<Array<Transaction>> => {
+  const mapFun = (doc, emit) => {
+    if (doc.metadata && doc.metadata.type === "Transaction") {
+      emit([doc.amount, doc.date], null);
+    }
+  };
+  const amount = "" + (parseFloat(transaction.amount) * -1);
+  const response = await db.query(mapFun, {
+    startkey: [amount, "9999"],
+    endkey: [amount, ""],
+    include_docs: true,
+    descending: true
+  });
+  return response.rows.map(r => new Transaction(r.doc));
+}

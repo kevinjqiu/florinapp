@@ -155,6 +155,7 @@ describe("transactionService.fetch", () => {
     expect(transactions.map(t => t._id)).toEqual(["txn1", "txn2"]);
   })
 });
+
 describe("transactionService.updateCategory", () => {
   beforeEach(async () => {
     await reset();
@@ -172,3 +173,49 @@ describe("transactionService.updateCategory", () => {
     expect(transaction.categoryId).toEqual("automobile-carpayment");
   });
 });
+
+
+describe("transactionService.fetchTransactionLinkCandidates", () => {
+  beforeEach(async () => {
+    await reset();
+    await setupIndex(db);
+    await setupViews(db);
+  })
+
+  it("should return empty when there's no transactions of the same opposite amount", async () => {
+    const txn1 = new Transaction({ _id: "txn1", date: "2017-01-01", amount: "3500" });
+    await db.post(txn1);
+    await db.post(new Transaction({ _id: "txn2", date: "2017-02-01", amount: "-3499" }));
+    await db.post(new Transaction({ _id: "txn3", date: "2017-01-15", amount: "-3501" }));
+    const candidates = await transactionService.fetchTransactionLinkCandidates(txn1)
+    expect(candidates).toEqual([]);
+  })
+
+  it("should return the transaction with the same amount but opposite type", async () => {
+    const txn1 = new Transaction({ _id: "txn1", date: "2017-01-01", amount: "3500" });
+    const txn2 = new Transaction({ _id: "txn2", date: "2017-02-01", amount: "-3500" })
+    const txn3 = new Transaction({ _id: "txn3", date: "2017-01-15", amount: "-3501" })
+    await db.post(txn1);
+    await db.post(txn2);
+    await db.post(txn3);
+    const candidates = await transactionService.fetchTransactionLinkCandidates(txn1)
+    expect(candidates.length).toEqual(1);
+    expect(candidates[0]._id).toEqual('txn2');
+  })
+
+  it("should return sort the candidates by date in desc order", async () => {
+    const txn1 = new Transaction({ _id: "txn1", date: "2017-01-01", amount: "3500" });
+    const txn2 = new Transaction({ _id: "txn2", date: "2017-02-01", amount: "-3500" })
+    const txn3 = new Transaction({ _id: "txn3", date: "2016-01-15", amount: "-3500" })
+    const txn4 = new Transaction({ _id: "txn4", date: "2018-01-05", amount: "-3500" })
+    const txn5 = new Transaction({ _id: "txn5", date: "2018-01-05", amount: "-3501" })
+    await db.post(txn1);
+    await db.post(txn2);
+    await db.post(txn3);
+    await db.post(txn4);
+    await db.post(txn5);
+    const candidates = await transactionService.fetchTransactionLinkCandidates(txn1)
+    expect(candidates.length).toEqual(3);
+    expect(candidates.map(c => c._id)).toEqual(["txn4", "txn2", "txn3"]);
+  })
+})

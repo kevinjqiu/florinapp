@@ -287,3 +287,31 @@ export const syncErrored = (sync: Sync, error) => {
     error
   };
 };
+
+export const openLinkTransactionsDialog = (transaction: Transaction) => {
+  return {
+    type: actionTypes.OPEN_LINK_TRANSACTIONS_DIALOG,
+    transaction
+  };
+};
+
+export const closeLinkTransactionsDialog = () => {
+  return {
+    type: actionTypes.CLOSE_LINK_TRANSACTIONS_DIALOG
+  };
+};
+
+export const fetchTransactionLinkCandidatesRequested = () => {
+  return {
+    type: actionTypes.FETCH_TRANSACTION_LINK_CANDIDATES_REQUESTED
+  };
+};
+
+export const fetchTransactionLinkCandidatesSucceeded = (candidates: Array<Transaction>) => {
+  return {
+    type: actionTypes.FETCH_TRANSACTION_LINK_CANDIDATES_SUCCEEDED,
+    candidates
+  };
+}
+
+export const fetchTransactionLinkCandidatesFailed = actionFailed(actionTypes.FETCH_TRANSACTION_LINK_CANDIDATES_FAILED);
