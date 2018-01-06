@@ -7,6 +7,7 @@ import Account from "../models/Account";
 import Transaction from "../models/Transaction";
 
 const defaultFetchOptions = {
+  orderBy: ["date", "asc"],
   pagination: {
     perPage: 999,
     page: 1
@@ -140,6 +141,7 @@ describe("transactionService.fetch", () => {
     await db.post(new Transaction({ _id: "txn3", date: "2017-02-01" }));
 
     const result = await transactionService.fetch({
+      orderBy: ["date", "asc"],
       pagination: {
         perPage: 999,
         page: 1
