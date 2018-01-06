@@ -11,7 +11,7 @@ import { thisMonth } from "../models/presetDateRanges";
 const thisMonthDateRange = thisMonth();
 
 export const defaultFetchOptions = {
-  orderBy: ["date", "asc"],
+  orderBy: ["date", "desc"],
   pagination: {
     perPage: 10,
     page: 1
@@ -29,16 +29,26 @@ export const fetch = async (
   const startkey = filters.dateFrom ? filters.dateFrom : "";
   const endkey = filters.dateTo ? filters.dateTo : "9999";
   const totalRows = (await db.query("transactions/byDate", {startkey, endkey})).rows.length;
-  const response = await db.query("transactions/byDate",
-    {
-      startkey,
-      endkey,
+  let queryOptions = {
       include_docs: true,
       limit: pagination.perPage,
       skip: (pagination.page - 1) * pagination.perPage
+  }
+  if (orderBy[1] === "asc") {
+    queryOptions = {
+      ...queryOptions,
+      startkey,
+      endkey,
     }
-  );
-
+  } else {
+    queryOptions = {
+      ...queryOptions,
+      startkey: endkey,
+      endkey: startkey,
+      descending: true
+    }
+  }
+  const response = await db.query("transactions/byDate", queryOptions);
   const transactions = response.rows.map(row => new Transaction(row.doc));
   const accountIds = new Set(transactions.map(t => t.accountId));
   const promises = [...accountIds].filter(aid => !!aid).map(async aid => {
