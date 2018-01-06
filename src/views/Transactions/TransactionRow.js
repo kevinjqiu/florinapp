@@ -93,12 +93,25 @@ export default class TransactionRow extends Component {
               <ListActionButton
                 id={`btn-expand-${transaction._id}`}
                 color="primary"
-                icon={this.state.isExpanded ? "fa-angle-double-up" : "fa-angle-double-down"}
+                icon={
+                  this.state.isExpanded
+                    ? "fa-angle-double-up"
+                    : "fa-angle-double-down"
+                }
                 tooltip="Expand"
                 onClick={() => {
                   this.setState({
                     isExpanded: !isExpanded
                   });
+                }}
+              />
+              <ListActionButton
+                id={`btn-split-${transaction._id}`}
+                color="primary"
+                icon="fa-code-fork"
+                tooltip="Split this transaction"
+                onClick={() => {
+                  console.log("TODO");
                 }}
               />
               <DeleteButton
@@ -113,8 +126,17 @@ export default class TransactionRow extends Component {
             <Date date={transaction.date} />
           </td>
           <td>
-            <Link to={`/accounts/${transaction.account._id}/view`}>
+            {/* TODO: account filter link */}
+            <Link to={`/transactions/${transaction._id}/view`}>
               {transaction.account.name}
+            </Link>{" "}
+            <Link to={`/accounts/${transaction.account._id}/view`}>
+              <ListActionButton
+                id={`btn-link-${transaction._id}`}
+                icon="fa-external-link"
+                outline={true}
+                tooltip="Open account page"
+              />
             </Link>
           </td>
           <td>{transaction.name}</td>
