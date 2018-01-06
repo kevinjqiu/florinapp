@@ -25,17 +25,12 @@ export const defaultFetchOptions = {
 export const fetch = async (
   options: FetchOptions = defaultFetchOptions
 ): Promise<PaginationResult<Transaction>> => {
-  const mapFun = (doc, emit) => {
-    if (doc.metadata && doc.metadata.type === "Transaction") {
-      emit(doc.date, null);
-    }
-  };
   const { pagination } = options;
   const { filters } = options;
   const startkey = filters.dateFrom ? filters.dateFrom : "";
   const endkey = filters.dateTo ? filters.dateTo : "9999";
-  const totalRows = (await db.query(mapFun, { startkey, endkey })).rows.length;
-  const response = await db.query(mapFun,
+  const totalRows = (await db.query("transactions/byDate", {startkey, endkey})).rows.length;
+  const response = await db.query("transactions/byDate",
     {
       startkey,
       endkey,

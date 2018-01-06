@@ -2,6 +2,7 @@ import * as fs from "fs";
 import * as transactionService from "./transactionService";
 import db from "../db";
 import reset from "../db/reset";
+import { setupIndex, setupViews } from "../db/setup";
 import Account from "../models/Account";
 import Transaction from "../models/Transaction";
 
@@ -16,6 +17,8 @@ const defaultFetchOptions = {
 describe("transactionService.importAccountStatement", () => {
   beforeEach(async () => {
     await reset();
+    await setupIndex(db);
+    await setupViews(db);
   });
 
   const newAccount = async (): Account => {
@@ -80,6 +83,8 @@ describe("transactionService.importAccountStatement", () => {
 describe("transactionService.fetch", () => {
   beforeEach(async () => {
     await reset();
+    await setupIndex(db);
+    await setupViews(db);
   });
 
   it("should return transactions ordered by date asc by default", async () => {
@@ -151,6 +156,8 @@ describe("transactionService.fetch", () => {
 describe("transactionService.updateCategory", () => {
   beforeEach(async () => {
     await reset();
+    await setupIndex(db);
+    await setupViews(db);
   });
 
   it("should update transaction category", async () => {

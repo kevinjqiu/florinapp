@@ -1,6 +1,7 @@
 import PouchDB from "pouchdb";
 import PouchDBFind from "pouchdb-find";
 import PouchDBMemoryAdapter from "pouchdb-adapter-memory";
+import { setupIndex, setupViews } from "./setup";
 
 let db;
 
@@ -20,19 +21,8 @@ if (DEBUG) {
   PouchDB.debug.enable("*");
 }
 
-const setupIndex = async db => {
-  const indexes = [
-    { index: { fields: ["metadata.type"] } }
-  ];
-
-  await Promise.all(indexes.map(async index => {
-    await db.createIndex(index);
-    console.log(`Created index ${JSON.stringify(index)}`);
-  }))
-};
-
-// setupIndex(db);
-// seed(db);
+setupIndex(db);
+setupViews(db);
 
 // const target = new PouchDB("http://localhost:5984/florin");
 // db.sync(target);
