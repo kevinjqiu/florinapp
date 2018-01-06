@@ -7,8 +7,7 @@ import ListActionButton from "../../components/ListActionButton/ListActionButton
 import DeleteButton from "../../components/ListActionButton/DeleteButton";
 import { categoryTypes } from "../../models/CategoryType";
 import { DropdownList } from "react-widgets";
-import InputField from "../../components/InputField/InputField";
-import { reduxForm, Field } from "redux-form";
+import { reduxForm } from "redux-form";
 
 const CategoryItemComponent = ({ item }) => {
   let color;
@@ -50,36 +49,13 @@ class CategorySelector extends Component {
   }
 }
 
-// class LinkedTransactionSelector extends Component {
-//   render() {
-//     const { categories, disabled, value, onChange } = this.props;
-//     return (
-//       <DropdownList
-//         data={categories}
-//         filter="contains"
-//         textField="name"
-//         valueField="_id"
-//         itemComponent={CategoryItemComponent}
-//         disabled={disabled}
-//         onChange={onChange}
-//         value={value}
-//         groupBy="type"
-//       />
-//     );
-//   }
-// }
-
 const _TransactionDetailForm = ({ transaction }) => {
   return (
     <Container fluid style={{ backgroundColor: "e0e1e2", height: "100px" }}>
       <Row>
         <Col xs="9" lg="9">
           <form className="form-horizontal">
-            <Field
-              name="linkedTransaction"
-              label="Linked Transaction"
-              component={InputField}
-            />
+            Transaction Detail Form (TODO)
           </form>
         </Col>
       </Row>
