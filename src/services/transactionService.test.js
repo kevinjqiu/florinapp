@@ -15,24 +15,24 @@ const defaultFetchOptions = {
   filters: {}
 };
 
+const newAccount = async (): Account => {
+  let account = await db.post(
+    new Account({
+      name: "Test",
+      financialInstitution: "TEST_FI",
+      type: "CHECKING"
+    })
+  );
+  account = await db.get(account.id);
+  return new Account(account);
+};
+
 describe("transactionService.importAccountStatement", () => {
   beforeEach(async () => {
     await reset();
     await setupIndex(db);
     await setupViews(db);
   });
-
-  const newAccount = async (): Account => {
-    let account = await db.post(
-      new Account({
-        name: "Test",
-        financialInstitution: "TEST_FI",
-        type: "CHECKING"
-      })
-    );
-    account = await db.get(account.id);
-    return new Account(account);
-  };
 
   it("should not import any transactions if OFX is empty", async () => {
     const account = await newAccount();
@@ -192,8 +192,9 @@ describe("transactionService.fetchTransactionLinkCandidates", () => {
   })
 
   it("should return the transaction with the same amount but opposite type", async () => {
+    const acct = await newAccount();
     const txn1 = new Transaction({ _id: "txn1", date: "2017-01-01", amount: "3500" });
-    const txn2 = new Transaction({ _id: "txn2", date: "2017-02-01", amount: "-3500" })
+    const txn2 = new Transaction({ _id: "txn2", accountId: acct._id, date: "2017-02-01", amount: "-3500" })
     const txn3 = new Transaction({ _id: "txn3", date: "2017-01-15", amount: "-3501" })
     await db.post(txn1);
     await db.post(txn2);
@@ -201,6 +202,7 @@ describe("transactionService.fetchTransactionLinkCandidates", () => {
     const candidates = await transactionService.fetchTransactionLinkCandidates(txn1)
     expect(candidates.length).toEqual(1);
     expect(candidates[0]._id).toEqual('txn2');
+    expect(candidates[0].account._id).toEqual(acct._id);
   })
 
   it("should return sort the candidates by date in desc order", async () => {

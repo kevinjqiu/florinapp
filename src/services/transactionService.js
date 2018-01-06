@@ -22,6 +22,32 @@ export const defaultFetchOptions = {
   }
 };
 
+const fetchTransactionAccounts = async (transactions: Array<Transaction>) => {
+  const accountIds = new Set(transactions.map(t => t.accountId));
+  const promises = [...accountIds].filter(aid => !!aid).map(async aid => {
+    try {
+      const doc = await db.get(aid);
+      return new Account(doc);
+    } catch (error) {
+      if (error.status === 404) {
+        return undefined;
+      }
+      throw error;
+    }
+  });
+  const accounts = await Promise.all(promises);
+  const accountMap = accounts.reduce((aggregate, current) => {
+    if (current !== undefined) {
+      aggregate.set(current._id, current);
+    }
+    return aggregate;
+  }, new Map());
+
+  transactions.forEach(t => {
+    t.account = accountMap.get(t.accountId);
+  });
+}
+
 export const fetch = async (
   options: FetchOptions = defaultFetchOptions
 ): Promise<PaginationResult<Transaction>> => {
@@ -50,30 +76,7 @@ export const fetch = async (
   }
   const response = await db.query("transactions/byDate", queryOptions);
   const transactions = response.rows.map(row => new Transaction(row.doc));
-  const accountIds = new Set(transactions.map(t => t.accountId));
-  const promises = [...accountIds].filter(aid => !!aid).map(async aid => {
-    try {
-      const doc = await db.get(aid);
-      return new Account(doc);
-    } catch (error) {
-      if (error.status === 404) {
-        return undefined;
-      }
-      throw error;
-    }
-  });
-  const accounts = await Promise.all(promises);
-  const accountMap = accounts.reduce((aggregate, current) => {
-    if (current !== undefined) {
-      aggregate.set(current._id, current);
-    }
-    return aggregate;
-  }, new Map());
-
-  transactions.forEach(t => {
-    t.account = accountMap.get(t.accountId);
-  });
-
+  await fetchTransactionAccounts(transactions);
   return new PaginationResult(transactions, totalRows);
 };
 
@@ -143,5 +146,7 @@ export const fetchTransactionLinkCandidates = async (transaction: Transaction): 
     include_docs: true,
     descending: true
   });
-  return response.rows.map(r => new Transaction(r.doc));
+  const transactions = response.rows.map(r => new Transaction(r.doc));
+  await fetchTransactionAccounts(transactions);
+  return transactions;
 }
