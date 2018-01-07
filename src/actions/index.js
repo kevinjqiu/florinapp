@@ -273,7 +273,9 @@ export const linkTransactions = (transaction1: Transaction, transaction2: Transa
   dispatch(actionCreators.linkTransactionsRequested());
   try {
     dispatch(actionCreators.linkTransactionsSucceeded(transaction1, transaction2));
+    dispatch(actionCreators.showSuccessNotification("Successfully linked the transactions"));
   } catch (error) {
     dispatch(actionCreators.linkTransactionsFailed(error));
+    dispatch(actionCreators.showErrorNotification("Cannot link the transactions", error));
   }
 }

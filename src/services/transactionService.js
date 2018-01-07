@@ -153,10 +153,10 @@ export const fetchTransactionLinkCandidates = async (transaction: Transaction): 
 }
 
 export const linkTransactions = async (transaction1: Transaction, transaction2: Transaction) => {
-  console.log(transaction1);
-  console.log(transaction2);
   transaction1.linkedTo = transaction2._id;
+  transaction1.categoryId = "internaltransfer";
   transaction2.linkedTo = transaction1._id;
+  transaction2.categoryId = "internaltransfer";
   await db.put(transaction1);
   await db.put(transaction2);
 }
