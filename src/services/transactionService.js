@@ -46,7 +46,7 @@ const fetchTransactionAccounts = async (transactions: Array<Transaction>) => {
   transactions.forEach(t => {
     t.account = accountMap.get(t.accountId);
   });
-}
+};
 
 export const fetch = async (
   options: FetchOptions = defaultFetchOptions
@@ -54,25 +54,28 @@ export const fetch = async (
   const { pagination, filters, orderBy } = options;
   const startkey = filters.dateFrom ? filters.dateFrom : "";
   const endkey = filters.dateTo ? filters.dateTo : "9999";
-  const totalRows = (await db.query("transactions/byDate", {startkey, endkey})).rows.length;
+  const totalRows = (await db.query("transactions/byDate", {
+    startkey,
+    endkey
+  })).rows.length;
   let queryOptions = {
-      include_docs: true,
-      limit: pagination.perPage,
-      skip: (pagination.page - 1) * pagination.perPage
-  }
+    include_docs: true,
+    limit: pagination.perPage,
+    skip: (pagination.page - 1) * pagination.perPage
+  };
   if (orderBy[1] === "asc") {
     queryOptions = {
       ...queryOptions,
       startkey,
-      endkey,
-    }
+      endkey
+    };
   } else {
     queryOptions = {
       ...queryOptions,
       startkey: endkey,
       endkey: startkey,
       descending: true
-    }
+    };
   }
   const response = await db.query("transactions/byDate", queryOptions);
   const transactions = response.rows.map(row => new Transaction(row.doc));
@@ -134,29 +137,32 @@ export const importAccountStatement = async (
 };
 
 export const fetchTransactionLinkCandidates = async (transaction: Transaction): Promise<Array<Transaction>> => {
-  // TODO: use a permanent view
   const mapFun = (doc, emit) => {
     if (doc.metadata && doc.metadata.type === "Transaction") {
       emit([doc.amount, doc.date], null);
     }
   };
-  const amount = "" + (parseFloat(transaction.amount) * -1);
-  const response = await db.query(mapFun, {
+  const amount = "" + parseFloat(transaction.amount) * -1;
+  const options = {
     startkey: [amount, "9999"],
     endkey: [amount, ""],
     include_docs: true,
     descending: true
-  });
+  }
+  const response = await db.query(mapFun, options);
   const transactions = response.rows.map(r => new Transaction(r.doc));
   await fetchTransactionAccounts(transactions);
   return transactions;
-}
+};
 
-export const linkTransactions = async (transaction1: Transaction, transaction2: Transaction) => {
+export const linkTransactions = async (
+  transaction1: Transaction,
+  transaction2: Transaction
+) => {
   transaction1.linkedTo = transaction2._id;
   transaction1.categoryId = "internaltransfer";
   transaction2.linkedTo = transaction1._id;
   transaction2.categoryId = "internaltransfer";
   await db.put(transaction1);
   await db.put(transaction2);
-}
+};
