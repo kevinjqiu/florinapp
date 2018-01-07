@@ -221,3 +221,29 @@ describe("transactionService.fetchTransactionLinkCandidates", () => {
     expect(candidates.map(c => c._id)).toEqual(["txn4", "txn2", "txn3"]);
   })
 })
+
+describe("transactionService.linkTransactions", () => {
+  beforeEach(async () => {
+    await reset();
+    await setupIndex(db);
+    await setupViews(db);
+  });
+
+  it("should set linkedTo attribute and categoryId", async () => {
+    let txn1 = new Transaction({ _id: "txn1", date: "2017-01-01", amount: "3500" });
+    let txn2 = new Transaction({ _id: "txn2", date: "2017-02-01", amount: "-3500" })
+
+    await transactionService.linkTransactions(txn1, txn2);
+    expect(txn1.linkedTo).toEqual("txn2");
+    expect(txn1.categoryId).toEqual("internaltransfer");
+    expect(txn2.linkedTo).toEqual("txn1");
+    expect(txn2.categoryId).toEqual("internaltransfer");
+
+    txn1 = await db.get("txn1");
+    txn2 = await db.get("txn2");
+    expect(txn1.linkedTo).toEqual("txn2");
+    expect(txn1.categoryId).toEqual("internaltransfer");
+    expect(txn2.linkedTo).toEqual("txn1");
+    expect(txn2.categoryId).toEqual("internaltransfer");
+  })
+})
