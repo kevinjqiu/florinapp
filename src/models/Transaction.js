@@ -23,6 +23,7 @@ export default class Transaction extends FlorinBase {
   splitFrom: ?string;
   // id of the transaction this transaction links to (for internal transfers)
   linkedTo: ?string;
+  linkedToTransaction: ?Transaction;
 
   constructor(props: {}) {
     super("Transaction");

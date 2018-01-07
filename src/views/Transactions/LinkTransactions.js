@@ -87,7 +87,7 @@ class LinkTransactions extends Component {
                         onChange={value => {
                           this.setState({ selected: value });
                         }}
-                        value={this.state.selected}
+                        defaultValue={transaction ? transaction.linkedToTransaction : null}
                         data={candidates}
                         valueComponent={LinkedTransactionComponent}
                         itemComponent={LinkedTransactionComponent}

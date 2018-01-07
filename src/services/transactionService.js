@@ -29,7 +29,7 @@ const fetchTransactionAccounts = async (transactions: Array<Transaction>) => {
       const doc = await db.get(aid);
       return new Account(doc);
     } catch (error) {
-      if (error.status === 404) {
+      if (parseInt(error.status) === 404) {
         return undefined;
       }
       throw error;
@@ -47,6 +47,32 @@ const fetchTransactionAccounts = async (transactions: Array<Transaction>) => {
     t.account = accountMap.get(t.accountId);
   });
 };
+
+const fetchLinkedTransactions = async (transactions: Array<Transaction>) => {
+  const transactionIds = new Set(transactions.filter(t => t.linkedTo).map(t => t.linkedTo));
+  const promises = [...transactionIds].map(async tid => {
+    try {
+      const doc = await db.get(tid);
+      return new Transaction(doc);
+    } catch (error) {
+      if (parseInt(error.status) === 404) {
+        return undefined;
+      }
+      throw error;
+    }
+  });
+  const linkedTransactions = await Promise.all(promises);
+  const transactionMap = linkedTransactions.reduce((aggregate, current) => {
+    if (current !== undefined) {
+      aggregate.set(current._id, current);
+    }
+    return aggregate;
+  }, new Map());
+
+  transactions.forEach(t => {
+    t.linkedToTransaction = transactionMap.get(t.linkedTo);
+  });
+}
 
 export const fetch = async (
   options: FetchOptions = defaultFetchOptions
@@ -80,6 +106,7 @@ export const fetch = async (
   const response = await db.query("transactions/byDate", queryOptions);
   const transactions = response.rows.map(row => new Transaction(row.doc));
   await fetchTransactionAccounts(transactions);
+  await fetchLinkedTransactions(transactions)
   return new PaginationResult(transactions, totalRows);
 };
 
