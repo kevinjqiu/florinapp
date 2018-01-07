@@ -1,11 +1,5 @@
 import React, { Component } from "react";
-import {
-  Container,
-  Badge,
-  Row,
-  Col,
-  ButtonGroup
-} from "reactstrap";
+import { Container, Badge, Row, Col, ButtonGroup } from "reactstrap";
 import { connect } from "react-redux";
 import * as actions from "../../actions";
 import TransactionTable from "./TransactionTable";
@@ -40,8 +34,22 @@ class TransactionList extends Component {
       <Container fluid>
         <Row>
           <Col xs="12" lg="12">
-            <h2 className="float-left">Transactions</h2>
-            <ButtonGroup className="float-right">
+            <h3 className="float-left">Transactions</h3>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs="12" lg="12">
+            <Badge color="primary" pill>
+              {" "}
+              Date: from {fetchOptions.filters.dateFrom} to{" "}
+              {fetchOptions.filters.dateTo}{" "}
+            </Badge>
+          </Col>
+        </Row>
+        <hr />
+        <Row>
+          <Col xs="12" lg="12">
+            <ButtonGroup>
               <RefreshButton
                 onClick={() => {
                   fetchTransactions(this.props.transactionsState.fetchOptions);
@@ -53,12 +61,6 @@ class TransactionList extends Component {
         <hr />
         <Row>
           <Col xs="12" lg="12">
-            <Badge color="primary" pill>
-              {" "}
-              Date: from {fetchOptions.filters.dateFrom} to{" "}
-              {fetchOptions.filters.dateTo}{" "}
-            </Badge>
-            <hr />
             <TransactionTable
               transactionsState={transactionsState}
               categoriesState={categoriesState}

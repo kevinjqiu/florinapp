@@ -149,8 +149,12 @@ class AccountList extends Component {
       <Container fluid>
         <Row>
           <Col xs="12" lg="12">
-            <h2 className="float-left">Accounts</h2>
-            <ButtonGroup className="float-right">
+            <h2>Accounts</h2>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <ButtonGroup>
               <NewAccountButton alignRight />
               <RefreshButton onClick={fetchAccounts} />
             </ButtonGroup>
