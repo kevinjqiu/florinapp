@@ -268,3 +268,12 @@ export const fetchTransactionLinkCandidates = (transaction: Transaction) => asyn
     dispatch(actionCreators.fetchTransactionLinkCandidatesFailed(error));
   }
 }
+
+export const linkTransactions = (transaction1: Transaction, transaction2: Transaction) => async dispatch => {
+  dispatch(actionCreators.linkTransactionsRequested());
+  try {
+    dispatch(actionCreators.linkTransactionsSucceeded(transaction1, transaction2));
+  } catch (error) {
+    dispatch(actionCreators.linkTransactionsFailed(error));
+  }
+}

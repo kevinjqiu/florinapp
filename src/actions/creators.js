@@ -315,3 +315,19 @@ export const fetchTransactionLinkCandidatesSucceeded = (candidates: Array<Transa
 }
 
 export const fetchTransactionLinkCandidatesFailed = actionFailed(actionTypes.FETCH_TRANSACTION_LINK_CANDIDATES_FAILED);
+
+export const linkTransactionsRequested = () => {
+  return {
+    type: actionTypes.LINK_TRANSACTIONS_REQUESTED
+  }
+}
+
+export const linkTransactionsSucceeded = (transaction1: Transaction, transaction2: Transaction) => {
+  return {
+    type: actionTypes.LINK_TRANSACTIONS_SUCCEEDED,
+    transaction1,
+    transaction2
+  }
+}
+
+export const linkTransactionsFailed = actionFailed(actionTypes.LINK_TRANSACTIONS_FAILED);

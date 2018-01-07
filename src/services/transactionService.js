@@ -134,6 +134,7 @@ export const importAccountStatement = async (
 };
 
 export const fetchTransactionLinkCandidates = async (transaction: Transaction): Promise<Array<Transaction>> => {
+  // TODO: use a permanent view
   const mapFun = (doc, emit) => {
     if (doc.metadata && doc.metadata.type === "Transaction") {
       emit([doc.amount, doc.date], null);
@@ -149,4 +150,13 @@ export const fetchTransactionLinkCandidates = async (transaction: Transaction): 
   const transactions = response.rows.map(r => new Transaction(r.doc));
   await fetchTransactionAccounts(transactions);
   return transactions;
+}
+
+export const linkTransactions = async (transaction1: Transaction, transaction2: Transaction) => {
+  console.log(transaction1);
+  console.log(transaction2);
+  transaction1.linkedTo = transaction2._id;
+  transaction2.linkedTo = transaction1._id;
+  await db.put(transaction1);
+  await db.put(transaction2);
 }
