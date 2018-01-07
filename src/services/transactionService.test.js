@@ -154,6 +154,20 @@ describe("transactionService.fetch", () => {
     const transactions = result.result;
     expect(transactions.map(t => t._id)).toEqual(["txn1", "txn2"]);
   })
+
+  it("should set the linkedToTransaction attribute when applicable", async () => {
+    const txn1 = new Transaction({ _id: "txn1", date: "2017-01-01", amount: "3500", linkedTo: "txn2" });
+    const txn2 = new Transaction({ _id: "txn2", date: "2017-02-01", amount: "-3500", linkedTo: "txn1" })
+    const txn3 = new Transaction({ _id: "txn3", date: "2018-01-05", amount: "-3501" })
+    await db.post(txn1);
+    await db.post(txn2);
+    await db.post(txn3);
+
+    const txns = await transactionService.fetch(defaultFetchOptions);
+    expect(txns.result[0].linkedToTransaction._id).toBe("txn2");
+    expect(txns.result[1].linkedToTransaction._id).toBe("txn1");
+    expect(txns.result[2].linkedToTransaction).toBe(undefined);
+  })
 });
 
 describe("transactionService.updateCategory", () => {
