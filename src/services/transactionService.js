@@ -29,7 +29,7 @@ const fetchTransactionAccounts = async (transactions: Array<Transaction>) => {
       const doc = await db.get(aid);
       return new Account(doc);
     } catch (error) {
-      if (parseInt(error.status) === 404) {
+      if (parseInt(error.status, 10) === 404) {
         return undefined;
       }
       throw error;
@@ -55,7 +55,7 @@ const fetchLinkedTransactions = async (transactions: Array<Transaction>) => {
       const doc = await db.get(tid);
       return new Transaction(doc);
     } catch (error) {
-      if (parseInt(error.status) === 404) {
+      if (parseInt(error.status, 10) === 404) {
         return undefined;
       }
       throw error;
