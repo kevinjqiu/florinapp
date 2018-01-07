@@ -16,6 +16,11 @@ const initState = {
   },
   statementImport: {
     loading: false
+  },
+  linkTransactions: {
+    isOpen: false,
+    transaction: null,
+    candidates: []
   }
 };
 
@@ -80,6 +85,33 @@ export default (state = initState, action) => {
           loading: false
         }
       };
+    case actionTypes.OPEN_LINK_TRANSACTIONS_DIALOG:
+      return {
+        ...state,
+        linkTransactions: {
+          ...state.linkTransactions,
+          isOpen: true,
+          transaction: action.transaction
+        }
+      };
+    case actionTypes.CLOSE_LINK_TRANSACTIONS_DIALOG:
+      return {
+        ...state,
+        linkTransactions: {
+          ...state.linkTransactions,
+          isOpen: false,
+          transaction: null,
+          candidates: []
+        }
+      };
+    case actionTypes.FETCH_TRANSACTION_LINK_CANDIDATES_SUCCEEDED:
+      return {
+        ...state,
+        linkTransactions: {
+          ...state.linkTransactions,
+          candidates: action.candidates
+        }
+      }
     default:
       return state;
   }

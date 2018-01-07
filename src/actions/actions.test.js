@@ -198,6 +198,7 @@ describe("Transactions", () => {
       await db.post(new Transaction({ _id: "txn2", date: "2017-05-05" }));
       await store.dispatch(
         actions.fetchTransactions({
+          orderBy: ["date", "asc"],
           pagination: { perPage: 999, page: 1 },
           filters: {}
         })

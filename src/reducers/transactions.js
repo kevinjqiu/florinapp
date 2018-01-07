@@ -11,7 +11,7 @@ const initState = {
   failed: false
 };
 
-const createFiltersFromQueryParams = (queryParams) => {
+const createFiltersFromQueryParams = queryParams => {
   let filters = {};
   if (queryParams["filters.dateFrom"] && queryParams["filters.dateTo"]) {
     filters["dateFrom"] = queryParams["filters.dateFrom"];
@@ -23,6 +23,7 @@ const createFiltersFromQueryParams = (queryParams) => {
 };
 
 export default (state = initState, action) => {
+  let newTransactions = [];
   switch (action.type) {
     case actionTypes.FETCH_TRANSACTIONS_SUCCEEDED:
       return {
@@ -46,7 +47,6 @@ export default (state = initState, action) => {
       };
     case actionTypes.UPDATE_TRANSACTION_CATEGORY_SUCCEEDED:
       const { transactionId, categoryId } = action;
-      const newTransactions = [];
       state.transactions.forEach(t => {
         if (t._id === transactionId) {
           t.categoryId = categoryId;
@@ -69,6 +69,23 @@ export default (state = initState, action) => {
             dateTo: dateRange.end.format("YYYY-MM-DD")
           }
         }
+      };
+    case actionTypes.LINK_TRANSACTIONS_SUCCEEDED:
+      const { transaction1, transaction2 } = action;
+      state.transactions.forEach(t => {
+        if (t._id === transaction1._id) {
+          newTransactions.push(transaction1);
+          return;
+        }
+        if (t._id === transaction2._id) {
+          newTransactions.push(transaction2);
+          return;
+        }
+        newTransactions.push(t);
+      });
+      return {
+        ...state,
+        transactions: newTransactions
       };
     case "@@router/LOCATION_CHANGE":
       const routerPayload = action.payload;

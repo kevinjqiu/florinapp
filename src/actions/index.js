@@ -8,6 +8,7 @@ import * as syncService from "../services/syncService";
 import type FetchOptions from "../services/FetchOptions";
 import DateRange from "../models/DateRange";
 import Account from "../models/Account";
+import Transaction from "../models/Transaction";
 import Sync from "../models/Sync";
 import { Location } from "react-router";
 import * as queryString from "query-string";
@@ -249,3 +250,33 @@ export const startSync = (sync: Sync) => dispatch => {
 
   dispatch(actionCreators.syncStarted(sync));
 };
+
+export const openLinkTransactionsDialog = (transaction: Transaction) => dispatch => {
+  dispatch(actionCreators.openLinkTransactionsDialog(transaction));
+};
+
+export const closeLinkTransactionsDialog = () => dispatch => {
+  dispatch(actionCreators.closeLinkTransactionsDialog());
+}
+
+export const fetchTransactionLinkCandidates = (transaction: Transaction) => async dispatch => {
+  dispatch(actionCreators.fetchTransactionLinkCandidatesRequested());
+  try {
+    const candidates = await transactionService.fetchTransactionLinkCandidates(transaction);
+    dispatch(actionCreators.fetchTransactionLinkCandidatesSucceeded(candidates));
+  } catch (error) {
+    dispatch(actionCreators.fetchTransactionLinkCandidatesFailed(error));
+  }
+}
+
+export const linkTransactions = (transaction1: Transaction, transaction2: Transaction) => async dispatch => {
+  dispatch(actionCreators.linkTransactionsRequested());
+  try {
+    await transactionService.linkTransactions(transaction1, transaction2);
+    dispatch(actionCreators.linkTransactionsSucceeded(transaction1, transaction2));
+    dispatch(actionCreators.showSuccessNotification("Successfully linked the transactions"));
+  } catch (error) {
+    dispatch(actionCreators.linkTransactionsFailed(error));
+    dispatch(actionCreators.showErrorNotification("Cannot link the transactions", error));
+  }
+}

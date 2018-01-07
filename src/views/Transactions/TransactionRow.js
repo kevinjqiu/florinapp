@@ -8,6 +8,8 @@ import DeleteButton from "../../components/ListActionButton/DeleteButton";
 import { categoryTypes } from "../../models/CategoryType";
 import { DropdownList } from "react-widgets";
 import { reduxForm } from "redux-form";
+import { connect } from "react-redux";
+import * as actions from "../../actions";
 
 const CategoryItemComponent = ({ item }) => {
   let color;
@@ -70,11 +72,11 @@ const TransactionDetailForm = ({ transaction }) => {
   return <F transaction={transaction} />;
 };
 
-export default class TransactionRow extends Component {
+class TransactionRow extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isExpanded: false
+      isExpanded: false,
     };
   }
   render() {
@@ -82,7 +84,8 @@ export default class TransactionRow extends Component {
       transaction,
       categories,
       disabledCategories,
-      updateTransactionCategory
+      updateTransactionCategory,
+      openLinkTransactionsDialog
     } = this.props;
     const { isExpanded } = this.state;
     return (
@@ -114,6 +117,15 @@ export default class TransactionRow extends Component {
                   console.log("TODO");
                 }}
               />
+              <ListActionButton
+                id={`btn-link-${transaction._id}`}
+                color="primary"
+                icon="fa-link"
+                tooltip="Link this transaction"
+                onClick={() => {
+                  openLinkTransactionsDialog(transaction);
+                }}
+              />
               <DeleteButton
                 objectId={transaction._id}
                 onClick={() => {
@@ -132,7 +144,7 @@ export default class TransactionRow extends Component {
             </Link>{" "}
             <Link to={`/accounts/${transaction.account._id}/view`}>
               <ListActionButton
-                id={`btn-link-${transaction._id}`}
+                id={`btn-openaccount-${transaction._id}`}
                 icon="fa-external-link"
                 outline={true}
                 tooltip="Open account page"
@@ -167,3 +179,5 @@ export default class TransactionRow extends Component {
     );
   }
 }
+
+export default connect(null, actions)(TransactionRow)

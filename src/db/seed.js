@@ -18,7 +18,7 @@ const categorySeeds = (): Array<Category> => {
     newCategory("automobile", "Automobile", null, false),
     newCategory(
       "automobile-carinsurance",
-      "Car Insurance",
+      "Automobile::Car Insurance",
       "automobile"
     ),
     newCategory(

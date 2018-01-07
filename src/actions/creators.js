@@ -287,3 +287,47 @@ export const syncErrored = (sync: Sync, error) => {
     error
   };
 };
+
+export const openLinkTransactionsDialog = (transaction: Transaction) => {
+  return {
+    type: actionTypes.OPEN_LINK_TRANSACTIONS_DIALOG,
+    transaction
+  };
+};
+
+export const closeLinkTransactionsDialog = () => {
+  return {
+    type: actionTypes.CLOSE_LINK_TRANSACTIONS_DIALOG
+  };
+};
+
+export const fetchTransactionLinkCandidatesRequested = () => {
+  return {
+    type: actionTypes.FETCH_TRANSACTION_LINK_CANDIDATES_REQUESTED
+  };
+};
+
+export const fetchTransactionLinkCandidatesSucceeded = (candidates: Array<Transaction>) => {
+  return {
+    type: actionTypes.FETCH_TRANSACTION_LINK_CANDIDATES_SUCCEEDED,
+    candidates
+  };
+}
+
+export const fetchTransactionLinkCandidatesFailed = actionFailed(actionTypes.FETCH_TRANSACTION_LINK_CANDIDATES_FAILED);
+
+export const linkTransactionsRequested = () => {
+  return {
+    type: actionTypes.LINK_TRANSACTIONS_REQUESTED
+  }
+}
+
+export const linkTransactionsSucceeded = (transaction1: Transaction, transaction2: Transaction) => {
+  return {
+    type: actionTypes.LINK_TRANSACTIONS_SUCCEEDED,
+    transaction1,
+    transaction2
+  }
+}
+
+export const linkTransactionsFailed = actionFailed(actionTypes.LINK_TRANSACTIONS_FAILED);
