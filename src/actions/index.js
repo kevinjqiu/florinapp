@@ -272,6 +272,7 @@ export const fetchTransactionLinkCandidates = (transaction: Transaction) => asyn
 export const linkTransactions = (transaction1: Transaction, transaction2: Transaction) => async dispatch => {
   dispatch(actionCreators.linkTransactionsRequested());
   try {
+    await transactionService.linkTransactions(transaction1, transaction2);
     dispatch(actionCreators.linkTransactionsSucceeded(transaction1, transaction2));
     dispatch(actionCreators.showSuccessNotification("Successfully linked the transactions"));
   } catch (error) {
