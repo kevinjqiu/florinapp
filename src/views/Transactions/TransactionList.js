@@ -16,6 +16,7 @@ class TransactionList extends Component {
     const { fetchOptions } = this.props.transactionsState;
     this.props.fetchTransactions(fetchOptions);
     this.props.fetchIncomeExpensesStats(fetchOptions.filters);
+    this.props.fetchCategorySummaries(fetchOptions.filters);
   }
 
   componentDidMount() {
@@ -23,6 +24,7 @@ class TransactionList extends Component {
     const { fetchOptions } = this.props.transactionsState;
     this.props.fetchTransactions(fetchOptions);
     this.props.fetchIncomeExpensesStats(fetchOptions.filters);
+    this.props.fetchCategorySummaries(fetchOptions.filters);
   }
 
   render() {

@@ -1,7 +1,8 @@
 import * as actionTypes from "../actions/types";
 
 const initState = {
-  incomeExpensesStats: null
+  incomeExpensesStats: null,
+  categorySummaries: null
 };
 
 export default (state = initState, action) => {
@@ -11,6 +12,11 @@ export default (state = initState, action) => {
         ...state,
         incomeExpensesStats: action.payload
       };
+    case actionTypes.FETCH_CATEGORY_SUMMARIES_SUCCEEDED:
+      return {
+        ...state,
+        categorySummaries: action.payload
+      }
     default:
       return state;
   }

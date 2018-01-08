@@ -46,10 +46,70 @@ const CallhoutBar = ({ text, percentage, colorTitle, colorBar }) => {
   );
 };
 
+const IncomeByCategory = ({ categorySummary }) => {
+  if (!categorySummary) {
+    return (
+      <div>
+        <Section>Income by Category</Section>
+        <span>N/A</span>
+      </div>
+    );
+  }
+
+  const totalAmount = categorySummary.map(s => s.amount).reduce((a, b) => a + b);
+
+  return (
+    <div>
+      <Section>Income by Category</Section>
+      {categorySummary.map(s => {
+        return (
+        <CallhoutBar
+          text={s.categoryName}
+          percentage={String(100 * s.amount / totalAmount)}
+          colorTitle="success"
+          colorBar="success"
+        />
+        );
+      })}
+    </div>
+  );
+};
+
+const ExpensesByCategory = ({ categorySummary }) => {
+  console.log(categorySummary);
+  if (!categorySummary) {
+    return (
+      <div>
+        <Section>Expenses by Category</Section>
+        <span>N/A</span>
+      </div>
+    );
+  }
+
+  const totalAmount = categorySummary.map(s => s.amount).reduce((a, b) => a + b);
+  console.log(totalAmount);
+
+  return (
+    <div>
+      <Section>Expenses by Category</Section>
+      {categorySummary.map(s => {
+        return (
+        <CallhoutBar
+          text={s.categoryName}
+          percentage={String(100 * s.amount / totalAmount)}
+          colorTitle="danger"
+          colorBar="danger"
+        />
+        );
+      })}
+    </div>
+  );
+};
+
 class TransactionListAside extends Component {
   render() {
     const { filters, transactionListAside, fetchIncomeExpensesStats } = this.props;
-    const { incomeExpensesStats } = transactionListAside;
+    const { incomeExpensesStats, categorySummaries } = transactionListAside;
     return (
       <div>
         <Section onClick={() => {fetchIncomeExpensesStats(filters)}}>Income vs Expense</Section>
@@ -63,20 +123,8 @@ class TransactionListAside extends Component {
           color="danger"
           textRight={incomeExpensesStats ? <Currency amount={incomeExpensesStats.DEBIT} code="CAD" /> : "N/A"}
         />
-        <Section>Income by Category</Section>
-        <CallhoutBar
-          text="Salary"
-          percentage="94"
-          colorTitle="info"
-          coloBar="success"
-        />
-        <Section>Expenses by Category</Section>
-        <CallhoutBar
-          text="Mortgage"
-          percentage="85"
-          colorTitle="danger"
-          colorBar="danger"
-        />"
+        <IncomeByCategory categorySummary={categorySummaries ? categorySummaries.incomeCategories: null} />
+        <ExpensesByCategory categorySummary={categorySummaries ? categorySummaries.expensesCategories : null} />
       </div>
     );
   }

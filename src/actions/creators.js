@@ -357,3 +357,18 @@ export const fetchIncomeExpensesStatsSucceeded = payload => {
 export const fetchIncomeExpensesStatsFailed = actionFailed(
   actionTypes.FETCH_INCOME_EXPENSES_STATS_FAILED
 );
+
+export const fetchCategorySummariesRequested = () => {
+  return {
+    type: actionTypes.FETCH_CATEGORY_SUMMARIES_REQUESTED
+  };
+}
+
+export const fetchCategorySummariesSucceeded = (payload) => {
+  return {
+    type: actionTypes.FETCH_CATEGORY_SUMMARIES_SUCCEEDED,
+    payload
+  };
+}
+
+export const fetchCategorySummariesFailed = actionFailed(actionTypes.FETCH_CATEGORY_SUMMARIES_FAILED);

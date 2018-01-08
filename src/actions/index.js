@@ -290,3 +290,13 @@ export const fetchIncomeExpensesStats = (filter: {dateFrom: string, dateTo: stri
     dispatch(actionCreators.fetchIncomeExpensesStatsFailed(error));
   }
 }
+
+export const fetchCategorySummaries = (filter: {dateFrom: string, dateTo: string}) => async dispatch => {
+  dispatch(actionCreators.fetchCategorySummariesRequested());
+  try {
+    const payload = await transactionService.sumByCategory(filter);
+    dispatch(actionCreators.fetchCategorySummariesSucceeded(payload));
+  } catch (error) {
+    dispatch(actionCreators.fetchCategorySummariesFailed(error));
+  }
+}
