@@ -99,7 +99,7 @@ const AccountCardBody = ({
           <th>Financial Institution</th>
           <th>Currency</th>
           <th>Type</th>
-          <th>Current Balance</th>
+          <th style={{textAlign: "right"}}>Current Balance</th>
         </tr>
       </thead>
       <tbody>
@@ -130,7 +130,7 @@ const AccountCardBody = ({
             <td>{account.financialInstitution}</td>
             <td>{account.currency}</td>
             <td>{account.type}</td>
-            <td>{getLatestAccountBalance(account)}</td>
+            <td style={{textAlign: "right"}}>{getLatestAccountBalance(account)}</td>
           </tr>
         ))}
       </tbody>
