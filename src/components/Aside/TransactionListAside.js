@@ -3,6 +3,8 @@ import { Progress } from "reactstrap";
 import { connect } from "react-redux";
 import * as actions from "../../actions";
 import Currency from "../../components/Currency/Currency";
+import ReactTooltip from "react-tooltip";
+import * as currencyFormatter from "currency-formatter";
 
 const Section = ({ children }) => {
   return (
@@ -27,10 +29,18 @@ const Callout = ({ color, textLeft, textRight }) => {
   );
 };
 
-const CallhoutBar = ({ text, percentage, colorTitle, colorBar }) => {
+const CallhoutBar = ({
+  id,
+  text,
+  percentage,
+  colorTitle,
+  colorBar,
+  amount
+}) => {
+  const tooltipId = `tooltip-${id}`;
   return (
-    <div className={`callout callout-${colorTitle}`}>
-      <ul className="horizontal-bars">
+    <div className={`callout callout-${colorTitle}`} style={{ border: "0px" }}>
+      <ul className="horizontal-bars" data-tip data-for={tooltipId}>
         <li>
           <div className="title">{text}</div>
           <div className="bars">
@@ -42,6 +52,9 @@ const CallhoutBar = ({ text, percentage, colorTitle, colorBar }) => {
           </div>
         </li>
       </ul>
+      <ReactTooltip place="top" id={tooltipId} type="info" effect="solid">
+        {currencyFormatter.format(amount, {code: "CAD"})}
+      </ReactTooltip>
     </div>
   );
 };
@@ -61,13 +74,16 @@ const IncomeByCategory = ({ categorySummary }) => {
   return (
     <div>
       <Section>Income by Category</Section>
-      {categorySummary.map(s => {
+      {categorySummary.map((s, idx) => {
         return (
         <CallhoutBar
+          key={`income-${idx}`}
+          id={`income-${idx}`}
           text={s.categoryName}
           percentage={String(100 * s.amount / totalAmount)}
           colorTitle="success"
           colorBar="success"
+          amount={s.amount}
         />
         );
       })}
@@ -92,13 +108,16 @@ const ExpensesByCategory = ({ categorySummary }) => {
   return (
     <div>
       <Section>Expenses by Category</Section>
-      {categorySummary.map(s => {
+      {categorySummary.map((s, idx) => {
         return (
         <CallhoutBar
+          key={`expenses-${idx}`}
+          id={`expenses-${idx}`}
           text={s.categoryName}
           percentage={String(100 * s.amount / totalAmount)}
           colorTitle="danger"
           colorBar="danger"
+          amount={s.amount}
         />
         );
       })}
