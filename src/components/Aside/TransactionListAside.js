@@ -55,7 +55,7 @@ class TransactionListAside extends Component {
         <Section onClick={() => {fetchIncomeExpensesStats(filters)}}>Income vs Expense</Section>
         <Callout
           textLeft="Income"
-          color="info"
+          color="success"
           textRight={incomeExpensesStats ? <Currency amount={incomeExpensesStats.CREDIT} code="CAD" /> : "N/A"}
         />
         <Callout

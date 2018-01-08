@@ -8,6 +8,7 @@ import type FetchOptions from "./FetchOptions";
 import PaginationResult from "./PaginationResult";
 import { thisMonth } from "../models/presetDateRanges";
 import { transactionTypes } from "../models/TransactionType";
+import CategorySummary from "../models/CategorySummary";
 
 const thisMonthDateRange = thisMonth();
 
@@ -50,7 +51,9 @@ const fetchTransactionAccounts = async (transactions: Array<Transaction>) => {
 };
 
 const fetchLinkedTransactions = async (transactions: Array<Transaction>) => {
-  const transactionIds = new Set(transactions.filter(t => t.linkedTo).map(t => t.linkedTo));
+  const transactionIds = new Set(
+    transactions.filter(t => t.linkedTo).map(t => t.linkedTo)
+  );
   const promises = [...transactionIds].map(async tid => {
     try {
       const doc = await db.get(tid);
@@ -73,7 +76,7 @@ const fetchLinkedTransactions = async (transactions: Array<Transaction>) => {
   transactions.forEach(t => {
     t.linkedToTransaction = transactionMap.get(t.linkedTo);
   });
-}
+};
 
 export const fetch = async (
   options: FetchOptions = defaultFetchOptions
@@ -107,7 +110,7 @@ export const fetch = async (
   const response = await db.query("transactions/byDate", queryOptions);
   const transactions = response.rows.map(row => new Transaction(row.doc));
   await fetchTransactionAccounts(transactions);
-  await fetchLinkedTransactions(transactions)
+  await fetchLinkedTransactions(transactions);
   return new PaginationResult(transactions, totalRows);
 };
 
@@ -171,7 +174,7 @@ export const fetchTransactionLinkCandidates = async (transaction: Transaction): 
     endkey: [amount, ""],
     include_docs: true,
     descending: true
-  }
+  };
   const response = await db.query("transactions/byAmount", options);
   const transactions = response.rows.map(r => new Transaction(r.doc));
   await fetchTransactionAccounts(transactions);
@@ -190,7 +193,7 @@ export const linkTransactions = async (
   await db.put(transaction2);
 };
 
-export const sumByType = async (filter: {dateFrom: string, dateTo: string}) => {
+export const sumByType = async (filter: { dateFrom: string, dateTo: string }) => {
   let result = await db.query("transactions/byType", {
     startkey: [transactionTypes.CREDIT, filter.dateFrom],
     endkey: [transactionTypes.CREDIT, filter.dateTo]
@@ -201,10 +204,56 @@ export const sumByType = async (filter: {dateFrom: string, dateTo: string}) => {
     startkey: [transactionTypes.DEBIT, filter.dateFrom],
     endkey: [transactionTypes.DEBIT, filter.dateTo]
   });
-  const totalDebit = result.rows.length > 0 ? result.rows[0].value: 0;
+  const totalDebit = result.rows.length > 0 ? result.rows[0].value : 0;
 
   return {
     [transactionTypes.CREDIT]: totalCredit,
     [transactionTypes.DEBIT]: totalDebit
-  }
+  };
+};
+
+export const sumByCategory = async (filter: { dateFrom: string, dateTo: string }): Promise<CategorySummary> => {
+  const mapFun = (doc, emit) => {
+    if (doc.metadata && doc.metadata.type === "Transaction") {
+      emit([doc.date, doc.categoryId], parseFloat(doc.amount));
+    }
+  };
+
+  const reduceFun = (key, values, rereduce) => {
+    if (!rereduce) {
+      var result = {};
+      for (var i=0; i<key.length; i++) {
+        var categoryId = key[i][0][1];
+        result[categoryId] = result[categoryId] || 0;
+        result[categoryId] += values[i];
+      }
+      return result;
+    }
+    var result = {};
+    for (var i=0; i<values.length; i++) {
+      for (var k in values[i]) {
+        result[k] = result[k] || 0;
+        result[k] += values[i][k];
+      }
+    }
+    return result;
+  };
+
+  const options = {
+    startkey: [filter.dateFrom],
+    endkey: [filter.dateTo]
+  };
+  const result = await db.query(
+    {
+      map: mapFun,
+      reduce: reduceFun
+    },
+    options
+  );
+  const stats = result.rows.length > 0 ? result.rows[0].value : null;
+  console.log(stats);
+  return new CategorySummary({
+    incomeCategories: [],
+    expensesCategories: []
+  });
 };
