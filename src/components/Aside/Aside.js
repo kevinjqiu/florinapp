@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Row } from "reactstrap";
 import TransactionListAside from "./TransactionListAside";
 
 const AsideContent = ({ location }) => {

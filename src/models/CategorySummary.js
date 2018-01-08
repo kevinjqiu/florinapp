@@ -1,6 +1,6 @@
-import { CategoryType } from "./CategoryType";
-
 // @flow
+
+import type { CategoryType } from "./CategoryType";
 
 class Summary {
   categoryId: string;

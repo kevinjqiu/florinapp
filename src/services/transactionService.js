@@ -207,43 +207,11 @@ export const sumByType = async (filter: { dateFrom: string, dateTo: string }) =>
 };
 
 export const sumByCategory = async (filter: { dateFrom: string, dateTo: string }): Promise<CategorySummary> => {
-  const mapFun = (doc, emit) => {
-    if (doc.metadata && doc.metadata.type === "Transaction") {
-      emit([doc.date, doc.categoryId], parseFloat(doc.amount));
-    }
-  };
-
-  const reduceFun = (key, values, rereduce) => {
-    if (!rereduce) {
-      var result = {};
-      for (var i=0; i<key.length; i++) {
-        var categoryId = key[i][0][1];
-        result[categoryId] = result[categoryId] || 0;
-        result[categoryId] += values[i];
-      }
-      return result;
-    }
-    var result = {};
-    for (var j=0; i<values.length; j++) {
-      for (var k in values[j]) {
-        result[k] = result[k] || 0;
-        result[k] += values[j][k];
-      }
-    }
-    return result;
-  };
-
   const options = {
     startkey: [filter.dateFrom],
     endkey: [filter.dateTo]
   };
-  const result = await db.query(
-    {
-      map: mapFun,
-      reduce: reduceFun
-    },
-    options
-  );
+  const result = await db.query("transactions/byCategory", options);
   const stats = result.rows.length > 0 ? result.rows[0].value : null;
   let incomeCategories = [];
   let expensesCategories = [];
@@ -258,7 +226,7 @@ export const sumByCategory = async (filter: { dateFrom: string, dateTo: string }
     const categorySummaries = [...categoryIds].map(categoryId => {
       const category = categoryMap.get(categoryId);
       if (!category) {
-        return;
+        return null;
       }
 
       const categorySummary = new CategorySummary({
@@ -271,8 +239,8 @@ export const sumByCategory = async (filter: { dateFrom: string, dateTo: string }
 
       return categorySummary
     });
-    incomeCategories = categorySummaries.filter(cs => cs.categoryType === categoryTypes.INCOME);
-    expensesCategories = categorySummaries.filter(cs => cs.categoryType === categoryTypes.EXPENSE);
+    incomeCategories = categorySummaries.filter(cs => cs && cs.categoryType === categoryTypes.INCOME);
+    expensesCategories = categorySummaries.filter(cs => cs && cs.categoryType === categoryTypes.EXPENSE);
     incomeCategories.sort((a, b) => a.amount < b.amount);
     expensesCategories.sort((a, b) => a.amount > b.amount);
   }
