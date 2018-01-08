@@ -53,13 +53,19 @@ const CallhoutBar = ({
         </li>
       </ul>
       <ReactTooltip place="top" id={tooltipId} type="info" effect="solid">
-        {currencyFormatter.format(amount, {code: "CAD"})}
+        {currencyFormatter.format(amount, { code: "CAD" })}
       </ReactTooltip>
     </div>
   );
 };
 
-const CategorySummary = ({categorySummary, type, title, colorTitle, colorBar}) => {
+const CategorySummary = ({
+  categorySummary,
+  type,
+  title,
+  colorTitle,
+  colorBar
+}) => {
   if (!categorySummary) {
     return (
       <div>
@@ -69,54 +75,82 @@ const CategorySummary = ({categorySummary, type, title, colorTitle, colorBar}) =
     );
   }
 
-  const totalAmount = categorySummary.map(s => s.amount).reduce((a, b) => a + b);
+  const totalAmount = categorySummary
+    .map(s => s.amount)
+    .reduce((a, b) => a + b);
 
   return (
     <div>
       <Section>{title}</Section>
       {categorySummary.map((s, idx) => {
         return (
-        <CallhoutBar
-          key={`${type}-${idx}`}
-          id={`${type}-${idx}`}
-          text={s.categoryName}
-          percentage={String(100 * s.amount / totalAmount)}
-          colorTitle={colorTitle}
-          colorBar={colorBar}
-          amount={s.amount}
-        />
+          <CallhoutBar
+            key={`${type}-${idx}`}
+            id={`${type}-${idx}`}
+            text={s.categoryName}
+            percentage={String(100 * s.amount / totalAmount)}
+            colorTitle={colorTitle}
+            colorBar={colorBar}
+            amount={s.amount}
+          />
         );
       })}
     </div>
   );
-}
+};
 
 class TransactionListAside extends Component {
   render() {
-    const { filters, transactionListAside, fetchIncomeExpensesStats } = this.props;
+    const {
+      filters,
+      transactionListAside,
+      fetchIncomeExpensesStats
+    } = this.props;
     const { incomeExpensesStats, categorySummaries } = transactionListAside;
     return (
       <div>
-        <Section onClick={() => {fetchIncomeExpensesStats(filters)}}>Income vs Expense</Section>
+        <Section
+          onClick={() => {
+            fetchIncomeExpensesStats(filters);
+          }}
+        >
+          Income vs Expense
+        </Section>
         <Callout
           textLeft="Income"
           color="success"
-          textRight={incomeExpensesStats ? <Currency amount={incomeExpensesStats.CREDIT} code="CAD" /> : "N/A"}
+          textRight={
+            incomeExpensesStats ? (
+              <Currency amount={incomeExpensesStats.CREDIT} code="CAD" />
+            ) : (
+              "N/A"
+            )
+          }
         />
         <Callout
           textLeft="Expenses"
           color="danger"
-          textRight={incomeExpensesStats ? <Currency amount={incomeExpensesStats.DEBIT} code="CAD" /> : "N/A"}
+          textRight={
+            incomeExpensesStats ? (
+              <Currency amount={incomeExpensesStats.DEBIT} code="CAD" />
+            ) : (
+              "N/A"
+            )
+          }
         />
         <CategorySummary
-          categorySummary={categorySummaries ? categorySummaries.incomeCategories: null}
+          categorySummary={
+            categorySummaries ? categorySummaries.incomeCategories : null
+          }
           title="Income By Category"
           colorTitle="success"
           colorBar="success"
           type="income"
         />
         <CategorySummary
-          categorySummary={categorySummaries ? categorySummaries.incomeCategories: null}
+          categorySummary={
+            categorySummaries ? categorySummaries.expensesCategories : null
+          }
           title="Expenses By Category"
           colorTitle="danger"
           colorBar="danger"
