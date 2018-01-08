@@ -241,8 +241,8 @@ export const sumByCategory = async (filter: { dateFrom: string, dateTo: string }
     });
     incomeCategories = summaries.filter(cs => cs && cs.categoryType === categoryTypes.INCOME);
     expensesCategories = summaries.filter(cs => cs && cs.categoryType === categoryTypes.EXPENSE);
-    incomeCategories.sort((a, b) => parseFloat(b.amount) - parseFloat(a.amount));
-    expensesCategories.sort((a, b) => parseFloat(a.amount) - parseFloat(b.amount));
+    incomeCategories.sort((a, b) => b.amount - a.amount);
+    expensesCategories.sort((a, b) => a.amount - b.amount);
   }
   return new CategorySummary({
     incomeCategories,
