@@ -17,7 +17,7 @@ export const setupViews = async db => {
   } catch (error) {
     ddoc = {};
   }
-  const transactionByDate = Object.assign(ddoc, {
+  const transactionsDdoc = Object.assign(ddoc, {
     _id: "_design/transactions",
     views: {
       byDate: {
@@ -26,8 +26,16 @@ export const setupViews = async db => {
             emit(doc.date, null);
           }
         }.toString()
+      },
+      byType: {
+        map: function(doc) {
+          if (doc.metadata && doc.metadata.type === "Transaction") {
+            emit([doc.type, doc.date], parseFloat(doc.amount));
+          }
+        }.toString(),
+        reduce: "_sum"
       }
     }
   });
-  await db.put(transactionByDate);
+  await db.put(transactionsDdoc);
 };

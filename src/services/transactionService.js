@@ -7,6 +7,7 @@ import OfxAdapter from "./OfxAdapter";
 import type FetchOptions from "./FetchOptions";
 import PaginationResult from "./PaginationResult";
 import { thisMonth } from "../models/presetDateRanges";
+import { transactionTypes } from "../models/TransactionType";
 
 const thisMonthDateRange = thisMonth();
 
@@ -192,4 +193,30 @@ export const linkTransactions = async (
   transaction2.categoryId = "internaltransfer";
   await db.put(transaction1);
   await db.put(transaction2);
+};
+
+export const sumByType = async (filter: {dateFrom: string, dateTo: string}) => {
+  const mapFun = (doc, emit) => {
+    if (doc.metadata && doc.metadata.type === "Transaction") {
+      emit([doc.type, doc.date], parseFloat(doc.amount));
+    }
+  }
+
+  let result = await db.query("transactions/byType", {
+    startkey: [transactionTypes.CREDIT, filter.dateFrom],
+    endkey: [transactionTypes.CREDIT, filter.dateTo]
+  });
+  console.log(result);
+  const totalCredit = result.rows.length > 0 ? result.rows[0].value : 0;
+
+  result = await db.query("transactions/byType", {
+    startkey: [transactionTypes.DEBIT, filter.dateFrom],
+    endkey: [transactionTypes.DEBIT, filter.dateTo]
+  });
+  const totalDebit = result.rows.length > 0 ? result.rows[0].value: 0;
+
+  return {
+    [transactionTypes.CREDIT]: totalCredit,
+    [transactionTypes.DEBIT]: totalDebit
+  }
 };
