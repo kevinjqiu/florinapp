@@ -59,11 +59,11 @@ const CallhoutBar = ({
   );
 };
 
-const IncomeByCategory = ({ categorySummary }) => {
+const CategorySummary = ({categorySummary, type, title, colorTitle, colorBar}) => {
   if (!categorySummary) {
     return (
       <div>
-        <Section>Income by Category</Section>
+        <Section>{title}</Section>
         <span>N/A</span>
       </div>
     );
@@ -73,57 +73,23 @@ const IncomeByCategory = ({ categorySummary }) => {
 
   return (
     <div>
-      <Section>Income by Category</Section>
+      <Section>{title}</Section>
       {categorySummary.map((s, idx) => {
         return (
         <CallhoutBar
-          key={`income-${idx}`}
-          id={`income-${idx}`}
+          key={`${type}-${idx}`}
+          id={`${type}-${idx}`}
           text={s.categoryName}
           percentage={String(100 * s.amount / totalAmount)}
-          colorTitle="success"
-          colorBar="success"
+          colorTitle={colorTitle}
+          colorBar={colorBar}
           amount={s.amount}
         />
         );
       })}
     </div>
   );
-};
-
-const ExpensesByCategory = ({ categorySummary }) => {
-  console.log(categorySummary);
-  if (!categorySummary) {
-    return (
-      <div>
-        <Section>Expenses by Category</Section>
-        <span>N/A</span>
-      </div>
-    );
-  }
-
-  const totalAmount = categorySummary.map(s => s.amount).reduce((a, b) => a + b);
-  console.log(totalAmount);
-
-  return (
-    <div>
-      <Section>Expenses by Category</Section>
-      {categorySummary.map((s, idx) => {
-        return (
-        <CallhoutBar
-          key={`expenses-${idx}`}
-          id={`expenses-${idx}`}
-          text={s.categoryName}
-          percentage={String(100 * s.amount / totalAmount)}
-          colorTitle="danger"
-          colorBar="danger"
-          amount={s.amount}
-        />
-        );
-      })}
-    </div>
-  );
-};
+}
 
 class TransactionListAside extends Component {
   render() {
@@ -142,8 +108,20 @@ class TransactionListAside extends Component {
           color="danger"
           textRight={incomeExpensesStats ? <Currency amount={incomeExpensesStats.DEBIT} code="CAD" /> : "N/A"}
         />
-        <IncomeByCategory categorySummary={categorySummaries ? categorySummaries.incomeCategories: null} />
-        <ExpensesByCategory categorySummary={categorySummaries ? categorySummaries.expensesCategories : null} />
+        <CategorySummary
+          categorySummary={categorySummaries ? categorySummaries.incomeCategories: null}
+          title="Income By Category"
+          colorTitle="success"
+          colorBar="success"
+          type="income"
+        />
+        <CategorySummary
+          categorySummary={categorySummaries ? categorySummaries.incomeCategories: null}
+          title="Expenses By Category"
+          colorTitle="danger"
+          colorBar="danger"
+          type="expenses"
+        />
       </div>
     );
   }
