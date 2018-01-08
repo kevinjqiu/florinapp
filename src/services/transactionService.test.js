@@ -361,7 +361,14 @@ describe("transactionService.sumByType", () => {
       _id: "txn5",
       date: "2018-01-05",
       amount: "2501.66",
-      type: transactionTypes.CREDIT
+      type: transactionTypes.CREDIT,
+    });
+    const txn6 = new Transaction({
+      _id: "txn6",
+      date: "2017-02-05",
+      amount: "3000.66",
+      type: transactionTypes.CREDIT,
+      categoryId: "internaltransfer"
     });
 
     await db.post(txn1);
@@ -369,6 +376,7 @@ describe("transactionService.sumByType", () => {
     await db.post(txn3);
     await db.post(txn4);
     await db.post(txn5);
+    await db.post(txn6);
   };
 
   beforeEach(async () => {
