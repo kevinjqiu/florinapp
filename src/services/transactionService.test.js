@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import * as transactionService from "./transactionService";
 import db from "../db";
+import seed from "../db/seed";
 import reset from "../db/reset";
 import { setupIndex, setupViews } from "../db/setup";
 import Account from "../models/Account";
@@ -452,19 +453,20 @@ describe("transactionService.sumByCategory", () => {
       date: "2018-01-05",
       amount: "2501.66",
       type: transactionTypes.CREDIT,
-      categoryId: "salary"
+      categoryId: "income-salary"
     }));
     await db.post(new Transaction({
       _id: "txn6",
       date: "2017-10-05",
       amount: "100",
       type: transactionTypes.CREDIT,
-      categoryId: "rewards"
+      categoryId: "income-rewards"
     }));
   };
 
   beforeEach(async () => {
     await reset();
+    await seed(db);
     await setupIndex(db);
     await setupViews(db);
     await setupFixtures();
@@ -472,8 +474,8 @@ describe("transactionService.sumByCategory", () => {
 
   it("should return 0 when nothing matches the date filter", async () => {
     const result = await transactionService.sumByCategory({
-      dateFrom: "2016-01-01",
-      dateTo: "2018-02-15"
+      dateFrom: "2018-01-10",
+      dateTo: "2018-01-15"
     });
     expect(result.incomeCategories).toEqual([]);
     expect(result.expensesCategories).toEqual([]);
@@ -481,17 +483,17 @@ describe("transactionService.sumByCategory", () => {
 
   it("should organize categories by type", async () => {
     const result = await transactionService.sumByCategory({
-      dateFrom: "2018-01-10",
-      dateTo: "2018-01-15"
+      dateFrom: "2016-01-01",
+      dateTo: "2018-02-15"
     });
     expect(result.incomeCategories).toEqual([
-      {categoryId: "salary", categoryName: "Salary", categoryType: categoryTypes.INCOME, parentCategoryId: null, amount: 2501.66},
-      {categoryId: "rewards", categoryName: "Rewards", categoryType: categoryTypes.INCOME, parentCategoryId: null, amount: 100},
+      {categoryId: "income-salary", categoryName: "Salary", categoryType: categoryTypes.INCOME, parentCategoryId: null, amount: 2501.66},
+      {categoryId: "income-rewards", categoryName: "Rewards", categoryType: categoryTypes.INCOME, parentCategoryId: null, amount: 100},
     ]);
     expect(result.expensesCategories).toEqual([
-      {categoryId: "mortgage", categoryName: "Mortgage", categoryType: categoryTypes.EXPENSE, parentCategoryId: null, amount: -996.66},
+      {categoryId: "mortgage", categoryName: "Mortgage", categoryType: categoryTypes.EXPENSE, parentCategoryId: undefined, amount: -996.66},
       {categoryId: "automobile-carpayment", categoryName: "Automobile::Car Payment", categoryType: categoryTypes.EXPENSE, parentCategoryId: "automobile", amount: -301.44},
-      {categoryId: "diningout-restaurants", categoryName: "Dining Out::Restaurants", categoryType: categoryTypes.EXPENSE, parentCategoryId: "automobile", amount: -100.45}
+      {categoryId: "diningout-restaurants", categoryName: "Dining Out::Restaurants", categoryType: categoryTypes.EXPENSE, parentCategoryId: "diningout", amount: -100.45}
     ]);
   })
 });

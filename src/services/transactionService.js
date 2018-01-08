@@ -9,6 +9,8 @@ import PaginationResult from "./PaginationResult";
 import { thisMonth } from "../models/presetDateRanges";
 import { transactionTypes } from "../models/TransactionType";
 import CategorySummary from "../models/CategorySummary";
+import Category from "../models/Category";
+import { categoryTypes } from "../models/CategoryType";
 
 const thisMonthDateRange = thisMonth();
 
@@ -24,12 +26,10 @@ export const defaultFetchOptions = {
   }
 };
 
-const fetchTransactionAccounts = async (transactions: Array<Transaction>) => {
-  const accountIds = new Set(transactions.map(t => t.accountId));
-  const promises = [...accountIds].filter(aid => !!aid).map(async aid => {
+const fetchAssociatedObjects = async (associatedObjectIds: Set<string>, fetchObjectById) => {
+  const promises = [...associatedObjectIds].map(async aid => {
     try {
-      const doc = await db.get(aid);
-      return new Account(doc);
+      return await fetchObjectById(aid);
     } catch (error) {
       if (parseInt(error.status, 10) === 404) {
         return undefined;
@@ -37,14 +37,23 @@ const fetchTransactionAccounts = async (transactions: Array<Transaction>) => {
       throw error;
     }
   });
-  const accounts = await Promise.all(promises);
-  const accountMap = accounts.reduce((aggregate, current) => {
+  const associatedObjects = await Promise.all(promises);
+  const associatedObjectsMap = associatedObjects.reduce((aggregate, current) => {
     if (current !== undefined) {
       aggregate.set(current._id, current);
     }
     return aggregate;
   }, new Map());
 
+  return associatedObjectsMap;
+}
+
+const fetchTransactionAccounts = async (transactions: Array<Transaction>) => {
+  const accountIds = new Set(transactions.filter(t => t.accountId).map(t => t.accountId));
+  const accountMap = await fetchAssociatedObjects(accountIds, async (aid) => {
+    const doc = await db.get(aid);
+    return new Account(doc);
+  });
   transactions.forEach(t => {
     t.account = accountMap.get(t.accountId);
   });
@@ -54,25 +63,10 @@ const fetchLinkedTransactions = async (transactions: Array<Transaction>) => {
   const transactionIds = new Set(
     transactions.filter(t => t.linkedTo).map(t => t.linkedTo)
   );
-  const promises = [...transactionIds].map(async tid => {
-    try {
-      const doc = await db.get(tid);
-      return new Transaction(doc);
-    } catch (error) {
-      if (parseInt(error.status, 10) === 404) {
-        return undefined;
-      }
-      throw error;
-    }
+  const transactionMap = await fetchAssociatedObjects(transactionIds, async (tid) => {
+    const doc = await db.get(tid);
+    return new Transaction(doc);
   });
-  const linkedTransactions = await Promise.all(promises);
-  const transactionMap = linkedTransactions.reduce((aggregate, current) => {
-    if (current !== undefined) {
-      aggregate.set(current._id, current);
-    }
-    return aggregate;
-  }, new Map());
-
   transactions.forEach(t => {
     t.linkedToTransaction = transactionMap.get(t.linkedTo);
   });
@@ -230,10 +224,10 @@ export const sumByCategory = async (filter: { dateFrom: string, dateTo: string }
       return result;
     }
     var result = {};
-    for (var i=0; i<values.length; i++) {
-      for (var k in values[i]) {
+    for (var j=0; i<values.length; j++) {
+      for (var k in values[j]) {
         result[k] = result[k] || 0;
-        result[k] += values[i][k];
+        result[k] += values[j][k];
       }
     }
     return result;
@@ -251,9 +245,39 @@ export const sumByCategory = async (filter: { dateFrom: string, dateTo: string }
     options
   );
   const stats = result.rows.length > 0 ? result.rows[0].value : null;
-  console.log(stats);
+  let incomeCategories = [];
+  let expensesCategories = [];
+
+  if (stats) {
+    const categoryIds = new Set(Object.keys(stats))
+    const categoryMap = await fetchAssociatedObjects(categoryIds, async (cid) => {
+      const doc = await db.get(cid);
+      return new Category(doc);
+    });
+
+    const categorySummaries = [...categoryIds].map(categoryId => {
+      const category = categoryMap.get(categoryId);
+      if (!category) {
+        return;
+      }
+
+      const categorySummary = new CategorySummary({
+          categoryId,
+          categoryName: category.name,
+          categoryType: category.type,
+          parentCategoryId: category.parent,
+          amount: stats[categoryId]
+      });
+
+      return categorySummary
+    });
+    incomeCategories = categorySummaries.filter(cs => cs.categoryType === categoryTypes.INCOME);
+    expensesCategories = categorySummaries.filter(cs => cs.categoryType === categoryTypes.EXPENSE);
+    incomeCategories.sort((a, b) => a.amount < b.amount);
+    expensesCategories.sort((a, b) => a.amount > b.amount);
+  }
   return new CategorySummary({
-    incomeCategories: [],
-    expensesCategories: []
+    incomeCategories,
+    expensesCategories
   });
 };
