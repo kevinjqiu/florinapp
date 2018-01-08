@@ -34,6 +34,13 @@ export const setupViews = async db => {
           }
         }.toString(),
         reduce: "_sum"
+      },
+      byAmount: {
+        map: function(doc) {
+          if (doc.metadata && doc.metadata.type === "Transaction") {
+            emit([doc.amount, doc.date], null);
+          }
+        }.toString()
       }
     }
   });

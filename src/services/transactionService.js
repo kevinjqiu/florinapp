@@ -165,11 +165,6 @@ export const importAccountStatement = async (
 };
 
 export const fetchTransactionLinkCandidates = async (transaction: Transaction): Promise<Array<Transaction>> => {
-  const mapFun = (doc, emit) => {
-    if (doc.metadata && doc.metadata.type === "Transaction") {
-      emit([doc.amount, doc.date], null);
-    }
-  };
   const amount = "" + parseFloat(transaction.amount) * -1;
   const options = {
     startkey: [amount, "9999"],
@@ -177,7 +172,7 @@ export const fetchTransactionLinkCandidates = async (transaction: Transaction): 
     include_docs: true,
     descending: true
   }
-  const response = await db.query(mapFun, options);
+  const response = await db.query("transactions/byAmount", options);
   const transactions = response.rows.map(r => new Transaction(r.doc));
   await fetchTransactionAccounts(transactions);
   return transactions;
@@ -206,7 +201,6 @@ export const sumByType = async (filter: {dateFrom: string, dateTo: string}) => {
     startkey: [transactionTypes.CREDIT, filter.dateFrom],
     endkey: [transactionTypes.CREDIT, filter.dateTo]
   });
-  console.log(result);
   const totalCredit = result.rows.length > 0 ? result.rows[0].value : 0;
 
   result = await db.query("transactions/byType", {
