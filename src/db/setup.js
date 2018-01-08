@@ -17,7 +17,7 @@ export const setupViews = async db => {
   } catch (error) {
     ddoc = {};
   }
-  const transactionByDate = Object.assign(ddoc, {
+  const transactionsDdoc = Object.assign(ddoc, {
     _id: "_design/transactions",
     views: {
       byDate: {
@@ -26,8 +26,50 @@ export const setupViews = async db => {
             emit(doc.date, null);
           }
         }.toString()
+      },
+      byType: {
+        map: function(doc) {
+          if (doc.metadata && doc.metadata.type === "Transaction") {
+            if (doc.categoryId !== "internaltransfer") {
+              emit([doc.type, doc.date], parseFloat(doc.amount));
+            }
+          }
+        }.toString(),
+        reduce: "_sum"
+      },
+      byAmount: {
+        map: function(doc) {
+          if (doc.metadata && doc.metadata.type === "Transaction") {
+            emit([doc.amount, doc.date], null);
+          }
+        }.toString()
+      },
+      byCategory: {
+        map: function(doc) {
+          if (doc.metadata && doc.metadata.type === "Transaction") {
+            emit([doc.date, doc.categoryId], parseFloat(doc.amount));
+          }
+        }.toString(),
+        reduce: function(key, values, rereduce) {
+          var result = {}
+          if (!rereduce) {
+            for (var i=0; i<key.length; i++) {
+              var categoryId = key[i][0][1];
+              result[categoryId] = result[categoryId] || 0;
+              result[categoryId] += values[i];
+            }
+            return result;
+          }
+          for (var j=0; i<values.length; j++) {
+            for (var k in values[j]) {
+              result[k] = result[k] || 0;
+              result[k] += values[j][k];
+            }
+          }
+          return result;
+        }.toString()
       }
     }
   });
-  await db.put(transactionByDate);
+  await db.put(transactionsDdoc);
 };

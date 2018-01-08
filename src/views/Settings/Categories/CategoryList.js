@@ -109,8 +109,12 @@ class CategoryList extends Component {
       <Container fluid>
         <Row>
           <Col xs="12" lg="12">
-            <h2 className="float-left">Categories</h2>
-            <ButtonGroup className="float-right">
+            <h3>Categories</h3>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs="12" lg="12">
+            <ButtonGroup>
               <Button
                 color="success"
                 size="sm"

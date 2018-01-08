@@ -307,27 +307,68 @@ export const fetchTransactionLinkCandidatesRequested = () => {
   };
 };
 
-export const fetchTransactionLinkCandidatesSucceeded = (candidates: Array<Transaction>) => {
+export const fetchTransactionLinkCandidatesSucceeded = (
+  candidates: Array<Transaction>
+) => {
   return {
     type: actionTypes.FETCH_TRANSACTION_LINK_CANDIDATES_SUCCEEDED,
     candidates
   };
-}
+};
 
-export const fetchTransactionLinkCandidatesFailed = actionFailed(actionTypes.FETCH_TRANSACTION_LINK_CANDIDATES_FAILED);
+export const fetchTransactionLinkCandidatesFailed = actionFailed(
+  actionTypes.FETCH_TRANSACTION_LINK_CANDIDATES_FAILED
+);
 
 export const linkTransactionsRequested = () => {
   return {
     type: actionTypes.LINK_TRANSACTIONS_REQUESTED
-  }
-}
+  };
+};
 
-export const linkTransactionsSucceeded = (transaction1: Transaction, transaction2: Transaction) => {
+export const linkTransactionsSucceeded = (
+  transaction1: Transaction,
+  transaction2: Transaction
+) => {
   return {
     type: actionTypes.LINK_TRANSACTIONS_SUCCEEDED,
     transaction1,
     transaction2
-  }
+  };
+};
+
+export const linkTransactionsFailed = actionFailed(
+  actionTypes.LINK_TRANSACTIONS_FAILED
+);
+
+export const fetchIncomeExpensesStatsRequested = () => {
+  return {
+    type: actionTypes.FETCH_INCOME_EXPENSES_STATS_REQUESTED
+  };
+};
+
+export const fetchIncomeExpensesStatsSucceeded = payload => {
+  return {
+    type: actionTypes.FETCH_INCOME_EXPENSES_STATS_SUCCEEDED,
+    payload
+  };
+};
+
+export const fetchIncomeExpensesStatsFailed = actionFailed(
+  actionTypes.FETCH_INCOME_EXPENSES_STATS_FAILED
+);
+
+export const fetchCategorySummariesRequested = () => {
+  return {
+    type: actionTypes.FETCH_CATEGORY_SUMMARIES_REQUESTED
+  };
 }
 
-export const linkTransactionsFailed = actionFailed(actionTypes.LINK_TRANSACTIONS_FAILED);
+export const fetchCategorySummariesSucceeded = (payload) => {
+  return {
+    type: actionTypes.FETCH_CATEGORY_SUMMARIES_SUCCEEDED,
+    payload
+  };
+}
+
+export const fetchCategorySummariesFailed = actionFailed(actionTypes.FETCH_CATEGORY_SUMMARIES_FAILED);

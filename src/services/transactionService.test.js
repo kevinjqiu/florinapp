@@ -1,10 +1,13 @@
 import * as fs from "fs";
 import * as transactionService from "./transactionService";
 import db from "../db";
+import seed from "../db/seed";
 import reset from "../db/reset";
 import { setupIndex, setupViews } from "../db/setup";
 import Account from "../models/Account";
 import Transaction from "../models/Transaction";
+import { transactionTypes } from "../models/TransactionType";
+import { categoryTypes } from "../models/CategoryType";
 
 const defaultFetchOptions = {
   orderBy: ["date", "asc"],
@@ -153,12 +156,26 @@ describe("transactionService.fetch", () => {
     });
     const transactions = result.result;
     expect(transactions.map(t => t._id)).toEqual(["txn1", "txn2"]);
-  })
+  });
 
   it("should set the linkedToTransaction attribute when applicable", async () => {
-    const txn1 = new Transaction({ _id: "txn1", date: "2017-01-01", amount: "3500", linkedTo: "txn2" });
-    const txn2 = new Transaction({ _id: "txn2", date: "2017-02-01", amount: "-3500", linkedTo: "txn1" })
-    const txn3 = new Transaction({ _id: "txn3", date: "2018-01-05", amount: "-3501" })
+    const txn1 = new Transaction({
+      _id: "txn1",
+      date: "2017-01-01",
+      amount: "3500",
+      linkedTo: "txn2"
+    });
+    const txn2 = new Transaction({
+      _id: "txn2",
+      date: "2017-02-01",
+      amount: "-3500",
+      linkedTo: "txn1"
+    });
+    const txn3 = new Transaction({
+      _id: "txn3",
+      date: "2018-01-05",
+      amount: "-3501"
+    });
     await db.post(txn1);
     await db.post(txn2);
     await db.post(txn3);
@@ -167,7 +184,7 @@ describe("transactionService.fetch", () => {
     expect(txns.result[0].linkedToTransaction._id).toBe("txn2");
     expect(txns.result[1].linkedToTransaction._id).toBe("txn1");
     expect(txns.result[2].linkedToTransaction).toBe(undefined);
-  })
+  });
 });
 
 describe("transactionService.updateCategory", () => {
@@ -188,53 +205,99 @@ describe("transactionService.updateCategory", () => {
   });
 });
 
-
 describe("transactionService.fetchTransactionLinkCandidates", () => {
   beforeEach(async () => {
     await reset();
     await setupIndex(db);
     await setupViews(db);
-  })
+  });
 
   it("should return empty when there's no transactions of the same opposite amount", async () => {
-    const txn1 = new Transaction({ _id: "txn1", date: "2017-01-01", amount: "3500" });
+    const txn1 = new Transaction({
+      _id: "txn1",
+      date: "2017-01-01",
+      amount: "3500"
+    });
     await db.post(txn1);
-    await db.post(new Transaction({ _id: "txn2", date: "2017-02-01", amount: "-3499" }));
-    await db.post(new Transaction({ _id: "txn3", date: "2017-01-15", amount: "-3501" }));
-    const candidates = await transactionService.fetchTransactionLinkCandidates(txn1)
+    await db.post(
+      new Transaction({ _id: "txn2", date: "2017-02-01", amount: "-3499" })
+    );
+    await db.post(
+      new Transaction({ _id: "txn3", date: "2017-01-15", amount: "-3501" })
+    );
+    const candidates = await transactionService.fetchTransactionLinkCandidates(
+      txn1
+    );
     expect(candidates).toEqual([]);
-  })
+  });
 
   it("should return the transaction with the same amount but opposite type", async () => {
     const acct = await newAccount();
-    const txn1 = new Transaction({ _id: "txn1", date: "2017-01-01", amount: "3500" });
-    const txn2 = new Transaction({ _id: "txn2", accountId: acct._id, date: "2017-02-01", amount: "-3500" })
-    const txn3 = new Transaction({ _id: "txn3", date: "2017-01-15", amount: "-3501" })
+    const txn1 = new Transaction({
+      _id: "txn1",
+      date: "2017-01-01",
+      amount: "3500"
+    });
+    const txn2 = new Transaction({
+      _id: "txn2",
+      accountId: acct._id,
+      date: "2017-02-01",
+      amount: "-3500"
+    });
+    const txn3 = new Transaction({
+      _id: "txn3",
+      date: "2017-01-15",
+      amount: "-3501"
+    });
     await db.post(txn1);
     await db.post(txn2);
     await db.post(txn3);
-    const candidates = await transactionService.fetchTransactionLinkCandidates(txn1)
+    const candidates = await transactionService.fetchTransactionLinkCandidates(
+      txn1
+    );
     expect(candidates.length).toEqual(1);
-    expect(candidates[0]._id).toEqual('txn2');
+    expect(candidates[0]._id).toEqual("txn2");
     expect(candidates[0].account._id).toEqual(acct._id);
-  })
+  });
 
   it("should return sort the candidates by date in desc order", async () => {
-    const txn1 = new Transaction({ _id: "txn1", date: "2017-01-01", amount: "3500" });
-    const txn2 = new Transaction({ _id: "txn2", date: "2017-02-01", amount: "-3500" })
-    const txn3 = new Transaction({ _id: "txn3", date: "2016-01-15", amount: "-3500" })
-    const txn4 = new Transaction({ _id: "txn4", date: "2018-01-05", amount: "-3500" })
-    const txn5 = new Transaction({ _id: "txn5", date: "2018-01-05", amount: "-3501" })
+    const txn1 = new Transaction({
+      _id: "txn1",
+      date: "2017-01-01",
+      amount: "3500"
+    });
+    const txn2 = new Transaction({
+      _id: "txn2",
+      date: "2017-02-01",
+      amount: "-3500"
+    });
+    const txn3 = new Transaction({
+      _id: "txn3",
+      date: "2016-01-15",
+      amount: "-3500"
+    });
+    const txn4 = new Transaction({
+      _id: "txn4",
+      date: "2018-01-05",
+      amount: "-3500"
+    });
+    const txn5 = new Transaction({
+      _id: "txn5",
+      date: "2018-01-05",
+      amount: "-3501"
+    });
     await db.post(txn1);
     await db.post(txn2);
     await db.post(txn3);
     await db.post(txn4);
     await db.post(txn5);
-    const candidates = await transactionService.fetchTransactionLinkCandidates(txn1)
+    const candidates = await transactionService.fetchTransactionLinkCandidates(
+      txn1
+    );
     expect(candidates.length).toEqual(3);
     expect(candidates.map(c => c._id)).toEqual(["txn4", "txn2", "txn3"]);
-  })
-})
+  });
+});
 
 describe("transactionService.linkTransactions", () => {
   beforeEach(async () => {
@@ -244,8 +307,16 @@ describe("transactionService.linkTransactions", () => {
   });
 
   it("should set linkedTo attribute and categoryId", async () => {
-    let txn1 = new Transaction({ _id: "txn1", date: "2017-01-01", amount: "3500" });
-    let txn2 = new Transaction({ _id: "txn2", date: "2017-02-01", amount: "-3500" })
+    let txn1 = new Transaction({
+      _id: "txn1",
+      date: "2017-01-01",
+      amount: "3500"
+    });
+    let txn2 = new Transaction({
+      _id: "txn2",
+      date: "2017-02-01",
+      amount: "-3500"
+    });
 
     await transactionService.linkTransactions(txn1, txn2);
     expect(txn1.linkedTo).toEqual("txn2");
@@ -259,5 +330,170 @@ describe("transactionService.linkTransactions", () => {
     expect(txn1.categoryId).toEqual("internaltransfer");
     expect(txn2.linkedTo).toEqual("txn1");
     expect(txn2.categoryId).toEqual("internaltransfer");
+  });
+});
+
+describe("transactionService.sumByType", () => {
+  const setupFixtures = async () => {
+    await db.post(new Transaction({
+      _id: "txn1",
+      date: "2017-01-01",
+      amount: "100.99",
+      type: transactionTypes.CREDIT
+    }));
+    await db.post(new Transaction({
+      _id: "txn2",
+      date: "2017-02-01",
+      amount: "-200.45",
+      type: transactionTypes.DEBIT
+    }));
+    await db.post(new Transaction({
+      _id: "txn3",
+      date: "2016-01-15",
+      amount: "-100.45",
+      type: transactionTypes.DEBIT
+    }));
+    await db.post(new Transaction({
+      _id: "txn4",
+      date: "2018-01-05",
+      amount: "-6.66",
+      type: transactionTypes.DEBIT
+    }));
+    await db.post(new Transaction({
+      _id: "txn5",
+      date: "2018-01-05",
+      amount: "2501.66",
+      type: transactionTypes.CREDIT
+    }));
+    await db.post(new Transaction({
+      _id: "txn6",
+      date: "2017-02-05",
+      amount: "3000.66",
+      type: transactionTypes.CREDIT,
+      categoryId: "internaltransfer"
+    }));
+  };
+
+  beforeEach(async () => {
+    await reset();
+    await setupIndex(db);
+    await setupViews(db);
+    await setupFixtures();
+  });
+
+  it("should return 0 when nothing matches the date filter", async () => {
+    const result = await transactionService.sumByType({
+      dateFrom: "2018-01-10",
+      dateTo: "2018-01-15"
+    });
+    expect(parseFloat(result.DEBIT)).toBe(0);
+    expect(parseFloat(result.CREDIT)).toBe(0);
+  });
+
+  it("should return credit matching the date filter", async () => {
+    const result = await transactionService.sumByType({
+      dateFrom: "2017-01-01",
+      dateTo: "2017-01-12"
+    });
+    expect(parseFloat(result.DEBIT)).toBe(0);
+    expect(parseFloat(result.CREDIT)).toBeCloseTo(100.99, 2);
+  });
+
+  it("should return debit matching the date filter", async () => {
+    const result = await transactionService.sumByType({
+      dateFrom: "2017-02-01",
+      dateTo: "2017-02-02"
+    });
+    expect(parseFloat(result.DEBIT)).toBeCloseTo(-200.45, 3);
+    expect(parseFloat(result.CREDIT)).toBe(0);
+  });
+
+  it("should return both credit/debit amount matching the date filter", async () => {
+    const result = await transactionService.sumByType({
+      dateFrom: "2016-01-01",
+      dateTo: "2018-02-02"
+    });
+    expect(parseFloat(result.DEBIT)).toBeCloseTo(-307.56, 2);
+    expect(parseFloat(result.CREDIT)).toBeCloseTo(2602.65, 2);
+  });
+});
+
+describe("transactionService.sumByCategory", () => {
+  const setupFixtures = async () => {
+    await db.post(new Transaction({
+      _id: "txn1",
+      date: "2017-01-01",
+      amount: "-100.99",
+      type: transactionTypes.DEBIT,
+      categoryId: "automobile-carpayment"
+    }));
+    await db.post(new Transaction({
+      _id: "txn2",
+      date: "2017-02-01",
+      amount: "-200.45",
+      type: transactionTypes.DEBIT,
+      categoryId: "automobile-carpayment"
+    }));
+    await db.post(new Transaction({
+      _id: "txn3",
+      date: "2016-01-15",
+      amount: "-100.45",
+      type: transactionTypes.DEBIT,
+      categoryId: "diningout-restaurants"
+    }));
+    await db.post(new Transaction({
+      _id: "txn4",
+      date: "2018-01-05",
+      amount: "-996.66",
+      type: transactionTypes.DEBIT,
+      categoryId: "mortgage"
+    }));
+    await db.post(new Transaction({
+      _id: "txn5",
+      date: "2018-01-05",
+      amount: "2501.66",
+      type: transactionTypes.CREDIT,
+      categoryId: "income-salary"
+    }));
+    await db.post(new Transaction({
+      _id: "txn6",
+      date: "2017-10-05",
+      amount: "100",
+      type: transactionTypes.CREDIT,
+      categoryId: "income-rewards"
+    }));
+  };
+
+  beforeEach(async () => {
+    await reset();
+    await seed(db);
+    await setupIndex(db);
+    await setupViews(db);
+    await setupFixtures();
+  });
+
+  it("should return 0 when nothing matches the date filter", async () => {
+    const result = await transactionService.sumByCategory({
+      dateFrom: "2018-01-10",
+      dateTo: "2018-01-15"
+    });
+    expect(result.incomeCategories).toEqual([]);
+    expect(result.expensesCategories).toEqual([]);
+  });
+
+  it("should organize categories by type", async () => {
+    const result = await transactionService.sumByCategory({
+      dateFrom: "2016-01-01",
+      dateTo: "2018-02-15"
+    });
+    expect(result.incomeCategories).toEqual([
+      {categoryId: "income-salary", categoryName: "Salary", categoryType: categoryTypes.INCOME, parentCategoryId: null, amount: 2501.66},
+      {categoryId: "income-rewards", categoryName: "Rewards", categoryType: categoryTypes.INCOME, parentCategoryId: null, amount: 100},
+    ]);
+    expect(result.expensesCategories).toEqual([
+      {categoryId: "mortgage", categoryName: "Mortgage", categoryType: categoryTypes.EXPENSE, parentCategoryId: undefined, amount: -996.66},
+      {categoryId: "automobile-carpayment", categoryName: "Automobile::Car Payment", categoryType: categoryTypes.EXPENSE, parentCategoryId: "automobile", amount: -301.44},
+      {categoryId: "diningout-restaurants", categoryName: "Dining Out::Restaurants", categoryType: categoryTypes.EXPENSE, parentCategoryId: "diningout", amount: -100.45}
+    ]);
   })
-})
+});

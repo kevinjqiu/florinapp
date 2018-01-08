@@ -76,16 +76,18 @@ class TransactionRow extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isExpanded: false,
+      isExpanded: false
     };
   }
   render() {
     const {
+      fetchOptions,
       transaction,
       categories,
       disabledCategories,
       updateTransactionCategory,
-      openLinkTransactionsDialog
+      openLinkTransactionsDialog,
+      fetchCategorySummaries
     } = this.props;
     const { isExpanded } = this.state;
     return (
@@ -164,7 +166,10 @@ class TransactionRow extends Component {
               categories={categories}
               value={transaction.categoryId}
               disabled={disabledCategories}
-              onChange={c => updateTransactionCategory(transaction._id, c._id)}
+              onChange={c => {
+                updateTransactionCategory(transaction._id, c._id);
+                fetchCategorySummaries(fetchOptions.filters);
+              }}
             />
           </td>
         </tr>
@@ -180,4 +185,7 @@ class TransactionRow extends Component {
   }
 }
 
-export default connect(null, actions)(TransactionRow)
+const mapStateToProps = ({ transactions }) => {
+  return { fetchOptions: transactions.fetchOptions };
+};
+export default connect(mapStateToProps, actions)(TransactionRow);
