@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 import { Progress } from "reactstrap";
+import { connect } from "react-redux";
+import * as actions from "../../actions";
+import Currency from "../../components/Currency/Currency";
 
 const Section = ({ children }) => {
   return (
@@ -43,18 +46,45 @@ const CallhoutBar = ({ text, percentage, colorTitle, colorBar }) => {
   );
 };
 
-export default class TransactionListAside extends Component {
+class TransactionListAside extends Component {
   render() {
+    const { filters, transactionListAside, fetchIncomeExpensesStats } = this.props;
+    const { incomeExpensesStats } = transactionListAside;
     return (
       <div>
-        <Section>Income vs Expense</Section>
-        <Callout textLeft="Income" color="info" textRight="$6738.45" />
-        <Callout textLeft="Expenses" color="danger" textRight="$4318.45" />
+        <Section onClick={() => {fetchIncomeExpensesStats(filters)}}>Income vs Expense</Section>
+        <Callout
+          textLeft="Income"
+          color="info"
+          textRight={incomeExpensesStats ? <Currency amount={incomeExpensesStats.CREDIT} code="CAD" /> : "N/A"}
+        />
+        <Callout
+          textLeft="Expenses"
+          color="danger"
+          textRight={incomeExpensesStats ? <Currency amount={incomeExpensesStats.DEBIT} code="CAD" /> : "N/A"}
+        />
         <Section>Income by Category</Section>
-        <CallhoutBar text="Salary" percentage="94" colorTitle="info" coloBar="success" />
+        <CallhoutBar
+          text="Salary"
+          percentage="94"
+          colorTitle="info"
+          coloBar="success"
+        />
         <Section>Expenses by Category</Section>
-        <CallhoutBar text="Mortgage" percentage="85" colorTitle="danger" colorBar="danger" />"
+        <CallhoutBar
+          text="Mortgage"
+          percentage="85"
+          colorTitle="danger"
+          colorBar="danger"
+        />"
       </div>
     );
   }
 }
+
+const mapStateToProps = ({ transactions, transactionListAside }) => {
+  const { fetchOptions } = transactions;
+  return { filters: fetchOptions.filters, transactionListAside };
+};
+
+export default connect(mapStateToProps, actions)(TransactionListAside);

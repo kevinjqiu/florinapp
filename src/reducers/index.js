@@ -7,12 +7,14 @@ import categories from "./categories";
 import globals from "./globals";
 import syncs from "./syncs";
 import aside from "./aside";
+import transactionListAside from "./transactionListAside";
 import { reducer as notifications } from "react-notification-system-redux";
 import { reducer as form } from "redux-form";
 import { routerReducer as router } from "react-router-redux";
 
 export default combineReducers({
   aside,
+  transactionListAside,
   router,
   globals,
   accounts,

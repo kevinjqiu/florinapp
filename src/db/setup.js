@@ -30,7 +30,9 @@ export const setupViews = async db => {
       byType: {
         map: function(doc) {
           if (doc.metadata && doc.metadata.type === "Transaction") {
-            emit([doc.type, doc.date], parseFloat(doc.amount));
+            if (doc.categoryId !== "internaltransfer") {
+              emit([doc.type, doc.date], parseFloat(doc.amount));
+            }
           }
         }.toString(),
         reduce: "_sum"

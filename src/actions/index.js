@@ -280,3 +280,13 @@ export const linkTransactions = (transaction1: Transaction, transaction2: Transa
     dispatch(actionCreators.showErrorNotification("Cannot link the transactions", error));
   }
 }
+
+export const fetchIncomeExpensesStats = (filter: {dateFrom: string, dateTo: string}) => async dispatch => {
+  dispatch(actionCreators.fetchIncomeExpensesStatsRequested());
+  try {
+    const stats = await transactionService.sumByType(filter);
+    dispatch(actionCreators.fetchIncomeExpensesStatsSucceeded(stats));
+  } catch (error) {
+    dispatch(actionCreators.fetchIncomeExpensesStatsFailed(error));
+  }
+}

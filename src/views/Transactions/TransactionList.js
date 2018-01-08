@@ -15,12 +15,14 @@ class TransactionList extends Component {
     }
     const { fetchOptions } = this.props.transactionsState;
     this.props.fetchTransactions(fetchOptions);
+    this.props.fetchIncomeExpensesStats(fetchOptions.filters);
   }
 
   componentDidMount() {
     this.props.fetchCategories();
     const { fetchOptions } = this.props.transactionsState;
     this.props.fetchTransactions(fetchOptions);
+    this.props.fetchIncomeExpensesStats(fetchOptions.filters);
   }
 
   render() {

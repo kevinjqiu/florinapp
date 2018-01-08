@@ -191,12 +191,6 @@ export const linkTransactions = async (
 };
 
 export const sumByType = async (filter: {dateFrom: string, dateTo: string}) => {
-  const mapFun = (doc, emit) => {
-    if (doc.metadata && doc.metadata.type === "Transaction") {
-      emit([doc.type, doc.date], parseFloat(doc.amount));
-    }
-  }
-
   let result = await db.query("transactions/byType", {
     startkey: [transactionTypes.CREDIT, filter.dateFrom],
     endkey: [transactionTypes.CREDIT, filter.dateTo]
