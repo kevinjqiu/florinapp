@@ -2,7 +2,7 @@
 
 import type { CategoryType } from "./CategoryType";
 
-class Summary {
+export class Summary {
   categoryId: string;
   categoryName: string;
   categoryType: CategoryType;
@@ -14,7 +14,7 @@ class Summary {
   }
 }
 
-export default class CategorySummary {
+export class CategorySummary {
   incomeCategories: Array<Summary>;
   expensesCategories: Array<Summary>;
 

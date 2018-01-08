@@ -8,7 +8,7 @@ import type FetchOptions from "./FetchOptions";
 import PaginationResult from "./PaginationResult";
 import { thisMonth } from "../models/presetDateRanges";
 import { transactionTypes } from "../models/TransactionType";
-import CategorySummary from "../models/CategorySummary";
+import { CategorySummary, Summary } from "../models/CategorySummary";
 import Category from "../models/Category";
 import { categoryTypes } from "../models/CategoryType";
 
@@ -223,13 +223,13 @@ export const sumByCategory = async (filter: { dateFrom: string, dateTo: string }
       return new Category(doc);
     });
 
-    const categorySummaries = [...categoryIds].map(categoryId => {
+    const summaries = [...categoryIds].map(categoryId => {
       const category = categoryMap.get(categoryId);
       if (!category) {
         return null;
       }
 
-      const categorySummary = new CategorySummary({
+      const categorySummary = new Summary({
           categoryId,
           categoryName: category.name,
           categoryType: category.type,
@@ -239,8 +239,8 @@ export const sumByCategory = async (filter: { dateFrom: string, dateTo: string }
 
       return categorySummary
     });
-    incomeCategories = categorySummaries.filter(cs => cs && cs.categoryType === categoryTypes.INCOME);
-    expensesCategories = categorySummaries.filter(cs => cs && cs.categoryType === categoryTypes.EXPENSE);
+    incomeCategories = summaries.filter(cs => cs && cs.categoryType === categoryTypes.INCOME);
+    expensesCategories = summaries.filter(cs => cs && cs.categoryType === categoryTypes.EXPENSE);
     incomeCategories.sort((a, b) => a.amount < b.amount);
     expensesCategories.sort((a, b) => a.amount > b.amount);
   }
