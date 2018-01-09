@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import { Container, Badge, Row, Col, ButtonGroup } from "reactstrap";
+import { Label, Input, Container, Badge, Row, Col, ButtonGroup } from "reactstrap";
 import { connect } from "react-redux";
 import * as actions from "../../actions";
 import TransactionTable from "./TransactionTable";
 import RefreshButton from "../../components/RefreshButton/RefreshButton";
+import TransactionsPagination from "./TransactionsPagination";
 
 class TransactionList extends Component {
   componentDidUpdate(nextProps, nextState) {
@@ -39,6 +40,14 @@ class TransactionList extends Component {
         <Row>
           <Col xs="12" lg="12">
             <h3 className="float-left">Transactions</h3>
+            <ButtonGroup style={{marginLeft: 5}}>
+              <RefreshButton
+                withCaption={false}
+                onClick={() => {
+                  fetchTransactions(this.props.transactionsState.fetchOptions);
+                }}
+              />
+            </ButtonGroup>
           </Col>
         </Row>
         <Row>
@@ -53,13 +62,12 @@ class TransactionList extends Component {
         <hr />
         <Row>
           <Col xs="12" lg="12">
-            <ButtonGroup>
-              <RefreshButton
-                onClick={() => {
-                  fetchTransactions(this.props.transactionsState.fetchOptions);
-                }}
-              />
-            </ButtonGroup>
+            <Label className="switch switch-3d switch-primary">
+              <Input type="checkbox" className="switch-input" defaultChecked={ fetchOptions.filters.showAccountTransfers } />
+              <span className="switch-label"></span>
+              <span className="switch-handle"></span>
+            </Label>
+            {" "}Account Transfers
           </Col>
         </Row>
         <hr />

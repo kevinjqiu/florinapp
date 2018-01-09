@@ -15,7 +15,9 @@ const defaultFetchOptions = {
     perPage: 999,
     page: 1
   },
-  filters: {}
+  filters: {
+    showAccountTransfers: true
+  }
 };
 
 const newAccount = async (): Account => {
@@ -185,6 +187,24 @@ describe("transactionService.fetch", () => {
     expect(txns.result[1].linkedToTransaction._id).toBe("txn1");
     expect(txns.result[2].linkedToTransaction).toBe(undefined);
   });
+
+  it("should exclude account transfers", async () => {
+    await db.post(new Transaction({
+        _id: "txn1",
+        date: "2017-01-01",
+        categoryId: "internaltransfer"
+      }));
+    await db.post(new Transaction({
+        _id: "txn2",
+        date: "2017-02-01",
+        categoryId: "income-salary"
+      }));
+    await db.post(new Transaction({ _id: "txn3", date: "2017-01-15" }));
+    const fetchOptions = { orderBy: ["date", "asc"], pagination: { perPage: 999, page: 1 }, filters: { dateFrom: "2016-01-01", dateTo: "2017-06-01", showAccountTransfers: false} };
+    const result = await transactionService.fetch(fetchOptions);
+    expect(result.result.map(t => t._id)).toEqual(["txn3", "txn2"]);
+  });
+
 });
 
 describe("transactionService.updateCategory", () => {
