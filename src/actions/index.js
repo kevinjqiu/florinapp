@@ -300,3 +300,11 @@ export const fetchCategorySummaries = (filter: {dateFrom: string, dateTo: string
     dispatch(actionCreators.fetchCategorySummariesFailed(error));
   }
 }
+
+export const changeShowAccountTransfers = (showAccountTransfers: boolean, location: Location) => dispatch => {
+  console.log(showAccountTransfers);
+  const queryParams = queryString.parse(location.search || "");
+  queryParams["filters.showAccountTransfers"] = showAccountTransfers
+  const newUrl = `${location.pathname}?${queryString.stringify(queryParams)}`;
+  dispatch(push(newUrl));
+};

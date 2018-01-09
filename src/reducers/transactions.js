@@ -12,12 +12,13 @@ const initState = {
 };
 
 const createFiltersFromQueryParams = queryParams => {
-  let filters = {};
+  let filters = Object.assign({}, defaultFetchOptions.filters);
   if (queryParams["filters.dateFrom"] && queryParams["filters.dateTo"]) {
     filters["dateFrom"] = queryParams["filters.dateFrom"];
     filters["dateTo"] = queryParams["filters.dateTo"];
-  } else {
-    filters = defaultFetchOptions.filters;
+  }
+  if (queryParams["filters.showAccountTransfers"] !== undefined) {
+    filters["showAccountTransfers"] = !!queryParams["filters.showAccountTransfers"];
   }
   return filters;
 };
