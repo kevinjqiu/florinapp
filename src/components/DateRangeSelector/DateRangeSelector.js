@@ -102,6 +102,7 @@ const DateRangeDropdownItem = ({ dateRange, isOnTransactionsPage, onDateRangeCli
     const params = queryString.parse(location.search || "");
     params["filters.dateFrom"] = dateRange.start.format("YYYY-MM-DD");
     params["filters.dateTo"] = dateRange.end.format("YYYY-MM-DD");
+    params["page"] = 1;
     return (
       <Link to={`${location.pathname}?${queryString.stringify(params)}`}>
         <DropdownItem>{dateRange.display}</DropdownItem>

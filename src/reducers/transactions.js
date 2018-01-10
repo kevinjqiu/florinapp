@@ -18,7 +18,8 @@ const createFiltersFromQueryParams = queryParams => {
     filters["dateTo"] = queryParams["filters.dateTo"];
   }
   if (queryParams["filters.showAccountTransfers"] !== undefined) {
-    filters["showAccountTransfers"] = queryParams["filters.showAccountTransfers"] === "true" ? true : false;
+    filters["showAccountTransfers"] = (
+      queryParams["filters.showAccountTransfers"] === "true" ? true : false);
   }
   return filters;
 };
