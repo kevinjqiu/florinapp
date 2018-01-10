@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import { Container, Badge, Row, Col, ButtonGroup } from "reactstrap";
+import { Label, Input, Container, Badge, Row, Col, ButtonGroup } from "reactstrap";
 import { connect } from "react-redux";
 import * as actions from "../../actions";
 import TransactionTable from "./TransactionTable";
 import RefreshButton from "../../components/RefreshButton/RefreshButton";
+import ReactTooltip from "react-tooltip";
 
 class TransactionList extends Component {
   componentDidUpdate(nextProps, nextState) {
@@ -29,59 +30,62 @@ class TransactionList extends Component {
 
   render() {
     const {
+      location,
       fetchTransactions,
       transactionsState,
       categoriesState
     } = this.props;
     const { fetchOptions } = transactionsState;
-    return (
-      <Container fluid>
+    return <Container fluid>
         <Row>
           <Col xs="12" lg="12">
             <h3 className="float-left">Transactions</h3>
+            <ButtonGroup style={{ marginLeft: 5 }}>
+              <RefreshButton withCaption={false} onClick={() => {
+                  fetchTransactions(this.props.transactionsState.fetchOptions);
+                }} />
+            </ButtonGroup>
           </Col>
         </Row>
         <Row>
           <Col xs="12" lg="12">
             <Badge color="primary" pill>
               {" "}
-              Date: from {fetchOptions.filters.dateFrom} to{" "}
-              {fetchOptions.filters.dateTo}{" "}
+              Date: from {fetchOptions.filters.dateFrom} to {fetchOptions.filters.dateTo}{" "}
             </Badge>
           </Col>
         </Row>
         <hr />
         <Row>
           <Col xs="12" lg="12">
-            <ButtonGroup>
-              <RefreshButton
-                onClick={() => {
-                  fetchTransactions(this.props.transactionsState.fetchOptions);
-                }}
-              />
-            </ButtonGroup>
+            <Label className="switch switch-3d switch-primary" data-tip data-for="switch-show-internaltransfer">
+              <Input type="checkbox" className="switch-input" onChange={() => {
+                this.props.changeShowAccountTransfers(!transactionsState.fetchOptions.filters.showAccountTransfers, location);
+              }} defaultChecked={fetchOptions.filters.showAccountTransfers} />
+              <span className="switch-label" />
+              <span className="switch-handle" />
+            </Label>{" "}<span data-tip data-for="switch-show-internaltransfer">Account Transfers</span>
+            <ReactTooltip id="switch-show-internaltransfer">Show/Hide account transfer transactions</ReactTooltip>
           </Col>
         </Row>
         <hr />
         <Row>
           <Col xs="12" lg="12">
-            <TransactionTable
-              transactionsState={transactionsState}
-              categoriesState={categoriesState}
-            />
+            <TransactionTable transactionsState={transactionsState} categoriesState={categoriesState} />
           </Col>
         </Row>
-      </Container>
-    );
+      </Container>;
   }
 }
 
 const mapStateToProps = state => {
   const transactionsState = state.transactions;
   const categoriesState = state.categories;
+  const location = state.router.location;
   return {
     categoriesState,
-    transactionsState
+    transactionsState,
+    location
   };
 };
 

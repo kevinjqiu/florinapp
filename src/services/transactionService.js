@@ -22,7 +22,8 @@ export const defaultFetchOptions = {
   },
   filters: {
     dateFrom: thisMonthDateRange.start.format("YYYY-MM-DD"),
-    dateTo: thisMonthDateRange.end.format("YYYY-MM-DD")
+    dateTo: thisMonthDateRange.end.format("YYYY-MM-DD"),
+    showAccountTransfers: false
   }
 };
 
@@ -72,13 +73,13 @@ const fetchLinkedTransactions = async (transactions: Array<Transaction>) => {
   });
 };
 
-export const fetch = async (
-  options: FetchOptions = defaultFetchOptions
-): Promise<PaginationResult<Transaction>> => {
+export const fetch = async (options: FetchOptions = defaultFetchOptions): Promise<PaginationResult<Transaction>> => {
   const { pagination, filters, orderBy } = options;
+  const viewName = filters.showAccountTransfers ? "transactions/byDate" : "transactions/byDateWithoutAccountTransfers";
+  console.log(viewName);
   const startkey = filters.dateFrom ? filters.dateFrom : "";
   const endkey = filters.dateTo ? filters.dateTo : "9999";
-  const totalRows = (await db.query("transactions/byDate", {
+  const totalRows = (await db.query(viewName, {
     startkey,
     endkey
   })).rows.length;
@@ -101,7 +102,7 @@ export const fetch = async (
       descending: true
     };
   }
-  const response = await db.query("transactions/byDate", queryOptions);
+  const response = await db.query(viewName, queryOptions);
   const transactions = response.rows.map(row => new Transaction(row.doc));
   await fetchTransactionAccounts(transactions);
   await fetchLinkedTransactions(transactions);
