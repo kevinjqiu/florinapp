@@ -77,6 +77,13 @@ export const setupViews = async db => {
           }
           return result;
         }.toString()
+      },
+      byCategoryAndDate: {
+        map: function(doc) {
+          if (doc.metadata && doc.metadata.type === "Transaction") {
+            emit([doc.categoryId, doc.date], null);
+          }
+        }.toString()
       }
     }
   });

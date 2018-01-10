@@ -14,6 +14,7 @@ import { categoryTypes } from "../models/CategoryType";
 
 const thisMonthDateRange = thisMonth();
 
+// TODO: make this a function
 export const defaultFetchOptions = {
   orderBy: ["date", "desc"],
   pagination: {
@@ -23,7 +24,8 @@ export const defaultFetchOptions = {
   filters: {
     dateFrom: thisMonthDateRange.start.format("YYYY-MM-DD"),
     dateTo: thisMonthDateRange.end.format("YYYY-MM-DD"),
-    showAccountTransfers: false
+    showAccountTransfers: false,
+    showOnlyUncategorized: false
   }
 };
 
@@ -73,16 +75,34 @@ const fetchLinkedTransactions = async (transactions: Array<Transaction>) => {
   });
 };
 
-export const fetch = async (options: FetchOptions = defaultFetchOptions): Promise<PaginationResult<Transaction>> => {
-  const { pagination, filters, orderBy } = options;
+const getViewQueryOptions = (options: FetchOptions) => {
+  const filters = { options };
+  if (filters.showOnlyUncategorized) {
+    return {
+      viewName: "transactions/byCategoryAndDate",
+      startkey: [null, filters.dateFrom ? filters.dateFrom : ""],
+      endkey: [null, filters.dateTo ? filters.dateTo : "9999"]
+    }
+  }
   const viewName = filters.showAccountTransfers ? "transactions/byDate" : "transactions/byDateWithoutAccountTransfers";
-  console.log(viewName);
   const startkey = filters.dateFrom ? filters.dateFrom : "";
   const endkey = filters.dateTo ? filters.dateTo : "9999";
+  return {
+    viewName,
+    startkey,
+    endkey
+  };
+};
+
+export const fetch = async (options: FetchOptions = defaultFetchOptions): Promise<PaginationResult<Transaction>> => {
+  const { pagination, orderBy } = options;
+  const { viewName, startkey, endkey } = getViewQueryOptions(options);
+  console.log(viewName);
   const totalRows = (await db.query(viewName, {
     startkey,
     endkey
   })).rows.length;
+
   let queryOptions = {
     include_docs: true,
     limit: pagination.perPage,

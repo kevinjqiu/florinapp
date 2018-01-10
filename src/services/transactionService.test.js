@@ -16,7 +16,8 @@ const defaultFetchOptions = {
     page: 1
   },
   filters: {
-    showAccountTransfers: true
+    showAccountTransfers: true,
+    showOnlyUncategorized: false
   }
 };
 
@@ -153,7 +154,8 @@ describe("transactionService.fetch", () => {
       },
       filters: {
         dateFrom: "2017-01-01",
-        dateTo: "2017-01-31"
+        dateTo: "2017-01-31",
+        showOnlyUncategorized: false
       }
     });
     const transactions = result.result;

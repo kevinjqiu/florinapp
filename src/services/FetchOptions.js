@@ -8,6 +8,7 @@ export default type FetchOptions = {
   filters: {
     dateFrom: string,
     dateTo: string,
-    showAccountTransfers: boolean
+    showAccountTransfers: boolean,
+    showOnlyUncategorized: boolean
   }
 };

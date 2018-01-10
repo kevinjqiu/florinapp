@@ -1,10 +1,16 @@
 import React, { Component } from "react";
-import { Label, Input, Container, Badge, Row, Col, ButtonGroup } from "reactstrap";
+import {
+  Container,
+  Badge,
+  Row,
+  Col,
+  ButtonGroup
+} from "reactstrap";
 import { connect } from "react-redux";
 import * as actions from "../../actions";
 import TransactionTable from "./TransactionTable";
 import RefreshButton from "../../components/RefreshButton/RefreshButton";
-import ReactTooltip from "react-tooltip";
+import Switch from "../../components/Switch/Switch";
 
 class TransactionList extends Component {
   componentDidUpdate(nextProps, nextState) {
@@ -36,14 +42,18 @@ class TransactionList extends Component {
       categoriesState
     } = this.props;
     const { fetchOptions } = transactionsState;
-    return <Container fluid>
+    return (
+      <Container fluid>
         <Row>
           <Col xs="12" lg="12">
             <h3 className="float-left">Transactions</h3>
             <ButtonGroup style={{ marginLeft: 5 }}>
-              <RefreshButton withCaption={false} onClick={() => {
+              <RefreshButton
+                withCaption={false}
+                onClick={() => {
                   fetchTransactions(this.props.transactionsState.fetchOptions);
-                }} />
+                }}
+              />
             </ButtonGroup>
           </Col>
         </Row>
@@ -51,30 +61,47 @@ class TransactionList extends Component {
           <Col xs="12" lg="12">
             <Badge color="primary" pill>
               {" "}
-              Date: from {fetchOptions.filters.dateFrom} to {fetchOptions.filters.dateTo}{" "}
+              Date: from {fetchOptions.filters.dateFrom} to{" "}
+              {fetchOptions.filters.dateTo}{" "}
             </Badge>
           </Col>
         </Row>
         <hr />
         <Row>
           <Col xs="12" lg="12">
-            <Label className="switch switch-3d switch-primary" data-tip data-for="switch-show-internaltransfer">
-              <Input type="checkbox" className="switch-input" onChange={() => {
-                this.props.changeShowAccountTransfers(!transactionsState.fetchOptions.filters.showAccountTransfers, location);
-              }} defaultChecked={fetchOptions.filters.showAccountTransfers} />
-              <span className="switch-label" />
-              <span className="switch-handle" />
-            </Label>{" "}<span data-tip data-for="switch-show-internaltransfer">Account Transfers</span>
-            <ReactTooltip id="switch-show-internaltransfer">Show/Hide account transfer transactions</ReactTooltip>
+            <Switch
+              text="Include Account Transfers"
+              tooltipId="switch-show-internaltransfer"
+              tooltipText="Show/Hide account transfer transactions"
+              onChange={() => {
+                this.props.changeShowAccountTransfers(
+                  !transactionsState.fetchOptions.filters.showAccountTransfers,
+                  location
+                );
+              }}
+              defaultChecked={fetchOptions.filters.showAccountTransfers}
+            />
+            <Switch
+              text="Show only uncategorized"
+              tooltipId="switch-show-uncategorized"
+              tooltipText="Only show transactions that need categorization"
+              onChange={() => {
+              }}
+              defaultChecked={fetchOptions.filters.showOnlyUncategorized}
+            />
           </Col>
         </Row>
         <hr />
         <Row>
           <Col xs="12" lg="12">
-            <TransactionTable transactionsState={transactionsState} categoriesState={categoriesState} />
+            <TransactionTable
+              transactionsState={transactionsState}
+              categoriesState={categoriesState}
+            />
           </Col>
         </Row>
-      </Container>;
+      </Container>
+    );
   }
 }
 

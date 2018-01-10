@@ -77,7 +77,7 @@ const CategorySummary = ({
 
   const totalAmount = categorySummary
     .map(s => s.amount)
-    .reduce((a, b) => a + b);
+    .reduce((a, b) => a + b, 0);
 
   return (
     <div>
