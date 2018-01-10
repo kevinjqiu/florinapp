@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import * as actions from "../../actions";
 import TransactionTable from "./TransactionTable";
 import RefreshButton from "../../components/RefreshButton/RefreshButton";
+import ReactTooltip from "react-tooltip";
 
 class TransactionList extends Component {
   componentDidUpdate(nextProps, nextState) {
@@ -57,14 +58,14 @@ class TransactionList extends Component {
         <hr />
         <Row>
           <Col xs="12" lg="12">
-            <Label className="switch switch-3d switch-primary">
+            <Label className="switch switch-3d switch-primary" data-tip data-for="switch-show-internaltransfer">
               <Input type="checkbox" className="switch-input" onChange={() => {
-                console.log(transactionsState.fetchOptions.filters.showAccountTransfers);
                 this.props.changeShowAccountTransfers(!transactionsState.fetchOptions.filters.showAccountTransfers, location);
               }} defaultChecked={fetchOptions.filters.showAccountTransfers} />
               <span className="switch-label" />
               <span className="switch-handle" />
-            </Label> Account Transfers
+            </Label>{" "}<span data-tip data-for="switch-show-internaltransfer">Account Transfers</span>
+            <ReactTooltip id="switch-show-internaltransfer">Show/Hide account transfer transactions</ReactTooltip>
           </Col>
         </Row>
         <hr />
