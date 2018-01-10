@@ -1,6 +1,7 @@
 import reducer from "./transactions";
 import * as actionCreators from "../actions/creators";
 import Transaction from "../models/Transaction";
+import { defaultFetchOptions } from "../services/transactionService";
 
 describe("transactions reducer", () => {
   it("should update transaction's category when category is updated", () => {
@@ -42,5 +43,54 @@ describe("transactions reducer", () => {
     );
     expect(newState.transactions.length).toEqual(1);
     expect(newState.total).toEqual(10);
+  });
+
+  it("should set to default fetch options when no query params", () => {
+    const state = {
+      fetchOptions: defaultFetchOptions
+    };
+
+    const action = {
+      type: "@@router/LOCATION_CHANGE",
+      payload: {
+        pathname: "/transactions",
+        search: ""
+      }
+    };
+
+    const newState = reducer(state, action);
+    expect(newState.fetchOptions).toEqual(defaultFetchOptions);
+  });
+
+  it("should set to showAccountTransfers to true when it's set in the query params", () => {
+    const state = {
+      fetchOptions: {
+        pagination: {
+          page: 1
+        },
+        filters: {
+          dateFrom: "2017-01-01",
+          dateTo: "2017-02-01"
+        }
+      }
+    };
+
+    const action = {
+      type: "@@router/LOCATION_CHANGE",
+      payload: {
+        pathname: "/transactions",
+        search: "?page=5&filters.showAccountTransfers=true"
+      }
+    };
+
+    const newState = reducer(state, action);
+    expect(newState.fetchOptions.filters.showAccountTransfers).toEqual(true);
+    expect(newState.fetchOptions.pagination.page).toEqual(5);
+    expect(newState.fetchOptions.filters.dateFrom).toEqual(
+      defaultFetchOptions.filters.dateFrom
+    );
+    expect(newState.fetchOptions.filters.dateTo).toEqual(
+      defaultFetchOptions.filters.dateTo
+    );
   });
 });
