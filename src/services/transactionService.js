@@ -76,7 +76,7 @@ const fetchLinkedTransactions = async (transactions: Array<Transaction>) => {
 };
 
 const getViewQueryOptions = (options: FetchOptions) => {
-  const filters = { options };
+  const { filters } = options;
   if (filters.showOnlyUncategorized) {
     return {
       viewName: "transactions/byCategoryAndDate",
@@ -97,7 +97,6 @@ const getViewQueryOptions = (options: FetchOptions) => {
 export const fetch = async (options: FetchOptions = defaultFetchOptions): Promise<PaginationResult<Transaction>> => {
   const { pagination, orderBy } = options;
   const { viewName, startkey, endkey } = getViewQueryOptions(options);
-  console.log(viewName);
   const totalRows = (await db.query(viewName, {
     startkey,
     endkey
