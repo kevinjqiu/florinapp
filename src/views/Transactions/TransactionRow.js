@@ -5,51 +5,10 @@ import Currency from "../../components/Currency/Currency";
 import Date from "../../components/Date/Date";
 import ListActionButton from "../../components/ListActionButton/ListActionButton";
 import DeleteButton from "../../components/ListActionButton/DeleteButton";
-import { categoryTypes } from "../../models/CategoryType";
-import { DropdownList } from "react-widgets";
 import { reduxForm } from "redux-form";
 import { connect } from "react-redux";
 import * as actions from "../../actions";
-
-const CategoryItemComponent = ({ item }) => {
-  let color;
-  switch (item.type) {
-    case categoryTypes.EXPENSE:
-      color = "red";
-      break;
-
-    case categoryTypes.INCOME:
-      color = "green";
-      break;
-
-    case categoryTypes.TRANSFER:
-      color = "blue";
-      break;
-
-    default:
-      color = "black";
-  }
-  return <span style={{ color }}>{item.name}</span>;
-};
-
-class CategorySelector extends Component {
-  render() {
-    const { categories, disabled, value, onChange } = this.props;
-    return (
-      <DropdownList
-        data={categories}
-        filter="contains"
-        textField="name"
-        valueField="_id"
-        itemComponent={CategoryItemComponent}
-        disabled={disabled}
-        onChange={onChange}
-        value={value}
-        groupBy="type"
-      />
-    );
-  }
-}
+import CategorySelector from "./CategorySelector";
 
 const _TransactionDetailForm = ({ transaction }) => {
   return (
