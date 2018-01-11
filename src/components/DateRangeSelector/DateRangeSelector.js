@@ -8,6 +8,7 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  NavItem,
   Modal,
   ModalHeader,
   ModalBody,
@@ -89,29 +90,32 @@ class CustomDateSelectorModal extends Component {
   }
 }
 
-const DateRangeDropdownItem = ({ dateRange, isOnTransactionsPage, onDateRangeClicked, location }) => {
+const DateRangeDropdownItem = ({
+  dateRange,
+  isOnTransactionsPage,
+  onDateRangeClicked,
+  location
+}) => {
   if (!isOnTransactionsPage) {
     return (
-      <DropdownItem
-        onClick={() => onDateRangeClicked(dateRange)}
-      >
+      <DropdownItem onClick={() => onDateRangeClicked(dateRange)}>
         {dateRange.display}
       </DropdownItem>
     );
   } else {
-    const newLink = links.createTransactionLink(location, (queryParams) => {
+    const newLink = links.createTransactionLink(location, queryParams => {
       return {
         ...queryParams,
         "filters.dateFrom": dateRange.start.format("YYYY-MM-DD"),
         "filters.dateTo": dateRange.end.format("YYYY-MM-DD"),
         page: 1
-      }
+      };
     });
     return (
       <Link to={newLink}>
         <DropdownItem>{dateRange.display}</DropdownItem>
       </Link>
-    )
+    );
   }
 };
 
@@ -177,36 +181,46 @@ class DateSelector extends Component {
       } else {
         this.props.changeDateRange(dateRange);
       }
-
     };
     const onClose = () => {
       this.setState({ modalOpen: false });
     };
-    return <span>
-        <Dropdown nav isOpen={this.state.dropdownOpen} toggle={this.toggle.bind(this)}>
-          <DropdownToggle caret>
-            {dateRange.normalizedDisplay}
-          </DropdownToggle>
-          <DropdownMenu right>
-            {dateRanges.map(dr => (
-              <DateRangeDropdownItem
-                key={dr.display}
-                dateRange={dr}
-                isOnTransactionsPage={isOnTransactionsPage}
-                onDateRangeClicked={() => this.onDateRangeClicked(dr)}
-                location={location}
-              />
-            ))}
-            <DropdownItem onClick={() => this.setState({
-                  modalOpen: true,
-                  datePickerError: null
-                })}>
-              Custom...
-              <CustomDateSelectorModal isOpen={this.state.modalOpen} onApply={onApply} onClose={onClose} error={this.state.datePickerError} />
-            </DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
-      </span>;
+    return (
+      <Dropdown
+        nav
+        isOpen={this.state.dropdownOpen}
+        toggle={this.toggle.bind(this)}
+      >
+        <DropdownToggle caret>{dateRange.normalizedDisplay}</DropdownToggle>
+        <DropdownMenu right>
+          {dateRanges.map(dr => (
+            <DateRangeDropdownItem
+              key={dr.display}
+              dateRange={dr}
+              isOnTransactionsPage={isOnTransactionsPage}
+              onDateRangeClicked={() => this.onDateRangeClicked(dr)}
+              location={location}
+            />
+          ))}
+          <DropdownItem
+            onClick={() =>
+              this.setState({
+                modalOpen: true,
+                datePickerError: null
+              })
+            }
+          >
+            Custom...
+            <CustomDateSelectorModal
+              isOpen={this.state.modalOpen}
+              onApply={onApply}
+              onClose={onClose}
+              error={this.state.datePickerError}
+            />
+          </DropdownItem>
+        </DropdownMenu>
+      </Dropdown>
+    );
   }
 }
 
