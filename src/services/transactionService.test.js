@@ -125,7 +125,7 @@ describe("transactionService.fetch", () => {
     expect(transactions[0].account).toBe(undefined);
   });
 
-  it.skip("should return transactions ordered by desc when requested", async () => {
+  it("should return transactions ordered by desc when requested", async () => {
     await db.post(new Transaction({ _id: "txn1", date: "2017-01-01" }));
     await db.post(new Transaction({ _id: "txn2", date: "2017-02-01" }));
     await db.post(new Transaction({ _id: "txn3", date: "2017-01-15" }));
