@@ -86,6 +86,10 @@ class TransactionList extends Component {
               tooltipId="switch-show-uncategorized"
               tooltipText="Only show transactions that need categorization"
               onChange={() => {
+                this.props.changeShowOnlyUncategorized(
+                  !transactionsState.fetchOptions.filters.showOnlyUncategorized,
+                  location
+                );
               }}
               defaultChecked={fetchOptions.filters.showOnlyUncategorized}
             />

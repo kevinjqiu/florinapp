@@ -307,3 +307,10 @@ export const changeShowAccountTransfers = (showAccountTransfers: boolean, locati
   const newUrl = `${location.pathname}?${queryString.stringify(queryParams)}`;
   dispatch(push(newUrl));
 };
+
+export const changeShowOnlyUncategorized = (showOnlyUncategorized: boolean, location: Location) => dispatch => {
+  const queryParams = queryString.parse(location.search || "");
+  queryParams["filters.showOnlyUncategorized"] = showOnlyUncategorized;
+  const newUrl = `${location.pathname}?${queryString.stringify(queryParams)}`;
+  dispatch(push(newUrl));
+};
