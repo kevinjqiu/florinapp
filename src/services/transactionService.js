@@ -25,7 +25,8 @@ export const defaultFetchOptions = {
     dateFrom: thisMonthDateRange.start.format("YYYY-MM-DD"),
     dateTo: thisMonthDateRange.end.format("YYYY-MM-DD"),
     showAccountTransfers: false,
-    showOnlyUncategorized: false
+    showOnlyUncategorized: false,
+    categoryId: undefined
   }
 };
 
@@ -77,16 +78,23 @@ const fetchLinkedTransactions = async (transactions: Array<Transaction>) => {
 
 const getViewQueryOptions = (options: FetchOptions) => {
   const { filters } = options;
-  if (filters.showOnlyUncategorized) {
+  let viewName;
+  const dateFrom = filters.dateFrom ? filters.dateFrom : "";
+  const dateTo = filters.dateTo ? filters.dateTo : "9999";
+
+  if (filters.showOnlyUncategorized || filters.categoryId !== undefined) {
+    viewName = "transactions/byCategoryAndDate";
+    let { categoryId } = filters;
+    if (filters.showOnlyUncategorized) categoryId = null;
     return {
-      viewName: "transactions/byCategoryAndDate",
-      startkey: [null, filters.dateFrom ? filters.dateFrom : ""],
-      endkey: [null, filters.dateTo ? filters.dateTo : "9999"]
+      viewName,
+      startkey: [categoryId, dateFrom],
+      endkey: [categoryId, dateTo]
     }
   }
-  const viewName = filters.showAccountTransfers ? "transactions/byDate" : "transactions/byDateWithoutAccountTransfers";
-  const startkey = filters.dateFrom ? filters.dateFrom : "";
-  const endkey = filters.dateTo ? filters.dateTo : "9999";
+  viewName = filters.showAccountTransfers ? "transactions/byDate" : "transactions/byDateWithoutAccountTransfers";
+  const startkey = dateFrom;
+  const endkey = dateTo;
   return {
     viewName,
     startkey,

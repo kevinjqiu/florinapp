@@ -30,10 +30,10 @@ let CategoryValueComponent = ({item, location}) => {
   const newLink = links.createTransactionLink(location, (queryParams) => {
     return {
       ...queryParams,
-      categoryId: item._id
+      "filters.categoryId": item._id
     }
   });
-  return <Link to={newLink}>{item.name}</Link>
+  return <Link to={newLink} onClick={(e)=>e.stopPropagation()}>{item.name}</Link>
 }
 
 const mapStateToProps = ({ router }) => {

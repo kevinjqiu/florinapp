@@ -23,6 +23,9 @@ const createFiltersFromQueryParams = queryParams => {
   if (queryParams["filters.showOnlyUncategorized"] !== undefined) {
     filters["showOnlyUncategorized"] = queryParams["filters.showOnlyUncategorized"] === "true";
   }
+  if (queryParams["filters.categoryId"] !== undefined) {
+    filters["categoryId"] = queryParams["filters.categoryId"];
+  }
   return filters;
 };
 

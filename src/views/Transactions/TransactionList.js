@@ -6,11 +6,44 @@ import {
   Col,
   ButtonGroup
 } from "reactstrap";
+import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import * as actions from "../../actions";
 import TransactionTable from "./TransactionTable";
 import RefreshButton from "../../components/RefreshButton/RefreshButton";
 import Switch from "../../components/Switch/Switch";
+import * as links from "../../models/links";
+
+const DateFilterBadge = ({ filters }) => {
+  return (
+    <Badge color="light" pill style={{fontSize: "1em", margin: "0.5em", padding: "0.6em"}}>
+      {" "}Date: from {filters.dateFrom} to{" "} {filters.dateTo}{" "}
+    </Badge>
+  );
+};
+
+const CategoryFilterBadge = ({ filters, categories, location }) => {
+  const { categoryId } = filters;
+  if (!categoryId) {
+    return <span />
+  }
+
+  const category = categories.find(c => c._id === categoryId)
+  if (!category) {
+    return <span />
+  }
+
+  const newLink = links.createTransactionLink(location, (queryParams) => {
+    const newQueryParams = {...queryParams};
+    delete newQueryParams["filters.categoryId"]
+    return newQueryParams;
+  });
+
+  return <Badge color="light" pill style={{fontSize: "1em", marginTop: "0.5em", padding: "0.6em"}}>
+    <Link to={newLink}><i className="fa fa-remove" /></Link>{" "}
+    Category: {category.name}
+  </Badge>
+}
 
 class TransactionList extends Component {
   componentDidUpdate(nextProps, nextState) {
@@ -42,70 +75,41 @@ class TransactionList extends Component {
       categoriesState
     } = this.props;
     const { fetchOptions } = transactionsState;
-    return (
-      <Container fluid>
+    return <Container fluid>
         <Row>
           <Col xs="12" lg="12">
             <h3 className="float-left">Transactions</h3>
             <ButtonGroup style={{ marginLeft: 5 }}>
-              <RefreshButton
-                withCaption={false}
-                onClick={() => {
+              <RefreshButton withCaption={false} onClick={() => {
                   fetchTransactions(this.props.transactionsState.fetchOptions);
-                }}
-              />
+                }} />
             </ButtonGroup>
           </Col>
         </Row>
+        <hr />
         <Row>
           <Col xs="12" lg="12">
-            <Badge color="primary" pill>
-              {" "}
-              Date: from {fetchOptions.filters.dateFrom} to{" "}
-              {fetchOptions.filters.dateTo}{" "}
-            </Badge>
+            <Switch text="Include Account Transfers" tooltipId="switch-show-internaltransfer" tooltipText="Show/Hide account transfer transactions" onChange={() => {
+                this.props.changeShowAccountTransfers(!transactionsState.fetchOptions.filters.showAccountTransfers, location);
+              }} defaultChecked={fetchOptions.filters.showAccountTransfers} />
+            <Switch text="Show only uncategorized" tooltipId="switch-show-uncategorized" tooltipText="Only show transactions that need categorization" onChange={() => {
+                this.props.changeShowOnlyUncategorized(!transactionsState.fetchOptions.filters.showOnlyUncategorized, location);
+              }} defaultChecked={fetchOptions.filters.showOnlyUncategorized} />
+          </Col>
+        </Row>
+        <Row>
+          <Col xs="12" lg="12">
+            <DateFilterBadge filters={fetchOptions.filters} />
+            <CategoryFilterBadge filters={fetchOptions.filters} categories={categoriesState.categories} location={location} />
           </Col>
         </Row>
         <hr />
         <Row>
           <Col xs="12" lg="12">
-            <Switch
-              text="Include Account Transfers"
-              tooltipId="switch-show-internaltransfer"
-              tooltipText="Show/Hide account transfer transactions"
-              onChange={() => {
-                this.props.changeShowAccountTransfers(
-                  !transactionsState.fetchOptions.filters.showAccountTransfers,
-                  location
-                );
-              }}
-              defaultChecked={fetchOptions.filters.showAccountTransfers}
-            />
-            <Switch
-              text="Show only uncategorized"
-              tooltipId="switch-show-uncategorized"
-              tooltipText="Only show transactions that need categorization"
-              onChange={() => {
-                this.props.changeShowOnlyUncategorized(
-                  !transactionsState.fetchOptions.filters.showOnlyUncategorized,
-                  location
-                );
-              }}
-              defaultChecked={fetchOptions.filters.showOnlyUncategorized}
-            />
+            <TransactionTable transactionsState={transactionsState} categoriesState={categoriesState} />
           </Col>
         </Row>
-        <hr />
-        <Row>
-          <Col xs="12" lg="12">
-            <TransactionTable
-              transactionsState={transactionsState}
-              categoriesState={categoriesState}
-            />
-          </Col>
-        </Row>
-      </Container>
-    );
+      </Container>;
   }
 }
 
