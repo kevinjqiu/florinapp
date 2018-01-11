@@ -11,7 +11,7 @@ import Account from "../models/Account";
 import Transaction from "../models/Transaction";
 import Sync from "../models/Sync";
 import { Location } from "react-router";
-import * as queryString from "query-string";
+import * as links from "../models/links";
 import seed from "../db/seed";
 import db from "../db";
 
@@ -184,10 +184,13 @@ export const changeTransactionPageDateRange = (
   dateRange: DateRange,
   location: Location
 ) => dispatch => {
-  const queryParams = queryString.parse(location.search || "");
-  queryParams["filters.dateFrom"] = dateRange.start.format("YYYY-MM-DD");
-  queryParams["filters.dateTo"] = dateRange.end.format("YYYY-MM-DD");
-  const newUrl = `${location.pathname}?${queryString.stringify(queryParams)}`;
+  const newUrl = links.createTransactionLink(location, (queryParams) => {
+    return {
+      ...queryParams,
+      "filters.dateFrom": dateRange.start.format("YYYY-MM-DD"),
+      "filters.dateTo": dateRange.end.format("YYYY-MM-DD")
+    }
+  })
   dispatch(push(newUrl));
 };
 
@@ -302,15 +305,21 @@ export const fetchCategorySummaries = (filter: {dateFrom: string, dateTo: string
 }
 
 export const changeShowAccountTransfers = (showAccountTransfers: boolean, location: Location) => dispatch => {
-  const queryParams = queryString.parse(location.search || "");
-  queryParams["filters.showAccountTransfers"] = showAccountTransfers
-  const newUrl = `${location.pathname}?${queryString.stringify(queryParams)}`;
+  const newUrl = links.createTransactionLink(location, (queryParams) => {
+    return {
+      ...queryParams,
+      "filters.showAccountTransfers": showAccountTransfers
+    }
+  });
   dispatch(push(newUrl));
 };
 
 export const changeShowOnlyUncategorized = (showOnlyUncategorized: boolean, location: Location) => dispatch => {
-  const queryParams = queryString.parse(location.search || "");
-  queryParams["filters.showOnlyUncategorized"] = showOnlyUncategorized;
-  const newUrl = `${location.pathname}?${queryString.stringify(queryParams)}`;
+  const newUrl = links.createTransactionLink(location, (queryParams) => {
+    return {
+      ...queryParams,
+      "filters.showOnlyUncategorized": showOnlyUncategorized
+    }
+  });
   dispatch(push(newUrl));
 };
