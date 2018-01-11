@@ -8,6 +8,7 @@ import {
   Badge
 } from "reactstrap";
 import DateRangeSelector from "../DateRangeSelector/DateRangeSelector";
+import ReactTooltip from "react-tooltip";
 
 class Header extends Component {
   sidebarToggle(e) {
@@ -53,7 +54,8 @@ class Header extends Component {
           </NavItem>
         </Nav>
         <NavbarToggler className="d-md-down-none" onClick={this.asideToggle}>
-          <span className="navbar-toggler-icon" />
+          <span className="navbar-toggler-icon" data-tip data-for="tt-toggle-sidebar" />
+          <ReactTooltip id="tt-toggle-sidebar" type="info" effect="solid" place="bottom">Contextual Sidebar</ReactTooltip>
         </NavbarToggler>
       </header>
     );
