@@ -29,7 +29,7 @@ import {
 } from "../../models/presetDateRanges";
 import { DateTimePicker } from "react-widgets";
 import momentLocalizer from "react-widgets-moment";
-import * as queryString from "query-string";
+import * as links from "../../models/links";
 
 class CustomDateSelectorModal extends Component {
   constructor(props) {
@@ -99,12 +99,16 @@ const DateRangeDropdownItem = ({ dateRange, isOnTransactionsPage, onDateRangeCli
       </DropdownItem>
     );
   } else {
-    const params = queryString.parse(location.search || "");
-    params["filters.dateFrom"] = dateRange.start.format("YYYY-MM-DD");
-    params["filters.dateTo"] = dateRange.end.format("YYYY-MM-DD");
-    params["page"] = 1;
+    const newLink = links.createTransactionLink(location, (queryParams) => {
+      return {
+        ...queryParams,
+        "filters.dateFrom": dateRange.start.format("YYYY-MM-DD"),
+        "filters.dateTo": dateRange.end.format("YYYY-MM-DD"),
+        page: 1
+      }
+    });
     return (
-      <Link to={`${location.pathname}?${queryString.stringify(params)}`}>
+      <Link to={newLink}>
         <DropdownItem>{dateRange.display}</DropdownItem>
       </Link>
     )

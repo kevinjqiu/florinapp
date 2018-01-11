@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { DropdownList } from "react-widgets";
 import { categoryTypes } from "../../models/CategoryType";
 import { connect } from "react-redux";
+import * as links from "../../models/links";
 
 const CategoryItemComponent = ({ item }) => {
   let color;
@@ -26,7 +27,13 @@ const CategoryItemComponent = ({ item }) => {
 };
 
 let CategoryValueComponent = ({item, location}) => {
-  return <Link to={`/transactions/view`}>{item.name}</Link>
+  const newLink = links.createTransactionLink(location, (queryParams) => {
+    return {
+      ...queryParams,
+      categoryId: item._id
+    }
+  });
+  return <Link to={newLink}>{item.name}</Link>
 }
 
 const mapStateToProps = ({ router }) => {
