@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import TransactionListAside from "./TransactionListAside";
 
-const AsideContent = ({ location }) => {
-  if (location.pathname.startsWith("/transactions")) {
+const AsideContent = ({ type }) => {
+  if (type === "TransactionListAside") {
     return <TransactionListAside />;
   }
 
@@ -16,11 +16,11 @@ const AsideContent = ({ location }) => {
 
 class Aside extends Component {
   render() {
-    const { location } = this.props.aside;
+    const { asideType } = this.props;
     return (
       <aside className="aside-menu">
         <div className="tab-content">
-          <AsideContent location={location} />
+          <AsideContent type={asideType} />
         </div>
       </aside>
     );
@@ -28,7 +28,8 @@ class Aside extends Component {
 }
 
 const mapStateToProps = ({ aside }) => {
-  return { aside };
+  const { asideType } = aside;
+  return { asideType };
 };
 
 export default connect(mapStateToProps, null)(Aside);

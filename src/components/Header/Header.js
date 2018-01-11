@@ -9,6 +9,7 @@ import {
 } from "reactstrap";
 import DateRangeSelector from "../DateRangeSelector/DateRangeSelector";
 import ReactTooltip from "react-tooltip";
+import { connect } from "react-redux";
 
 class Header extends Component {
   sidebarToggle(e) {
@@ -52,14 +53,24 @@ class Header extends Component {
               </Badge>
             </NavLink>
           </NavItem>
+          <NavItem className="d-md-down-none">
+            <NavbarToggler className="d-md-down-none" onClick={this.asideToggle}>
+              <i className="navbar-toggler-icon" />
+              {this.props.asideType ?
+              <Badge pill color="warning" style={{position: "absolute", top: "50%", left: "50%"}}><i className="icon-eye"/>
+              </Badge>
+              : <span />}
+            </NavbarToggler>
+          </NavItem>
         </Nav>
-        <NavbarToggler className="d-md-down-none" onClick={this.asideToggle}>
-          <span className="navbar-toggler-icon" data-tip data-for="tt-toggle-sidebar" />
-          <ReactTooltip id="tt-toggle-sidebar" type="info" effect="solid" place="bottom">Contextual Sidebar</ReactTooltip>
-        </NavbarToggler>
+        <ReactTooltip id="tt-toggle-sidebar" type="info" effect="solid" place="bottom">Contextual Sidebar</ReactTooltip>
       </header>
     );
   }
 }
 
-export default Header;
+const mapStateToProps = ({ aside }) => {
+  const { asideType } = aside;
+  return { asideType };
+};
+export default connect(mapStateToProps, null)(Header);
