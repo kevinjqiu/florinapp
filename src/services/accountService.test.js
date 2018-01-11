@@ -65,6 +65,24 @@ describe("accountService", () => {
       expect(updatedAccount.name).toEqual("UPDATED");
     });
 
+    it("should sort account history by date", async () => {
+      const history = [
+        { dateTime: "2017-01-05", amount: "192.55" },
+        { dateTime: "2017-03-01", amount: "92.55" },
+        { dateTime: "2017-01-02", amount: "9.55" },
+        { dateTime: "2017-02-03", amount: "192.55" },
+      ];
+      const response = await db.post(new Account({
+        history
+      }));
+      await accountService.update(response.id, { name: "UPDATED" });
+      const updatedAccount = await db.get(response.id);
+      expect(updatedAccount.name).toEqual("UPDATED");
+      expect(updatedAccount.history).toEqual([
+        history[2], history[0], history[3], history[1]
+      ]);
+    })
+
     it("errors on non-existing account", async () => {
       try {
         await accountService.update("FOO", { name: "UPDATED" });

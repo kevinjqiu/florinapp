@@ -32,6 +32,12 @@ export const update = async (accountId: string, accountData: Account): Promise<A
     ...(await db.get(accountId)),
     ...accountData
   };
+
+  const history = account.history || [];
+  history.sort((h1, h2) => {
+    return h1.dateTime.localeCompare(h2.dateTime);
+  });
+
   await db.put(account);
   return await fetchById(accountId);
 };
