@@ -308,7 +308,8 @@ export const changeShowAccountTransfers = (showAccountTransfers: boolean, locati
   const newUrl = links.createTransactionLink(location, (queryParams) => {
     return {
       ...queryParams,
-      "filters.showAccountTransfers": showAccountTransfers
+      "filters.showAccountTransfers": showAccountTransfers,
+      page: 1
     }
   });
   dispatch(push(newUrl));
@@ -318,7 +319,8 @@ export const changeShowOnlyUncategorized = (showOnlyUncategorized: boolean, loca
   const newUrl = links.createTransactionLink(location, (queryParams) => {
     return {
       ...queryParams,
-      "filters.showOnlyUncategorized": showOnlyUncategorized
+      "filters.showOnlyUncategorized": showOnlyUncategorized,
+      page: 1
     }
   });
   dispatch(push(newUrl));

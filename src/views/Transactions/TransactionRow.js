@@ -15,7 +15,8 @@ const TransactionAccount = ({ transaction, location }) => {
   const newLink = links.createTransactionLink(location, (queryParams) => {
     return {
       ...queryParams,
-      "filters.accountId": transaction.accountId
+      "filters.accountId": transaction.accountId,
+      page: 1
     }
   });
   return (

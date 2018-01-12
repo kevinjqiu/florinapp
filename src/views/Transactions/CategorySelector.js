@@ -31,7 +31,8 @@ let CategoryValueComponent = ({item, location}) => {
     const newLink = links.createTransactionLink(location, (queryParams) => {
       return {
         ...queryParams,
-        "filters.categoryId": item._id
+        "filters.categoryId": item._id,
+        page: 1
       }
     });
     return <Link to={newLink} onClick={(e)=>e.stopPropagation()}>{item.name}</Link>
