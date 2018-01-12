@@ -8,7 +8,7 @@
 
 A client-side personal finance management app.
 
-[![CircleCI](https://circleci.com/gh/florinapp/v2.svg?style=svg)](https://circleci.com/gh/florinapp/v2)
+[![CircleCI](https://circleci.com/gh/kevinjqiu/florinapp.svg?style=svg)](https://circleci.com/gh/kevinjqiu/florinapp)
 
 Features
 ========
