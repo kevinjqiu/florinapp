@@ -8,10 +8,9 @@ import {
   Badge
 } from "reactstrap";
 import DateRangeSelector from "../DateRangeSelector/DateRangeSelector";
-import PreviousMonth from "../DateRangeSelector/PreviousMonth";
-import NextMonth from "../DateRangeSelector/NextMonth";
 import ReactTooltip from "react-tooltip";
 import { connect } from "react-redux";
+import MonthNavigator from "../DateRangeSelector/MonthNavigator";
 
 class Header extends Component {
   sidebarToggle(e) {
@@ -46,13 +45,13 @@ class Header extends Component {
         </NavbarToggler>
         <Nav className="ml-auto" navbar>
           <NavItem className="d-md-down-none">
-            <PreviousMonth />
+            <MonthNavigator iconClass="fa-chevron-left" monthOffset={-1} />
           </NavItem>
           <NavItem className="d-md-down-none">
             <DateRangeSelector />
           </NavItem>
           <NavItem className="d-md-down-none">
-            <NextMonth />
+            <MonthNavigator iconClass="fa-chevron-right" monthOffset={1} />
           </NavItem>
           <NavItem className="d-md-down-none">
             <NavLink href="#">

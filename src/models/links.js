@@ -1,6 +1,5 @@
 // @flow
 import * as queryString from "query-string";
-import { defaultFetchOptions } from "../services/transactionService";
 
 export const createTransactionLink = (currentLocation: Location, queryParamReducer: ({}) => {}) => {
   const queryParams = queryString.parse(currentLocation.search || "");

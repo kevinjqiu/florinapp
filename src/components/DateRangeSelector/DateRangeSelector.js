@@ -8,7 +8,6 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  NavItem,
   Modal,
   ModalHeader,
   ModalBody,
