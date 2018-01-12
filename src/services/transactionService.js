@@ -77,32 +77,6 @@ const fetchLinkedTransactions = async (transactions: Array<Transaction>) => {
   });
 };
 
-// const getViewQueryOptions = (options: FetchOptions) => {
-//   const { filters } = options;
-//   let viewName;
-//   const dateFrom = filters.dateFrom ? filters.dateFrom : "";
-//   const dateTo = filters.dateTo ? filters.dateTo : "9999";
-
-//   if (filters.showOnlyUncategorized || filters.categoryId !== undefined) {
-//     viewName = "transactions/byCategoryAndDate";
-//     let { categoryId } = filters;
-//     if (filters.showOnlyUncategorized) categoryId = null;
-//     return {
-//       viewName,
-//       startkey: [categoryId, dateFrom],
-//       endkey: [categoryId, dateTo]
-//     }
-//   }
-//   viewName = filters.showAccountTransfers ? "transactions/byDate" : "transactions/byDateWithoutAccountTransfers";
-//   const startkey = dateFrom;
-//   const endkey = dateTo;
-//   return {
-//     viewName,
-//     startkey,
-//     endkey
-//   };
-// };
-
 const getTotalRows = async (query): Promise<Number> => {
   const queryForTotalRows = {
     ...query,
@@ -172,40 +146,6 @@ export const fetch = async (options: FetchOptions = defaultFetchOptions):  Promi
   await fetchLinkedTransactions(transactions);
   return new PaginationResult(transactions, totalRows);
 }
-
-// export const fetch_v0 = async (options: FetchOptions = defaultFetchOptions): Promise<PaginationResult<Transaction>> => {
-//   const { pagination, orderBy } = options;
-//   const { viewName, startkey, endkey } = getViewQueryOptions(options);
-//   const totalRows = (await db.query(viewName, {
-//     startkey,
-//     endkey
-//   })).rows.length;
-
-//   let queryOptions = {
-//     include_docs: true,
-//     limit: pagination.perPage,
-//     skip: (pagination.page - 1) * pagination.perPage
-//   };
-//   if (orderBy[1] === "asc") {
-//     queryOptions = {
-//       ...queryOptions,
-//       startkey,
-//       endkey
-//     };
-//   } else {
-//     queryOptions = {
-//       ...queryOptions,
-//       startkey: endkey,
-//       endkey: startkey,
-//       descending: true
-//     };
-//   }
-//   const response = await db.query(viewName, queryOptions);
-//   const transactions = response.rows.map(row => new Transaction(row.doc));
-//   await fetchTransactionAccounts(transactions);
-//   await fetchLinkedTransactions(transactions);
-//   return new PaginationResult(transactions, totalRows);
-// };
 
 export const updateCategory = async (
   transactionId: string,
