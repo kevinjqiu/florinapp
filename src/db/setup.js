@@ -1,12 +1,17 @@
 export const setupIndex = async db => {
   const indexes = [
+    { index: { fields: ["date"] } },
+    { index: { fields: ["categoryId", "metadata.type"] } },
+    { index: { fields: ["accountId", "metadata.type"] } },
     { index: { fields: ["metadata.type"] } }
   ];
 
-  await Promise.all(indexes.map(async index => {
-    await db.createIndex(index);
-    console.log(`Created index ${JSON.stringify(index)}`);
-  }))
+  await Promise.all(
+    indexes.map(async index => {
+      await db.createIndex(index);
+      console.log(`Created index ${JSON.stringify(index)}`);
+    })
+  );
 };
 
 export const setupViews = async db => {
