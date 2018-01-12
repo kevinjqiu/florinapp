@@ -8,7 +8,32 @@ import DeleteButton from "../../components/ListActionButton/DeleteButton";
 import { reduxForm } from "redux-form";
 import { connect } from "react-redux";
 import * as actions from "../../actions";
+import * as links from "../../models/links";
 import CategorySelector from "./CategorySelector";
+
+const TransactionAccount = ({ transaction, location }) => {
+  const newLink = links.createTransactionLink(location, (queryParams) => {
+    return {
+      ...queryParams,
+      "filters.accountId": transaction.accountId
+    }
+  });
+  return (
+    <div>
+      <Link to={newLink}>
+        {transaction.account.name}
+      </Link>{" "}
+      <Link to={`/accounts/${transaction.account._id}/view`}>
+        <ListActionButton
+          id={`btn-openaccount-${transaction._id}`}
+          icon="fa-external-link"
+          outline={true}
+          tooltip="Open account page"
+        />
+      </Link>
+    </div>
+  );
+};
 
 const _TransactionDetailForm = ({ transaction }) => {
   return (
@@ -40,6 +65,7 @@ class TransactionRow extends Component {
   }
   render() {
     const {
+      location,
       fetchOptions,
       transaction,
       categories,
@@ -99,18 +125,7 @@ class TransactionRow extends Component {
             <Date date={transaction.date} />
           </td>
           <td>
-            {/* TODO: account filter link */}
-            <Link to={`/transactions/${transaction._id}/view`}>
-              {transaction.account.name}
-            </Link>{" "}
-            <Link to={`/accounts/${transaction.account._id}/view`}>
-              <ListActionButton
-                id={`btn-openaccount-${transaction._id}`}
-                icon="fa-external-link"
-                outline={true}
-                tooltip="Open account page"
-              />
-            </Link>
+            <TransactionAccount transaction={transaction} location={location} />
           </td>
           <td>{transaction.name}</td>
           <td>{transaction.memo}</td>
@@ -144,7 +159,8 @@ class TransactionRow extends Component {
   }
 }
 
-const mapStateToProps = ({ transactions }) => {
-  return { fetchOptions: transactions.fetchOptions };
+const mapStateToProps = ({ transactions, router }) => {
+  const { location } = router;
+  return { fetchOptions: transactions.fetchOptions, location };
 };
 export default connect(mapStateToProps, actions)(TransactionRow);
