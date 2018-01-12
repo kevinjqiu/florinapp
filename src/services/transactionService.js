@@ -119,6 +119,21 @@ const addCategorySelector = (query, filters): {} => {
   }
 }
 
+const addAccountIdSelector = (query, filters): {} => {
+  const { accountId } = filters;
+  if (accountId === undefined) {
+    return query;
+  }
+
+  return {
+    ...query,
+    selector: {
+      ...query.selector,
+      accountId
+    }
+  }
+}
+
 export const fetch = async (options: FetchOptions = defaultFetchOptions):  Promise<PaginationResult<Transaction>> => {
   const { pagination, orderBy, filters } = options;
   let query = {
@@ -128,11 +143,11 @@ export const fetch = async (options: FetchOptions = defaultFetchOptions):  Promi
         $lte: filters.dateTo ? filters.dateTo : "9999",
       }
     },
-    sort: [{date: options.orderBy[1]}]
+    sort: [{date: orderBy[1]}]
   }
 
-  query = addCategorySelector(query, filters);
-
+  const filterProcessors = [addCategorySelector, addAccountIdSelector];
+  query = filterProcessors.reduce((aggregate, filterProcessor) => filterProcessor(aggregate, filters), query);
   query = {
     ...query,
     limit: pagination.perPage,

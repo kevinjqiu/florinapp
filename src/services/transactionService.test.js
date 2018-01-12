@@ -191,38 +191,126 @@ describe("transactionService.fetch", () => {
   });
 
   it("should exclude account transfers", async () => {
-    await db.post(new Transaction({
+    await db.post(
+      new Transaction({
         _id: "txn1",
         date: "2017-01-01",
         categoryId: "internaltransfer"
-      }));
-    await db.post(new Transaction({
+      })
+    );
+    await db.post(
+      new Transaction({
         _id: "txn2",
         date: "2017-02-01",
         categoryId: "income-salary"
-      }));
+      })
+    );
     await db.post(new Transaction({ _id: "txn3", date: "2017-01-15" }));
-    const fetchOptions = { orderBy: ["date", "asc"], pagination: { perPage: 999, page: 1 }, filters: { dateFrom: "2016-01-01", dateTo: "2017-06-01", showAccountTransfers: false} };
+    const fetchOptions = {
+      orderBy: ["date", "asc"],
+      pagination: { perPage: 999, page: 1 },
+      filters: {
+        dateFrom: "2016-01-01",
+        dateTo: "2017-06-01",
+        showAccountTransfers: false
+      }
+    };
     const result = await transactionService.fetch(fetchOptions);
     expect(result.result.map(t => t._id)).toEqual(["txn3", "txn2"]);
   });
 
   it("should fetch by categoryId if specified", async () => {
-    await db.post(new Transaction({
+    await db.post(
+      new Transaction({
         _id: "txn1",
         date: "2017-01-01",
         categoryId: "internaltransfer"
-      }));
-    await db.post(new Transaction({
+      })
+    );
+    await db.post(
+      new Transaction({
         _id: "txn2",
         date: "2017-02-01",
         categoryId: "income-salary"
-      }));
+      })
+    );
     await db.post(new Transaction({ _id: "txn3", date: "2017-01-15" }));
-    const fetchOptions = { orderBy: ["date", "asc"], pagination: { perPage: 999, page: 1 }, filters: { categoryId: "income-salary"} };
+    const fetchOptions = {
+      orderBy: ["date", "asc"],
+      pagination: { perPage: 999, page: 1 },
+      filters: { categoryId: "income-salary" }
+    };
     const result = await transactionService.fetch(fetchOptions);
     expect(result.result.map(t => t._id)).toEqual(["txn2"]);
-  })
+  });
+
+  it("should fetch by accountId if specified", async () => {
+    await db.post(
+      new Transaction({
+        _id: "txn1",
+        accountId: "acct1",
+        date: "2017-01-01"
+      })
+    );
+    await db.post(
+      new Transaction({
+        _id: "txn2",
+        accountId: "acct2",
+        date: "2017-02-01",
+        categoryId: "income-salary"
+      })
+    );
+
+    await db.post(
+      new Transaction({
+        _id: "txn3",
+        accountId: "acct1",
+        date: "2017-01-15"
+      })
+    );
+
+    const fetchOptions = {
+      orderBy: ["date", "asc"],
+      pagination: { perPage: 999, page: 1 },
+      filters: { accountId: "acct1" }
+    };
+    const result = await transactionService.fetch(fetchOptions);
+    expect(result.result.map(t => t._id)).toEqual(["txn1", "txn3"]);
+  });
+
+  it("should fetch by accountId and categoryId if specified", async () => {
+    await db.post(
+      new Transaction({
+        _id: "txn1",
+        accountId: "acct1",
+        date: "2017-01-01"
+      })
+    );
+    await db.post(
+      new Transaction({
+        _id: "txn2",
+        accountId: "acct2",
+        date: "2017-02-01",
+        categoryId: "income-salary"
+      })
+    );
+
+    await db.post(
+      new Transaction({
+        _id: "txn3",
+        accountId: "acct2",
+        date: "2017-01-15"
+      })
+    );
+
+    const fetchOptions = {
+      orderBy: ["date", "asc"],
+      pagination: { perPage: 999, page: 1 },
+      filters: { accountId: "acct2", categoryId: "income-salary" }
+    };
+    const result = await transactionService.fetch(fetchOptions);
+    expect(result.result.map(t => t._id)).toEqual(["txn2"]);
+  });
 });
 
 describe("transactionService.updateCategory", () => {
@@ -373,43 +461,55 @@ describe("transactionService.linkTransactions", () => {
 
 describe("transactionService.sumByType", () => {
   const setupFixtures = async () => {
-    await db.post(new Transaction({
-      _id: "txn1",
-      date: "2017-01-01",
-      amount: "100.99",
-      type: transactionTypes.CREDIT
-    }));
-    await db.post(new Transaction({
-      _id: "txn2",
-      date: "2017-02-01",
-      amount: "-200.45",
-      type: transactionTypes.DEBIT
-    }));
-    await db.post(new Transaction({
-      _id: "txn3",
-      date: "2016-01-15",
-      amount: "-100.45",
-      type: transactionTypes.DEBIT
-    }));
-    await db.post(new Transaction({
-      _id: "txn4",
-      date: "2018-01-05",
-      amount: "-6.66",
-      type: transactionTypes.DEBIT
-    }));
-    await db.post(new Transaction({
-      _id: "txn5",
-      date: "2018-01-05",
-      amount: "2501.66",
-      type: transactionTypes.CREDIT
-    }));
-    await db.post(new Transaction({
-      _id: "txn6",
-      date: "2017-02-05",
-      amount: "3000.66",
-      type: transactionTypes.CREDIT,
-      categoryId: "internaltransfer"
-    }));
+    await db.post(
+      new Transaction({
+        _id: "txn1",
+        date: "2017-01-01",
+        amount: "100.99",
+        type: transactionTypes.CREDIT
+      })
+    );
+    await db.post(
+      new Transaction({
+        _id: "txn2",
+        date: "2017-02-01",
+        amount: "-200.45",
+        type: transactionTypes.DEBIT
+      })
+    );
+    await db.post(
+      new Transaction({
+        _id: "txn3",
+        date: "2016-01-15",
+        amount: "-100.45",
+        type: transactionTypes.DEBIT
+      })
+    );
+    await db.post(
+      new Transaction({
+        _id: "txn4",
+        date: "2018-01-05",
+        amount: "-6.66",
+        type: transactionTypes.DEBIT
+      })
+    );
+    await db.post(
+      new Transaction({
+        _id: "txn5",
+        date: "2018-01-05",
+        amount: "2501.66",
+        type: transactionTypes.CREDIT
+      })
+    );
+    await db.post(
+      new Transaction({
+        _id: "txn6",
+        date: "2017-02-05",
+        amount: "3000.66",
+        type: transactionTypes.CREDIT,
+        categoryId: "internaltransfer"
+      })
+    );
   };
 
   beforeEach(async () => {
@@ -458,48 +558,60 @@ describe("transactionService.sumByType", () => {
 
 describe("transactionService.sumByCategory", () => {
   const setupFixtures = async () => {
-    await db.post(new Transaction({
-      _id: "txn1",
-      date: "2017-01-01",
-      amount: "-100.99",
-      type: transactionTypes.DEBIT,
-      categoryId: "automobile-carpayment"
-    }));
-    await db.post(new Transaction({
-      _id: "txn2",
-      date: "2017-02-01",
-      amount: "-200.45",
-      type: transactionTypes.DEBIT,
-      categoryId: "automobile-carpayment"
-    }));
-    await db.post(new Transaction({
-      _id: "txn3",
-      date: "2016-01-15",
-      amount: "-100.45",
-      type: transactionTypes.DEBIT,
-      categoryId: "diningout-restaurants"
-    }));
-    await db.post(new Transaction({
-      _id: "txn4",
-      date: "2018-01-05",
-      amount: "-996.66",
-      type: transactionTypes.DEBIT,
-      categoryId: "mortgage"
-    }));
-    await db.post(new Transaction({
-      _id: "txn5",
-      date: "2018-01-05",
-      amount: "2501.66",
-      type: transactionTypes.CREDIT,
-      categoryId: "income-salary"
-    }));
-    await db.post(new Transaction({
-      _id: "txn6",
-      date: "2017-10-05",
-      amount: "100",
-      type: transactionTypes.CREDIT,
-      categoryId: "income-rewards"
-    }));
+    await db.post(
+      new Transaction({
+        _id: "txn1",
+        date: "2017-01-01",
+        amount: "-100.99",
+        type: transactionTypes.DEBIT,
+        categoryId: "automobile-carpayment"
+      })
+    );
+    await db.post(
+      new Transaction({
+        _id: "txn2",
+        date: "2017-02-01",
+        amount: "-200.45",
+        type: transactionTypes.DEBIT,
+        categoryId: "automobile-carpayment"
+      })
+    );
+    await db.post(
+      new Transaction({
+        _id: "txn3",
+        date: "2016-01-15",
+        amount: "-100.45",
+        type: transactionTypes.DEBIT,
+        categoryId: "diningout-restaurants"
+      })
+    );
+    await db.post(
+      new Transaction({
+        _id: "txn4",
+        date: "2018-01-05",
+        amount: "-996.66",
+        type: transactionTypes.DEBIT,
+        categoryId: "mortgage"
+      })
+    );
+    await db.post(
+      new Transaction({
+        _id: "txn5",
+        date: "2018-01-05",
+        amount: "2501.66",
+        type: transactionTypes.CREDIT,
+        categoryId: "income-salary"
+      })
+    );
+    await db.post(
+      new Transaction({
+        _id: "txn6",
+        date: "2017-10-05",
+        amount: "100",
+        type: transactionTypes.CREDIT,
+        categoryId: "income-rewards"
+      })
+    );
   };
 
   beforeEach(async () => {
@@ -525,13 +637,43 @@ describe("transactionService.sumByCategory", () => {
       dateTo: "2018-02-15"
     });
     expect(result.incomeCategories).toEqual([
-      {categoryId: "income-salary", categoryName: "Salary", categoryType: categoryTypes.INCOME, parentCategoryId: null, amount: 2501.66},
-      {categoryId: "income-rewards", categoryName: "Rewards", categoryType: categoryTypes.INCOME, parentCategoryId: null, amount: 100},
+      {
+        categoryId: "income-salary",
+        categoryName: "Salary",
+        categoryType: categoryTypes.INCOME,
+        parentCategoryId: null,
+        amount: 2501.66
+      },
+      {
+        categoryId: "income-rewards",
+        categoryName: "Rewards",
+        categoryType: categoryTypes.INCOME,
+        parentCategoryId: null,
+        amount: 100
+      }
     ]);
     expect(result.expensesCategories).toEqual([
-      {categoryId: "mortgage", categoryName: "Mortgage", categoryType: categoryTypes.EXPENSE, parentCategoryId: undefined, amount: -996.66},
-      {categoryId: "automobile-carpayment", categoryName: "Automobile::Car Payment", categoryType: categoryTypes.EXPENSE, parentCategoryId: "automobile", amount: -301.44},
-      {categoryId: "diningout-restaurants", categoryName: "Dining Out::Restaurants", categoryType: categoryTypes.EXPENSE, parentCategoryId: "diningout", amount: -100.45}
+      {
+        categoryId: "mortgage",
+        categoryName: "Mortgage",
+        categoryType: categoryTypes.EXPENSE,
+        parentCategoryId: undefined,
+        amount: -996.66
+      },
+      {
+        categoryId: "automobile-carpayment",
+        categoryName: "Automobile::Car Payment",
+        categoryType: categoryTypes.EXPENSE,
+        parentCategoryId: "automobile",
+        amount: -301.44
+      },
+      {
+        categoryId: "diningout-restaurants",
+        categoryName: "Dining Out::Restaurants",
+        categoryType: categoryTypes.EXPENSE,
+        parentCategoryId: "diningout",
+        amount: -100.45
+      }
     ]);
-  })
+  });
 });

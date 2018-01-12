@@ -26,6 +26,9 @@ const createFiltersFromQueryParams = queryParams => {
   if (queryParams["filters.categoryId"] !== undefined) {
     filters["categoryId"] = queryParams["filters.categoryId"];
   }
+  if (queryParams["filters.accountId"] !== undefined) {
+    filters["accountId"] = queryParams["filters.accountId"];
+  }
   return filters;
 };
 

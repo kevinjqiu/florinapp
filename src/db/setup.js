@@ -9,7 +9,6 @@ export const setupIndex = async db => {
   await Promise.all(
     indexes.map(async index => {
       await db.createIndex(index);
-      console.log(`Created index ${JSON.stringify(index)}`);
     })
   );
 };

@@ -33,15 +33,38 @@ const CategoryFilterBadge = ({ filters, categories, location }) => {
     return <span />
   }
 
-  const newLink = links.createTransactionLink(location, (queryParams) => {
+  const removeLink = links.createTransactionLink(location, (queryParams) => {
     const newQueryParams = {...queryParams};
     delete newQueryParams["filters.categoryId"]
     return newQueryParams;
   });
 
   return <Badge color="light" pill style={{fontSize: "1em", marginTop: "0.5em", padding: "0.6em"}}>
-    <Link to={newLink}><i className="fa fa-remove" /></Link>{" "}
+    <Link to={removeLink}><i className="fa fa-remove" /></Link>{" "}
     Category: {category.name}
+  </Badge>
+}
+
+const AccountFilterBadge = ({ filters, accounts, location }) => {
+  const { accountId } = filters;
+  if (!accountId) {
+    return <span />
+  }
+
+  const account = accounts.find(a => a._id === accountId);
+  if (!account) {
+    return <span />
+  }
+
+  const removeLink = links.createTransactionLink(location, (queryParams) => {
+    const newQueryParams = {...queryParams};
+    delete newQueryParams["filters.accountId"]
+    return newQueryParams;
+  });
+
+  return <Badge color="light" pill style={{fontSize: "1em", marginTop: "0.5em", padding: "0.6em"}}>
+    <Link to={removeLink}><i className="fa fa-remove" /></Link>{" "}
+    Account: {account.name}
   </Badge>
 }
 
@@ -61,6 +84,7 @@ class TransactionList extends Component {
 
   componentDidMount() {
     this.props.fetchCategories();
+    this.props.fetchAccounts();
     const { fetchOptions } = this.props.transactionsState;
     this.props.fetchTransactions(fetchOptions);
     this.props.fetchIncomeExpensesStats(fetchOptions.filters);
@@ -72,7 +96,8 @@ class TransactionList extends Component {
       location,
       fetchTransactions,
       transactionsState,
-      categoriesState
+      categoriesState,
+      accounts
     } = this.props;
     const { fetchOptions } = transactionsState;
     return <Container fluid>
@@ -101,6 +126,7 @@ class TransactionList extends Component {
           <Col xs="12" lg="12">
             <DateFilterBadge filters={fetchOptions.filters} />
             <CategoryFilterBadge filters={fetchOptions.filters} categories={categoriesState.categories} location={location} />
+            <AccountFilterBadge filters={fetchOptions.filters} accounts={accounts} location={location} />
           </Col>
         </Row>
         <hr />
@@ -116,10 +142,12 @@ class TransactionList extends Component {
 const mapStateToProps = state => {
   const transactionsState = state.transactions;
   const categoriesState = state.categories;
+  const accounts = state.accounts;
   const location = state.router.location;
   return {
     categoriesState,
     transactionsState,
+    accounts,  // TODO: have accountsState the same way as transactions and categories
     location
   };
 };
