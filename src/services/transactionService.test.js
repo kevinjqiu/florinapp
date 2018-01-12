@@ -207,6 +207,22 @@ describe("transactionService.fetch", () => {
     expect(result.result.map(t => t._id)).toEqual(["txn3", "txn2"]);
   });
 
+  it("should fetch by categoryId if specified", async () => {
+    await db.post(new Transaction({
+        _id: "txn1",
+        date: "2017-01-01",
+        categoryId: "internaltransfer"
+      }));
+    await db.post(new Transaction({
+        _id: "txn2",
+        date: "2017-02-01",
+        categoryId: "income-salary"
+      }));
+    await db.post(new Transaction({ _id: "txn3", date: "2017-01-15" }));
+    const fetchOptions = { orderBy: ["date", "asc"], pagination: { perPage: 999, page: 1 }, filters: { categoryId: "income-salary"} };
+    const result = await transactionService.fetch(fetchOptions);
+    expect(result.result.map(t => t._id)).toEqual(["txn2"]);
+  })
 });
 
 describe("transactionService.updateCategory", () => {

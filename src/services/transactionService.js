@@ -114,6 +114,37 @@ const getTotalRows = async (query): Promise<Number> => {
   return resultForTotalRows.docs.length;
 }
 
+const addCategorySelector = (query, filters): {} => {
+  let categoryIdClauses = [];
+  if (filters.categoryId !== undefined) {
+    categoryIdClauses = [...categoryIdClauses, { $eq: filters.categoryId }];
+  }
+
+  if (filters.showOnlyUncategorized) {
+    categoryIdClauses = [...categoryIdClauses, { $eq: null }];
+  }
+
+  if (!filters.showAccountTransfers) {
+    categoryIdClauses = [...categoryIdClauses, { $ne: "internaltransfer" }];
+  }
+
+  if (categoryIdClauses.length === 0) {
+    return query;
+  }
+
+  const categoryId = categoryIdClauses.reduce((aggregate, current) => {
+    return { ...aggregate, ...current };
+  }, {});
+
+  return {
+    ...query,
+    selector: {
+      ...query.selector,
+      categoryId
+    }
+  }
+}
+
 export const fetch = async (options: FetchOptions = defaultFetchOptions):  Promise<PaginationResult<Transaction>> => {
   const { pagination, orderBy, filters } = options;
   let query = {
@@ -126,37 +157,7 @@ export const fetch = async (options: FetchOptions = defaultFetchOptions):  Promi
     sort: [{date: options.orderBy[1]}]
   }
 
-  if (filters.showOnlyUncategorized) {
-    query = {
-      ...query,
-      selector: {
-        ...query.selector,
-        categoryId: null
-      }
-    }
-  }
-
-  if (filters.categoryId !== undefined) {
-    query = {
-      ...query,
-      selector: {
-        ...query.selector,
-        categoryId: filters.categoryId
-      }
-    }
-  }
-
-  if (!filters.showAccountTransfers) {
-    query = {
-      ...query,
-      selector: {
-        ...query.selector,
-        categoryId: {
-          $ne: "internaltransfer"
-        }
-      }
-    }
-  }
+  query = addCategorySelector(query, filters);
 
   query = {
     ...query,
