@@ -143,7 +143,7 @@ export const fetch = async (options: FetchOptions = defaultFetchOptions):  Promi
         $lte: filters.dateTo ? filters.dateTo : "9999",
       }
     },
-    sort: [{date: options.orderBy[1]}]
+    sort: [{date: orderBy[1]}]
   }
 
   const filterProcessors = [addCategorySelector, addAccountIdSelector];
