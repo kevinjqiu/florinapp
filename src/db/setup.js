@@ -1,12 +1,17 @@
 export const setupIndex = async db => {
   const indexes = [
+    { index: { fields: ["date"] } },
+    { index: { fields: ["categoryId", "metadata.type"] } },
+    { index: { fields: ["accountId", "metadata.type"] } },
     { index: { fields: ["metadata.type"] } }
   ];
 
-  await Promise.all(indexes.map(async index => {
-    await db.createIndex(index);
-    console.log(`Created index ${JSON.stringify(index)}`);
-  }))
+  await Promise.all(
+    indexes.map(async index => {
+      await db.createIndex(index);
+      console.log(`Created index ${JSON.stringify(index)}`);
+    })
+  );
 };
 
 export const setupViews = async db => {
@@ -20,13 +25,6 @@ export const setupViews = async db => {
   const transactionsDdoc = Object.assign(ddoc, {
     _id: "_design/transactions",
     views: {
-      byDate: {
-        map: function(doc) {
-          if (doc.metadata && doc.metadata.type === "Transaction") {
-            emit(doc.date, null);
-          }
-        }.toString()
-      },
       byType: {
         map: function(doc) {
           if (doc.metadata && doc.metadata.type === "Transaction") {
@@ -36,15 +34,6 @@ export const setupViews = async db => {
           }
         }.toString(),
         reduce: "_sum"
-      },
-      byDateWithoutAccountTransfers: {
-        map: function(doc) {
-          if (doc.metadata && doc.metadata.type === "Transaction") {
-            if (doc.categoryId !== "internaltransfer") {
-              emit(doc.date, null);
-            }
-          }
-        }.toString()
       },
       byAmount: {
         map: function(doc) {
@@ -76,13 +65,6 @@ export const setupViews = async db => {
             }
           }
           return result;
-        }.toString()
-      },
-      byCategoryAndDate: {
-        map: function(doc) {
-          if (doc.metadata && doc.metadata.type === "Transaction") {
-            emit([doc.categoryId, doc.date], null);
-          }
         }.toString()
       }
     }

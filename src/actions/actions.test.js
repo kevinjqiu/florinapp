@@ -177,7 +177,7 @@ describe("Transactions", () => {
     });
 
     it("should signal failure when db.find fails", async () => {
-      const mockDb = sinon.stub(db, "query");
+      const mockDb = sinon.stub(db, "find");
       mockDb.throws();
       await store.dispatch(actions.fetchTransactions());
       const { transactions } = store.getState();

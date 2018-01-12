@@ -26,7 +26,8 @@ export const defaultFetchOptions = {
     dateTo: thisMonthDateRange.end.format("YYYY-MM-DD"),
     showAccountTransfers: false,
     showOnlyUncategorized: false,
-    categoryId: undefined
+    categoryId: undefined,
+    accountId: undefined
   }
 };
 
@@ -76,65 +77,75 @@ const fetchLinkedTransactions = async (transactions: Array<Transaction>) => {
   });
 };
 
-const getViewQueryOptions = (options: FetchOptions) => {
-  const { filters } = options;
-  let viewName;
-  const dateFrom = filters.dateFrom ? filters.dateFrom : "";
-  const dateTo = filters.dateTo ? filters.dateTo : "9999";
+const getTotalRows = async (query): Promise<Number> => {
+  const queryForTotalRows = {
+    ...query,
+    fields: [],
+    limit: Number.MAX_SAFE_INTEGER,
+    skip: 0
+  }
+  const resultForTotalRows = await db.find(queryForTotalRows);
+  return resultForTotalRows.docs.length;
+}
 
-  if (filters.showOnlyUncategorized || filters.categoryId !== undefined) {
-    viewName = "transactions/byCategoryAndDate";
-    let { categoryId } = filters;
-    if (filters.showOnlyUncategorized) categoryId = null;
-    return {
-      viewName,
-      startkey: [categoryId, dateFrom],
-      endkey: [categoryId, dateTo]
+const addCategorySelector = (query, filters): {} => {
+  let categoryIdClauses = [];
+  if (filters.categoryId !== undefined) {
+    categoryIdClauses = [...categoryIdClauses, { $eq: filters.categoryId }];
+  }
+
+  if (filters.showOnlyUncategorized) {
+    categoryIdClauses = [...categoryIdClauses, { $eq: null }];
+  }
+
+  if (!filters.showAccountTransfers) {
+    categoryIdClauses = [...categoryIdClauses, { $ne: "internaltransfer" }];
+  }
+
+  if (categoryIdClauses.length === 0) {
+    return query;
+  }
+
+  const categoryId = categoryIdClauses.reduce((aggregate, current) => {
+    return { ...aggregate, ...current };
+  }, {});
+
+  return {
+    ...query,
+    selector: {
+      ...query.selector,
+      categoryId
     }
   }
-  viewName = filters.showAccountTransfers ? "transactions/byDate" : "transactions/byDateWithoutAccountTransfers";
-  const startkey = dateFrom;
-  const endkey = dateTo;
-  return {
-    viewName,
-    startkey,
-    endkey
-  };
-};
+}
 
-export const fetch = async (options: FetchOptions = defaultFetchOptions): Promise<PaginationResult<Transaction>> => {
-  const { pagination, orderBy } = options;
-  const { viewName, startkey, endkey } = getViewQueryOptions(options);
-  const totalRows = (await db.query(viewName, {
-    startkey,
-    endkey
-  })).rows.length;
+export const fetch = async (options: FetchOptions = defaultFetchOptions):  Promise<PaginationResult<Transaction>> => {
+  const { pagination, orderBy, filters } = options;
+  let query = {
+    selector: {
+      date: {
+        $gte: filters.dateFrom ? filters.dateFrom : "",
+        $lte: filters.dateTo ? filters.dateTo : "9999",
+      }
+    },
+    sort: [{date: options.orderBy[1]}]
+  }
 
-  let queryOptions = {
-    include_docs: true,
+  query = addCategorySelector(query, filters);
+
+  query = {
+    ...query,
     limit: pagination.perPage,
     skip: (pagination.page - 1) * pagination.perPage
-  };
-  if (orderBy[1] === "asc") {
-    queryOptions = {
-      ...queryOptions,
-      startkey,
-      endkey
-    };
-  } else {
-    queryOptions = {
-      ...queryOptions,
-      startkey: endkey,
-      endkey: startkey,
-      descending: true
-    };
   }
-  const response = await db.query(viewName, queryOptions);
-  const transactions = response.rows.map(row => new Transaction(row.doc));
+
+  const totalRows = await getTotalRows(query);
+  const result = await db.find(query)
+  const transactions = result.docs.map(doc => new Transaction(doc));
   await fetchTransactionAccounts(transactions);
   await fetchLinkedTransactions(transactions);
   return new PaginationResult(transactions, totalRows);
-};
+}
 
 export const updateCategory = async (
   transactionId: string,
