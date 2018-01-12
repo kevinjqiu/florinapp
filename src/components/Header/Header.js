@@ -10,6 +10,7 @@ import {
 import DateRangeSelector from "../DateRangeSelector/DateRangeSelector";
 import ReactTooltip from "react-tooltip";
 import { connect } from "react-redux";
+import MonthNavigator from "../DateRangeSelector/MonthNavigator";
 
 class Header extends Component {
   sidebarToggle(e) {
@@ -44,26 +45,48 @@ class Header extends Component {
         </NavbarToggler>
         <Nav className="ml-auto" navbar>
           <NavItem className="d-md-down-none">
+            <MonthNavigator iconClass="fa-chevron-left" monthOffset={-1} />
+          </NavItem>
+          <NavItem className="d-md-down-none">
             <DateRangeSelector />
+          </NavItem>
+          <NavItem className="d-md-down-none">
+            <MonthNavigator iconClass="fa-chevron-right" monthOffset={1} />
           </NavItem>
           <NavItem className="d-md-down-none">
             <NavLink href="#">
               <i className="icon-bell" />
-              <Badge pill color="danger">
-              </Badge>
+              <Badge pill color="danger" />
             </NavLink>
           </NavItem>
           <NavItem className="d-md-down-none">
-            <NavbarToggler className="d-md-down-none" onClick={this.asideToggle}>
+            <NavbarToggler
+              className="d-md-down-none"
+              onClick={this.asideToggle}
+            >
               <i className="navbar-toggler-icon" />
-              {this.props.asideType ?
-              <Badge pill color="warning" style={{position: "absolute", top: "50%", left: "50%"}}><i className="icon-eye"/>
-              </Badge>
-              : <span />}
+              {this.props.asideType ? (
+                <Badge
+                  pill
+                  color="warning"
+                  style={{ position: "absolute", top: "50%", left: "50%" }}
+                >
+                  <i className="icon-eye" />
+                </Badge>
+              ) : (
+                <span />
+              )}
             </NavbarToggler>
           </NavItem>
         </Nav>
-        <ReactTooltip id="tt-toggle-sidebar" type="info" effect="solid" place="bottom">Contextual Sidebar</ReactTooltip>
+        <ReactTooltip
+          id="tt-toggle-sidebar"
+          type="info"
+          effect="solid"
+          place="bottom"
+        >
+          Contextual Sidebar
+        </ReactTooltip>
       </header>
     );
   }

@@ -27,13 +27,16 @@ const CategoryItemComponent = ({ item }) => {
 };
 
 let CategoryValueComponent = ({item, location}) => {
-  const newLink = links.createTransactionLink(location, (queryParams) => {
-    return {
-      ...queryParams,
-      "filters.categoryId": item._id
-    }
-  });
-  return <Link to={newLink} onClick={(e)=>e.stopPropagation()}>{item.name}</Link>
+  if (item) {
+    const newLink = links.createTransactionLink(location, (queryParams) => {
+      return {
+        ...queryParams,
+        "filters.categoryId": item._id
+      }
+    });
+    return <Link to={newLink} onClick={(e)=>e.stopPropagation()}>{item.name}</Link>
+  }
+  return null;
 }
 
 const mapStateToProps = ({ router }) => {
