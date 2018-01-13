@@ -102,12 +102,21 @@ const AccountCardBody = ({
               <Col md="3" />
               <Col md="6">
                 <FormGroup style={{margin: "0px; auto"}}>
-                  <Label check htmlFor="group-by-fi">
-                  <Input type="radio" id="group-by-fi" name="group-by-fi" value="group-by-fi"/>Group By Financial Institution
+                  <Label check>Group By</Label>
+                  {' '}
+                  <Label check htmlFor="group-by">
+                    <Input type="radio" id="account-group-by" name="account-group-by" value="group-by-none"/>
+                    <span style={{fontWeight: "normal"}}>None</span>
                   </Label>
                   {' '}
-                  <Label check htmlFor="group-by-type">
-                  <Input type="radio" id="group-by-type" name="group-by-type" value="group-by-type"/>Group By Account Type
+                  <Label check htmlFor="group-by">
+                    <Input type="radio" id="account-group-by" name="account-group-by" value="group-by-fi"/>
+                    <span style={{fontWeight: "normal"}}>Financial Institution</span>
+                  </Label>
+                  {' '}
+                  <Label check htmlFor="group-by">
+                    <Input type="radio" id="account-group-by" name="account-group-by" value="group-by-type"/>
+                    <span style={{fontWeight: "normal"}}>Account Type</span>
                   </Label>
                 </FormGroup>
               </Col>
