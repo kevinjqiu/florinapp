@@ -66,13 +66,14 @@ const getLatestAccountBalance = account => {
 
 const AccountCardBody = ({
   accounts,
-  ui,
+  loading,
+  failed,
   deleteAccount,
   showGlobalModal,
   hideGlobalModal,
   fetchAccounts
 }) => {
-  if (ui.loading) {
+  if (loading) {
     return (
       <i
         className="fa fa-spinner fa-spin fa-3x fa-fw"
@@ -80,7 +81,7 @@ const AccountCardBody = ({
       />
     );
   }
-  if (ui.failed) {
+  if (failed) {
     return (
       <Alert color="danger">Loading accounts failed. Try again later...</Alert>
     );
@@ -176,7 +177,7 @@ class AccountList extends Component {
     this.props.fetchAccounts();
   }
   render() {
-    const { accounts } = this.props;
+    const { accounts, loading, failed } = this.props.accountsState;
     const { fetchAccounts } = this.props;
     return (
       <Container fluid>
@@ -196,7 +197,7 @@ class AccountList extends Component {
         <hr />
         <Row>
           <Col xs="12" lg="12">
-            <AccountCardBody accounts={accounts} {...this.props} />
+            <AccountCardBody accounts={accounts} loading={loading} failed={failed} {...this.props} />
           </Col>
         </Row>
       </Container>
@@ -204,8 +205,8 @@ class AccountList extends Component {
   }
 }
 
-const mapStateToProps = ({ accounts, ui }) => {
-  return { accounts, ui: ui.accounts };
+const mapStateToProps = ({ accounts }) => {
+  return { accountsState: accounts };
 };
 
 export default connect(mapStateToProps, actions)(AccountList);

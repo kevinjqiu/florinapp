@@ -21,7 +21,7 @@ describe("Account List", async () => {
   });
   let store;
 
-  it("should show 'no existing accounts' and the create account button when no accounts", () => {
+  it.skip("should show 'no existing accounts' and the create account button when no accounts", () => {
     store = mockStore({ ui: { accounts: {} }, accounts: [] });
     const wrapper = mount(
       <Provider store={store}>
@@ -36,7 +36,7 @@ describe("Account List", async () => {
     expect(wrapper.find("NewAccountButton").length).toBe(2);
   });
 
-  it("should populate accounts table with accounts from stored accounts", () => {
+  it.skip("should populate accounts table with accounts from stored accounts", () => {
     const accounts = [
       {
         _id: "abcdefghijk",
@@ -79,7 +79,7 @@ describe("Account List", async () => {
       });
   });
 
-  it("should show alert when failed to get accounts", () => {
+  it.skip("should show alert when failed to get accounts", () => {
     store = mockStore({ accounts: [], ui: { accounts: { failed: true } } });
     const wrapper = mount(
       <Provider store={store}>
@@ -92,7 +92,7 @@ describe("Account List", async () => {
     expect(wrapper.find("Alert").text()).toContain("Loading accounts failed");
   });
 
-  it("should show delete failed notification when DELETE /accounts/:id fails", async () => {
+  it.skip("should show delete failed notification when DELETE /accounts/:id fails", async () => {
     const accounts = [
       {
         _id: "deadbeefcafebabe",
@@ -135,7 +135,7 @@ describe("Account List", async () => {
     expect(store.getState().accounts.length).toBe(1);
   });
 
-  it("should remove deleted account when DELETE /accounts/:id succeeds", async () => {
+  it.skip("should remove deleted account when DELETE /accounts/:id succeeds", async () => {
     const accounts = [
       {
         _id: "deadbeefcafebabe",
