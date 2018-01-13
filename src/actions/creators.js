@@ -389,3 +389,10 @@ export const fetchUncategorizedTransactionCountSucceeded = (count: Number) => {
 }
 
 export const fetchUncategorizedTransactionCountFailed = actionFailed(actionTypes.FETCH_UNCATEGORIZED_TRANSACTION_COUNT_FAILED);
+
+export const changeAccountListGroupByOptionSucceeded = (groupBy) => {
+  return {
+    type: actionTypes.CHANGE_ACCOUNT_LIST_GROUP_BY_OPTION_SUCCEEDED,
+    groupBy
+  }
+}
