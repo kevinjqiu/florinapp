@@ -18,7 +18,7 @@ describe("transactions reducer", () => {
     };
     const newState = reducer(
       state,
-      actionCreators.updateTransactionCategorySucceeded("txn2", "category1")
+      actionCreators.updateTransactionCategorySucceeded("txn2", "category2", "category1")
     );
     expect(newState.transactions[0].categoryId).toEqual("test");
     expect(newState.transactions[1].categoryId).toEqual("category1");

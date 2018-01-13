@@ -142,7 +142,7 @@ class TransactionRow extends Component {
               value={transaction.categoryId}
               disabled={disabledCategories}
               onChange={c => {
-                updateTransactionCategory(transaction._id, c._id);
+                updateTransactionCategory(transaction._id, transaction.categoryId, c._id);
                 fetchCategorySummaries(fetchOptions.filters);
               }}
             />

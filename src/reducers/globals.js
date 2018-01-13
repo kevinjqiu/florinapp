@@ -21,6 +21,14 @@ export default (state = initState, action) => {
         ...state,
         uncategorizedTransactionsCount: action.count
       }
+    case actionTypes.UPDATE_TRANSACTION_CATEGORY_SUCCEEDED:
+      if (action.previousCategoryId === undefined && action.categoryId !== undefined) {
+        return {
+          ...state,
+          uncategorizedTransactionsCount: state.uncategorizedTransactionsCount - 1
+        };
+      }
+      return state;
     case "@@router/LOCATION_CHANGE":
       // When the location change carries filters.dateFrom and filters.dateTo,
       // The dateRange state should be updated so we can show the correct date range

@@ -155,6 +155,7 @@ export const seedCategories = () => async dispatch => {
 
 export const updateTransactionCategory = (
   transactionId: string,
+  previousCategoryId: string,
   categoryId: string
 ) => async dispatch => {
   dispatch(
@@ -165,6 +166,7 @@ export const updateTransactionCategory = (
     dispatch(
       actionCreators.updateTransactionCategorySucceeded(
         transactionId,
+        previousCategoryId,
         categoryId
       )
     );

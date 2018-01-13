@@ -186,11 +186,13 @@ export const updateTransactionCategoryRequested = (
 
 export const updateTransactionCategorySucceeded = (
   transactionId: string,
+  previousCategoryId,
   categoryId: string
 ) => {
   return {
     type: actionTypes.UPDATE_TRANSACTION_CATEGORY_SUCCEEDED,
     transactionId,
+    previousCategoryId,
     categoryId
   };
 };
