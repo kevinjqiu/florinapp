@@ -48,7 +48,9 @@ const MonthNavigator = ({ location, iconClass, monthOffset, changeDateRange, dat
     start: newDateFrom,
     end: newDateTo
   });
-  return <Link to="#" onClick={() => changeDateRange(newDateRange)}><i className={`fa ${iconClass}`}/></Link>
+  return <Link to="#" onClick={() => {
+    changeDateRange(newDateRange);
+  }}><i className={`fa ${iconClass}`}/></Link>
 };
 
 const mapStateToProps = ({ router, globals }) => {
