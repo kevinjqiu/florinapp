@@ -234,15 +234,15 @@ const AccountCardBody = ({
     );
   }
 
-  const accountsTable = (accounts) => {
+  const accountsTable = (accounts, key) => {
     accounts.sort((a, b) => a.name.localeCompare(b.name));
-    return <AccountsTable accounts={accounts} deleteAccountWithConfirmation={deleteAccountWithConfirmation} showGlobalModal={showGlobalModal} hideGlobalModal={hideGlobalModal} deleteAccount={deleteAccount} fetchAccounts={fetchAccounts} />;
+    return <AccountsTable key={key} accounts={accounts} deleteAccountWithConfirmation={deleteAccountWithConfirmation} showGlobalModal={showGlobalModal} hideGlobalModal={hideGlobalModal} deleteAccount={deleteAccount} fetchAccounts={fetchAccounts} />;
   }
 
   const renderGroupedAccounts = groupedAccounts => {
-    return Object.keys(groupedAccounts).map(key => {
+    return Object.keys(groupedAccounts).map((key, idx) => {
       const accounts = groupedAccounts[key];
-      return <div>
+      return <div key={idx}>
           <h4>{key}</h4>
           {accountsTable(accounts)}
         </div>;
@@ -253,7 +253,7 @@ const AccountCardBody = ({
   let groupedAccounts = {};
   switch (uiOptions.groupBy) {
     case null:
-      accountsTables = [accountsTable(accounts)];
+      accountsTables = [accountsTable(accounts, 1)];
       break;
     case "financialInstitution":
       groupedAccounts = groupAccountsByKey(accounts, "financialInstitution");
