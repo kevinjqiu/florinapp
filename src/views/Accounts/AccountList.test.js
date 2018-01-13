@@ -22,7 +22,7 @@ describe("Account List", async () => {
   let store;
 
   it("should show 'no existing accounts' and the create account button when no accounts", () => {
-    store = mockStore({ ui: { accounts: {} }, accounts: [] });
+    store = mockStore({ accounts: { accounts: [] } });
     const wrapper = mount(
       <Provider store={store}>
         <BrowserRouter>
@@ -53,7 +53,7 @@ describe("Account List", async () => {
         currency: "CAD"
       }
     ];
-    store = mockStore({ accounts, ui: { accounts: {} } });
+    store = mockStore({ accounts: { accounts, uiOptions: { groupBy: null } } });
     const wrapper = mount(
       <Provider store={store}>
         <BrowserRouter>
@@ -80,7 +80,7 @@ describe("Account List", async () => {
   });
 
   it("should show alert when failed to get accounts", () => {
-    store = mockStore({ accounts: [], ui: { accounts: { failed: true } } });
+    store = mockStore({ accounts: { accounts: [], failed: true } });
     const wrapper = mount(
       <Provider store={store}>
         <BrowserRouter>
@@ -103,8 +103,11 @@ describe("Account List", async () => {
       }
     ];
     store = mockStore({
-      accounts,
-      ui: { accounts: { failed: false } }
+      accounts: {
+        accounts,
+        failed: false,
+        uiOptions: { groupBy: null }
+      }
     });
     const wrapper = mount(
       <Provider store={store}>
@@ -132,7 +135,7 @@ describe("Account List", async () => {
 
     expect(actions[2].type).toBe(actionTypes.DELETE_ACCOUNT_FAILED);
 
-    expect(store.getState().accounts.length).toBe(1);
+    expect(store.getState().accounts.accounts.length).toBe(1);
   });
 
   it("should remove deleted account when DELETE /accounts/:id succeeds", async () => {
@@ -149,8 +152,11 @@ describe("Account List", async () => {
       await db.post(account);
     });
     store = mockStore({
-      accounts,
-      ui: { accounts: { failed: false } }
+      accounts: {
+        accounts,
+        failed: false,
+        uiOptions: { groupBy: null }
+      }
     });
     const wrapper = mount(
       <Provider store={store}>

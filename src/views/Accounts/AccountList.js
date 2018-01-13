@@ -6,7 +6,10 @@ import {
   Container,
   Table,
   Button,
-  ButtonGroup
+  ButtonGroup,
+  FormGroup,
+  Label,
+  Input
 } from "reactstrap";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -61,37 +64,87 @@ const getLatestAccountBalance = account => {
   return <Currency amount={latest.balance} code={account.currency} />;
 };
 
-const AccountCardBody = ({
-  accounts,
-  ui,
-  deleteAccount,
-  showGlobalModal,
-  hideGlobalModal,
-  fetchAccounts
-}) => {
-  if (ui.loading) {
-    return (
-      <i
-        className="fa fa-spinner fa-spin fa-3x fa-fw"
-        style={{ fontSize: "8em" }}
-      />
-    );
-  }
-  if (ui.failed) {
-    return (
-      <Alert color="danger">Loading accounts failed. Try again later...</Alert>
-    );
-  }
-  if (accounts.length === 0) {
-    return (
-      <span>
-        There are currently no existing accounts. <NewAccountButton />
-      </span>
-    );
-  }
-
+const GroupByOption = ({uiOptions, changeAccountListGroupByOption}) => {
   return (
-    <Table responsive striped>
+    <Table style={{border: "none"}}>
+      <thead>
+        <tr>
+          <th style={{ textAlign: "center", border: "none" }}>
+            <FormGroup row style={{ marginBottom: "0em" }}>
+              <Col md="3" />
+              <Col md="6">
+                <FormGroup style={{ margin: "0px; auto" }}>
+                  <Label check>Group By</Label>{" "}
+                  <Label check htmlFor="group-by">
+                    <Input
+                      type="radio"
+                      id="account-group-by"
+                      name="account-group-by"
+                      value="group-by-none"
+                      defaultChecked={uiOptions.groupBy === null}
+                      onChange={() => {
+                        changeAccountListGroupByOption(null);
+                      }}
+                    />
+                    <span style={{ fontWeight: "normal" }}>None</span>
+                  </Label>{" "}
+                  <Label check htmlFor="group-by">
+                    <Input
+                      type="radio"
+                      id="account-group-by"
+                      name="account-group-by"
+                      value="group-by-fi"
+                      defaultChecked={
+                        uiOptions.groupBy === "financialInstitution"
+                      }
+                      onChange={() => {
+                        changeAccountListGroupByOption("financialInstitution");
+                      }}
+                    />
+                    <span style={{ fontWeight: "normal" }}>
+                      Financial Institution
+                    </span>
+                  </Label>{" "}
+                  <Label check htmlFor="group-by">
+                    <Input
+                      type="radio"
+                      id="account-group-by"
+                      name="account-group-by"
+                      value="group-by-type"
+                      defaultChecked={uiOptions.groupBy === "accountType"}
+                      onChange={() => {
+                        changeAccountListGroupByOption("accountType");
+                      }}
+                    />
+                    <span style={{ fontWeight: "normal" }}>Account Type</span>
+                  </Label>{" "}
+                  <Label check htmlFor="group-by">
+                    <Input
+                      type="radio"
+                      id="account-group-by"
+                      name="account-group-by"
+                      value="group-by-currency"
+                      defaultChecked={uiOptions.groupBy === "currency"}
+                      onChange={() => {
+                        changeAccountListGroupByOption("currency");
+                      }}
+                    />
+                    <span style={{ fontWeight: "normal" }}>Currency</span>
+                  </Label>
+                </FormGroup>
+              </Col>
+              <Col md="3" />
+            </FormGroup>
+          </th>
+        </tr>
+      </thead>
+    </Table>
+  );
+};
+
+const AccountsTable = ({accounts, deleteAccountWithConfirmation, showGlobalModal, hideGlobalModal, deleteAccount, fetchAccounts}) => {
+  return (
+    <Table>
       <thead>
         <tr>
           <th />
@@ -99,7 +152,7 @@ const AccountCardBody = ({
           <th>Financial Institution</th>
           <th>Currency</th>
           <th>Type</th>
-          <th style={{textAlign: "right"}}>Current Balance</th>
+          <th style={{ textAlign: "right" }}>Current Balance</th>
         </tr>
       </thead>
       <tbody>
@@ -130,11 +183,99 @@ const AccountCardBody = ({
             <td>{account.financialInstitution}</td>
             <td>{account.currency}</td>
             <td>{account.type}</td>
-            <td style={{textAlign: "right"}}>{getLatestAccountBalance(account)}</td>
+            <td style={{ textAlign: "right" }}>
+              {getLatestAccountBalance(account)}
+            </td>
           </tr>
         ))}
       </tbody>
     </Table>
+  );
+};
+
+const groupAccountsByKey = (accounts: Array<Account>, key: string) => {
+  const groupedAccounts = accounts.reduce((aggregate, account) => {
+    aggregate[account[key]] = aggregate[account[key]] || [];
+    aggregate[account[key]].push(account);
+    return aggregate;
+  }, {});
+  return groupedAccounts;
+};
+
+const AccountCardBody = ({
+  accounts,
+  loading,
+  failed,
+  uiOptions,
+  deleteAccount,
+  showGlobalModal,
+  hideGlobalModal,
+  fetchAccounts,
+  changeAccountListGroupByOption
+}) => {
+  if (loading) {
+    return (
+      <i
+        className="fa fa-spinner fa-spin fa-3x fa-fw"
+        style={{ fontSize: "8em" }}
+      />
+    );
+  }
+  if (failed) {
+    return (
+      <Alert color="danger">Loading accounts failed. Try again later...</Alert>
+    );
+  }
+  if (accounts.length === 0) {
+    return (
+      <span>
+        There are currently no existing accounts. <NewAccountButton />
+      </span>
+    );
+  }
+
+  const accountsTable = (accounts, key) => {
+    accounts.sort((a, b) => a.name.localeCompare(b.name));
+    return <AccountsTable key={key} accounts={accounts} deleteAccountWithConfirmation={deleteAccountWithConfirmation} showGlobalModal={showGlobalModal} hideGlobalModal={hideGlobalModal} deleteAccount={deleteAccount} fetchAccounts={fetchAccounts} />;
+  }
+
+  const renderGroupedAccounts = groupedAccounts => {
+    return Object.keys(groupedAccounts).map((key, idx) => {
+      const accounts = groupedAccounts[key];
+      return <div key={idx}>
+          <h4>{key}</h4>
+          {accountsTable(accounts)}
+        </div>;
+    });
+  };
+
+  let accountsTables = [];
+  let groupedAccounts = {};
+  switch (uiOptions.groupBy) {
+    case null:
+      accountsTables = [accountsTable(accounts, 1)];
+      break;
+    case "financialInstitution":
+      groupedAccounts = groupAccountsByKey(accounts, "financialInstitution");
+      accountsTables = renderGroupedAccounts(groupedAccounts);
+      break;
+    case "accountType":
+      groupedAccounts = groupAccountsByKey(accounts, "type");
+      accountsTables = renderGroupedAccounts(groupedAccounts);
+      break;
+    case "currency":
+      groupedAccounts = groupAccountsByKey(accounts, "currency");
+      accountsTables = renderGroupedAccounts(groupedAccounts);
+      break;
+    default:
+      break;
+  }
+
+  return (
+    <div>
+      <GroupByOption uiOptions={uiOptions} changeAccountListGroupByOption={changeAccountListGroupByOption} />
+      {accountsTables}
+    </div>
   );
 };
 
@@ -143,7 +284,7 @@ class AccountList extends Component {
     this.props.fetchAccounts();
   }
   render() {
-    const { accounts } = this.props;
+    const { accounts, loading, failed, uiOptions } = this.props.accountsState;
     const { fetchAccounts } = this.props;
     return (
       <Container fluid>
@@ -163,7 +304,13 @@ class AccountList extends Component {
         <hr />
         <Row>
           <Col xs="12" lg="12">
-            <AccountCardBody accounts={accounts} {...this.props} />
+            <AccountCardBody
+              accounts={accounts}
+              loading={loading}
+              failed={failed}
+              uiOptions={uiOptions}
+              {...this.props}
+            />
           </Col>
         </Row>
       </Container>
@@ -171,8 +318,8 @@ class AccountList extends Component {
   }
 }
 
-const mapStateToProps = ({ accounts, ui }) => {
-  return { accounts, ui: ui.accounts };
+const mapStateToProps = ({ accounts }) => {
+  return { accountsState: accounts };
 };
 
 export default connect(mapStateToProps, actions)(AccountList);

@@ -337,3 +337,7 @@ export const fetchUncategorizedTransactionsCount = (filter: {dateFrom: string, d
     dispatch(actionCreators.fetchUncategorizedTransactionCountFailed(error));
   }
 }
+
+export const changeAccountListGroupByOption = (groupBy: ?string) => dispatch => {
+  dispatch(actionCreators.changeAccountListGroupByOptionSucceeded(groupBy));
+}

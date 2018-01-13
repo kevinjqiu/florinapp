@@ -33,7 +33,7 @@ describe("Account", () => {
     it("should set state to empty accounts when no accounts are loaded", async () => {
       await store.dispatch(actions.fetchAccounts());
       const { accounts } = store.getState();
-      expect(accounts.length).toBe(0);
+      expect(accounts.accounts.length).toBe(0);
     });
 
     it("should load the accounts", async () => {
@@ -46,10 +46,10 @@ describe("Account", () => {
       );
       await store.dispatch(actions.fetchAccounts());
       const { accounts } = store.getState();
-      expect(accounts.length).toBe(1);
-      expect(accounts[0].name).toEqual("TEST");
-      expect(accounts[0].financialInstitution).toEqual("TEST_FI");
-      expect(accounts[0].type).toEqual("CHECKING");
+      expect(accounts.accounts.length).toBe(1);
+      expect(accounts.accounts[0].name).toEqual("TEST");
+      expect(accounts.accounts[0].financialInstitution).toEqual("TEST_FI");
+      expect(accounts.accounts[0].type).toEqual("CHECKING");
     });
 
     it("should signal failure when db.find fails", async () => {
@@ -57,9 +57,8 @@ describe("Account", () => {
       mockDb.throws();
       await store.dispatch(actions.fetchAccounts());
       const { accounts } = store.getState();
-      expect(accounts.length).toBe(0);
-      const uiAccounts = store.getState().ui.accounts;
-      expect(uiAccounts.failed).toBe(true);
+      expect(accounts.accounts.length).toBe(0);
+      expect(accounts.failed).toBe(true);
       mockDb.restore();
     });
   });
@@ -68,7 +67,7 @@ describe("Account", () => {
     it("should signal failure when account to delete does not exist", async () => {
       await store.dispatch(actions.deleteAccount("nonexistent"));
       const { notifications, accounts } = store.getState();
-      expect(accounts.length).toBe(0);
+      expect(accounts.accounts.length).toBe(0);
       expect(notifications.length).toBe(1);
       expect(notifications[0].title).toEqual("Cannot delete account");
     });
@@ -83,7 +82,7 @@ describe("Account", () => {
       );
       await store.dispatch(actions.deleteAccount(response.id));
       const { notifications, accounts } = store.getState();
-      expect(accounts.length).toBe(0);
+      expect(accounts.accounts.length).toBe(0);
       expect(notifications.length).toBe(1);
       expect(notifications[0].title).toEqual("The account was deleted");
     });

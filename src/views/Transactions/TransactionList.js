@@ -97,7 +97,7 @@ class TransactionList extends Component {
       fetchTransactions,
       transactionsState,
       categoriesState,
-      accounts
+      accountsState,
     } = this.props;
     const { fetchOptions } = transactionsState;
     return <Container fluid>
@@ -126,7 +126,7 @@ class TransactionList extends Component {
           <Col xs="12" lg="12">
             <DateFilterBadge filters={fetchOptions.filters} />
             <CategoryFilterBadge filters={fetchOptions.filters} categories={categoriesState.categories} location={location} />
-            <AccountFilterBadge filters={fetchOptions.filters} accounts={accounts} location={location} />
+            <AccountFilterBadge filters={fetchOptions.filters} accounts={accountsState.accounts} location={location} />
           </Col>
         </Row>
         <hr />
@@ -142,12 +142,12 @@ class TransactionList extends Component {
 const mapStateToProps = state => {
   const transactionsState = state.transactions;
   const categoriesState = state.categories;
-  const accounts = state.accounts;
+  const accountsState = state.accounts;
   const location = state.router.location;
   return {
     categoriesState,
     transactionsState,
-    accounts,  // TODO: have accountsState the same way as transactions and categories
+    accountsState,
     location
   };
 };
