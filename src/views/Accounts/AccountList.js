@@ -6,7 +6,10 @@ import {
   Container,
   Table,
   Button,
-  ButtonGroup
+  ButtonGroup,
+  FormGroup,
+  Label,
+  Input
 } from "reactstrap";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -92,6 +95,27 @@ const AccountCardBody = ({
 
   return (
     <Table responsive striped>
+      <thead>
+        <tr>
+          <th colSpan="6" style={{textAlign: "center"}}>
+            <FormGroup row style={{marginBottom: "0em"}}>
+              <Col md="3" />
+              <Col md="6">
+                <FormGroup style={{margin: "0px; auto"}}>
+                  <Label check htmlFor="group-by-fi">
+                  <Input type="radio" id="group-by-fi" name="group-by-fi" value="group-by-fi"/>Group By Financial Institution
+                  </Label>
+                  {' '}
+                  <Label check htmlFor="group-by-type">
+                  <Input type="radio" id="group-by-type" name="group-by-type" value="group-by-type"/>Group By Account Type
+                  </Label>
+                </FormGroup>
+              </Col>
+              <Col md="3" />
+            </FormGroup>
+          </th>
+        </tr>
+      </thead>
       <thead>
         <tr>
           <th />
