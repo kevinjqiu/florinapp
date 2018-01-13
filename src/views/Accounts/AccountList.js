@@ -117,6 +117,19 @@ const GroupByOption = ({uiOptions, changeAccountListGroupByOption}) => {
                       }}
                     />
                     <span style={{ fontWeight: "normal" }}>Account Type</span>
+                  </Label>{" "}
+                  <Label check htmlFor="group-by">
+                    <Input
+                      type="radio"
+                      id="account-group-by"
+                      name="account-group-by"
+                      value="group-by-currency"
+                      defaultChecked={uiOptions.groupBy === "currency"}
+                      onChange={() => {
+                        changeAccountListGroupByOption("currency");
+                      }}
+                    />
+                    <span style={{ fontWeight: "normal" }}>Currency</span>
                   </Label>
                 </FormGroup>
               </Col>
@@ -127,6 +140,66 @@ const GroupByOption = ({uiOptions, changeAccountListGroupByOption}) => {
       </thead>
     </Table>
   );
+};
+
+const AccountsTable = ({accounts, deleteAccountWithConfirmation, showGlobalModal, hideGlobalModal, deleteAccount, fetchAccounts}) => {
+  return (
+    <Table>
+      <thead>
+        <tr>
+          <th />
+          <th>Name</th>
+          <th>Financial Institution</th>
+          <th>Currency</th>
+          <th>Type</th>
+          <th style={{ textAlign: "right" }}>Current Balance</th>
+        </tr>
+      </thead>
+      <tbody>
+        {accounts.map(account => (
+          <tr key={account._id}>
+            <td>
+              <ButtonGroup className="float-right">
+                <Link to={`/accounts/${account._id}/view`}>
+                  <ViewButton objectId={account._id} />
+                </Link>
+                <DeleteButton
+                  objectId={account._id}
+                  onClick={() =>
+                    deleteAccountWithConfirmation({
+                      accountId: account._id,
+                      showGlobalModal,
+                      hideGlobalModal,
+                      deleteAccount,
+                      fetchAccounts
+                    })
+                  }
+                />
+              </ButtonGroup>
+            </td>
+            <td>
+              <Link to={`/accounts/${account._id}/view`}>{account.name}</Link>
+            </td>
+            <td>{account.financialInstitution}</td>
+            <td>{account.currency}</td>
+            <td>{account.type}</td>
+            <td style={{ textAlign: "right" }}>
+              {getLatestAccountBalance(account)}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </Table>
+  );
+};
+
+const groupAccountsByKey = (accounts: Array<Account>, key: string) => {
+  const groupedAccounts = accounts.reduce((aggregate, account) => {
+    aggregate[account[key]] = aggregate[account[key]] || [];
+    aggregate[account[key]].push(account);
+    return aggregate;
+  }, {});
+  return groupedAccounts;
 };
 
 const AccountCardBody = ({
@@ -161,58 +234,47 @@ const AccountCardBody = ({
     );
   }
 
-  if (uiOptions.groupBy === null) {
+  const accountsTable = (accounts) => {
+    accounts.sort((a, b) => a.name.localeCompare(b.name));
+    return <AccountsTable accounts={accounts} deleteAccountWithConfirmation={deleteAccountWithConfirmation} showGlobalModal={showGlobalModal} hideGlobalModal={hideGlobalModal} deleteAccount={deleteAccount} fetchAccounts={fetchAccounts} />;
+  }
+
+  const renderGroupedAccounts = groupedAccounts => {
+    return Object.keys(groupedAccounts).map(key => {
+      const accounts = groupedAccounts[key];
+      return <div>
+          <h4>{key}</h4>
+          {accountsTable(accounts)}
+        </div>;
+    });
+  };
+
+  let accountsTables = [];
+  let groupedAccounts = {};
+  switch (uiOptions.groupBy) {
+    case null:
+      accountsTables = [accountsTable(accounts)];
+      break;
+    case "financialInstitution":
+      groupedAccounts = groupAccountsByKey(accounts, "financialInstitution");
+      accountsTables = renderGroupedAccounts(groupedAccounts);
+      break;
+    case "accountType":
+      groupedAccounts = groupAccountsByKey(accounts, "type");
+      accountsTables = renderGroupedAccounts(groupedAccounts);
+      break;
+    case "currency":
+      groupedAccounts = groupAccountsByKey(accounts, "currency");
+      accountsTables = renderGroupedAccounts(groupedAccounts);
+      break;
+    default:
+      break;
   }
 
   return (
     <div>
       <GroupByOption uiOptions={uiOptions} changeAccountListGroupByOption={changeAccountListGroupByOption} />
-      <Table>
-        <thead>
-          <tr>
-            <th />
-            <th>Name</th>
-            <th>Financial Institution</th>
-            <th>Currency</th>
-            <th>Type</th>
-            <th style={{ textAlign: "right" }}>Current Balance</th>
-          </tr>
-        </thead>
-        <tbody>
-          {accounts.map(account => (
-            <tr key={account._id}>
-              <td>
-                <ButtonGroup className="float-right">
-                  <Link to={`/accounts/${account._id}/view`}>
-                    <ViewButton objectId={account._id} />
-                  </Link>
-                  <DeleteButton
-                    objectId={account._id}
-                    onClick={() =>
-                      deleteAccountWithConfirmation({
-                        accountId: account._id,
-                        showGlobalModal,
-                        hideGlobalModal,
-                        deleteAccount,
-                        fetchAccounts
-                      })
-                    }
-                  />
-                </ButtonGroup>
-              </td>
-              <td>
-                <Link to={`/accounts/${account._id}/view`}>{account.name}</Link>
-              </td>
-              <td>{account.financialInstitution}</td>
-              <td>{account.currency}</td>
-              <td>{account.type}</td>
-              <td style={{ textAlign: "right" }}>
-                {getLatestAccountBalance(account)}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+      {accountsTables}
     </div>
   );
 };
