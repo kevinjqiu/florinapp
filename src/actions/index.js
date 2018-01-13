@@ -326,10 +326,10 @@ export const changeShowOnlyUncategorized = (showOnlyUncategorized: boolean, loca
   dispatch(push(newUrl));
 };
 
-export const fetchUncategorizedTransactionCount = (filter: {dateFrom: string, dateTo: string}) => async dispatch => {
+export const fetchUncategorizedTransactionsCount = (filter: {dateFrom: string, dateTo: string}) => async dispatch => {
   dispatch(actionCreators.fetchUncategorizedTransactionCountRequested());
   try {
-    const count = await transactionService.fetchUncategorizedTransactionCount(filter);
+    const count = await transactionService.fetchUncategorizedTransactionsCount(filter);
     dispatch(actionCreators.fetchUncategorizedTransactionCountSucceeded(count));
   } catch (error) {
     dispatch(actionCreators.fetchUncategorizedTransactionCountFailed(error));

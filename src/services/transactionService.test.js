@@ -345,7 +345,7 @@ describe("transactionService.fetchUncategorizedTransactionCount", () => {
       })
     );
 
-    const count = await transactionService.fetchUncategorizedTransactionCount({
+    const count = await transactionService.fetchUncategorizedTransactionsCount({
         dateFrom: "2017-01-01",
         dateTo: "2017-02-05"
     });

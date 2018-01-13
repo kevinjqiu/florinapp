@@ -5,7 +5,8 @@ import moment from "moment";
 import * as queryString from "query-string";
 
 const initState = {
-  dateRange: thisMonth()
+  dateRange: thisMonth(),
+  uncategorizedTransactionsCount: 0
 };
 
 export default (state = initState, action) => {
@@ -15,6 +16,11 @@ export default (state = initState, action) => {
         ...state,
         dateRange: action.dateRange
       };
+    case actionTypes.FETCH_UNCATEGORIZED_TRANSACTION_COUNT_SUCCEEDED:
+      return {
+        ...state,
+        uncategorizedTransactionsCount: action.count
+      }
     case "@@router/LOCATION_CHANGE":
       // When the location change carries filters.dateFrom and filters.dateTo,
       // The dateRange state should be updated so we can show the correct date range

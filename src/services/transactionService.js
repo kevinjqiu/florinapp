@@ -163,7 +163,7 @@ export const fetch = async (options: FetchOptions = defaultFetchOptions):  Promi
   return new PaginationResult(transactions, totalRows);
 }
 
-export const fetchUncategorizedTransactionCount = async (filters: {dateFrom: string, dateTo: string}): Promise<Number> => {
+export const fetchUncategorizedTransactionsCount = async (filters: {dateFrom: string, dateTo: string}): Promise<Number> => {
   let query = {
     selector: {
       "metadata.type": "Transaction",
@@ -172,7 +172,7 @@ export const fetchUncategorizedTransactionCount = async (filters: {dateFrom: str
         $lte: filters.dateTo ? filters.dateTo : "9999"
       },
       categoryId: {
-          $exists: false
+        $exists: false
       },
     },
     fields: [],
