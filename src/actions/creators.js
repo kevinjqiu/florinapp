@@ -372,3 +372,18 @@ export const fetchCategorySummariesSucceeded = (payload) => {
 }
 
 export const fetchCategorySummariesFailed = actionFailed(actionTypes.FETCH_CATEGORY_SUMMARIES_FAILED);
+
+export const fetchUncategorizedTransactionCountRequested = () => {
+  return {
+    type: actionTypes.FETCH_UNCATEGORIZED_TRANSACTION_COUNT_REQUESTED
+  }
+}
+
+export const fetchUncategorizedTransactionCountSucceeded = (count: Number) => {
+  return {
+    type: actionTypes.FETCH_UNCATEGORIZED_TRANSACTION_COUNT_SUCCEEDED,
+    count
+  }
+}
+
+export const fetchUncategorizedTransactionCountFailed = actionFailed(actionTypes.FETCH_UNCATEGORIZED_TRANSACTION_COUNT_FAILED);

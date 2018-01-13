@@ -95,7 +95,7 @@ const addCategorySelector = (query, filters): {} => {
   }
 
   if (filters.showOnlyUncategorized) {
-    categoryIdClauses = [...categoryIdClauses, { $eq: null }];
+    categoryIdClauses = [...categoryIdClauses, { $exists: false }];
   }
 
   if (!filters.showAccountTransfers) {
@@ -138,6 +138,7 @@ export const fetch = async (options: FetchOptions = defaultFetchOptions):  Promi
   const { pagination, orderBy, filters } = options;
   let query = {
     selector: {
+      "metadata.type": "Transaction",
       date: {
         $gte: filters.dateFrom ? filters.dateFrom : "",
         $lte: filters.dateTo ? filters.dateTo : "9999",
@@ -161,6 +162,26 @@ export const fetch = async (options: FetchOptions = defaultFetchOptions):  Promi
   await fetchLinkedTransactions(transactions);
   return new PaginationResult(transactions, totalRows);
 }
+
+export const fetchUncategorizedTransactionCount = async (filters: {dateFrom: string, dateTo: string}): Promise<Number> => {
+  let query = {
+    selector: {
+      "metadata.type": "Transaction",
+      date: {
+        $gte: filters.dateFrom ? filters.dateFrom : "",
+        $lte: filters.dateTo ? filters.dateTo : "9999"
+      },
+      categoryId: {
+          $exists: false
+      },
+    },
+    fields: [],
+    limit: Number.MAX_SAFE_INTEGER,
+    skip: 0
+  };
+  const result = await db.find(query);
+  return result.docs.length;
+};
 
 export const updateCategory = async (
   transactionId: string,

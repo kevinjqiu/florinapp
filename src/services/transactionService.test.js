@@ -313,6 +313,46 @@ describe("transactionService.fetch", () => {
   });
 });
 
+describe("transactionService.fetchUncategorizedTransactionCount", () => {
+  beforeEach(async () => {
+    await reset();
+    await setupIndex(db);
+    await setupViews(db);
+  });
+
+  it("should fetch uncategorized transaction count in the date range", async () => {
+    await db.post(
+      new Transaction({
+        _id: "txn1",
+        accountId: "acct1",
+        date: "2017-01-02",
+      })
+    );
+    await db.post(
+      new Transaction({
+        _id: "txn2",
+        accountId: "acct2",
+        date: "2017-02-01",
+        categoryId: "income-salary"
+      })
+    );
+
+    await db.post(
+      new Transaction({
+        _id: "txn3",
+        accountId: "acct2",
+        date: "2015-01-15"
+      })
+    );
+
+    const count = await transactionService.fetchUncategorizedTransactionCount({
+        dateFrom: "2017-01-01",
+        dateTo: "2017-02-05"
+    });
+    expect(count).toBe(1);
+  });
+});
+
 describe("transactionService.updateCategory", () => {
   beforeEach(async () => {
     await reset();
