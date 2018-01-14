@@ -27,6 +27,14 @@ export default (state = initState, action) => {
         loading: false,
         failed: true
       };
+    case actionTypes.CREATE_CATEGORY_SUCCEEDED:
+      let { categories } = state;
+      categories = [...categories, action.category]
+      categories.sort((a, b) => a._id.localeCompare(b._id))
+      return {
+        ...state,
+        categories
+      }
     default:
       return state;
   }

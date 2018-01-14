@@ -9,3 +9,8 @@ export const fetch = async (): Promise<Array<Category>> => {
   });
   return response.docs.map(doc => new Category(doc));
 };
+
+export const create = async (categoryData: Category): Promise<Category> => {
+  // TODO: fill me
+  return new Category();
+}
