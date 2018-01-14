@@ -115,6 +115,16 @@ class CategoryList extends Component {
         <Row>
           <Col xs="12" lg="12">
             <ButtonGroup>
+              <Link to="/settings/categories/new">
+                <Button
+                  color="success"
+                  size="sm"
+                  outline
+                >
+                  <i className="fa fa-plus" aria-hidden="true" />
+                  {"\u00A0"}Add
+                </Button>
+              </Link>
               <Button
                 color="success"
                 size="sm"
