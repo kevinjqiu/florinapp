@@ -173,6 +173,21 @@ export const seedCategoriesFailed = actionFailed(
   actionTypes.SEED_CATEGORIES_FAILED
 );
 
+export const createCategoryRequested = () => {
+  return {
+    type: actionTypes.CREATE_CATEGORY_REQUESTED
+  }
+}
+
+export const createCategorySucceeded = (category: Category) => {
+  return {
+    type: actionTypes.CREATE_CATEGORY_SUCCEEDED,
+    category
+  }
+}
+
+export const createCategoryFailed = actionFailed(actionTypes.CREATE_CATEGORY_FAILED);
+
 export const updateTransactionCategoryRequested = (
   transactionId: string,
   categoryId: string
