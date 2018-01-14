@@ -26,3 +26,14 @@ export const create = async (categoryData: Category): Promise<Category> => {
   const response = await db.post(categoryData);
   return new Category(await db.get(response.id));
 }
+
+export const update = async (categoryId: string, categoryData: Category): Promise<Category> => {
+  let category = {
+    ...(await db.get(categoryId)),
+    ...categoryData
+  }
+
+  await db.put(category);
+
+  return new Category(category);  // TODO: fetchById?
+}

@@ -169,6 +169,21 @@ export const createCategory = (categoryData: Category) => async dispatch => {
   }
 }
 
+export const updateCategory = (categoryId: string, categoryData: Category) => async dispatch => {
+  dispatch(actionCreators.updateCategoryRequested());
+  try {
+    const account = await categoryService.update(categoryId, categoryData);
+    dispatch(actionCreators.updateCategorySucceeded(account));
+    dispatch(push("/settings/categories"));
+    dispatch(actionCreators.showSuccessNotification("Category updated"));
+  } catch (err) {
+    dispatch(
+      actionCreators.showErrorNotification("Category update failed", err)
+    );
+    dispatch(actionCreators.updateCategoryFailed(err));
+  }
+}
+
 export const updateTransactionCategory = (
   transactionId: string,
   previousCategoryId: string,
