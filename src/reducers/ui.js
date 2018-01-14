@@ -21,7 +21,6 @@ const initState = {
 };
 
 export default (state = initState, action) => {
-  let accounts;
   switch (action.type) {
     case actionTypes.SHOW_GLOBAL_MODAL:
       return {

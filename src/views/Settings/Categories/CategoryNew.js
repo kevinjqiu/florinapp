@@ -3,6 +3,7 @@ import { Container, Row, Col } from "reactstrap";
 import { connect } from "react-redux";
 import CategoryForm from "./CategoryForm";
 import { reduxForm } from "redux-form";
+import * as actions from "../../../actions";
 
 const NewCategoryForm = reduxForm({
   initialValues: { type: "INCOME", parent: null },
@@ -11,7 +12,6 @@ const NewCategoryForm = reduxForm({
 
 class CategoryNew extends Component {
   render() {
-    const { categories } = this.props;
     return (
       <Container fluid>
         <Row>
@@ -21,7 +21,7 @@ class CategoryNew extends Component {
         </Row>
         <Row>
           <Col xs="12" lg="12">
-            <NewCategoryForm categories={categories} onSubmit={() => {}}/>
+            <NewCategoryForm onSubmit={() => {}}/>
           </Col>
         </Row>
       </Container>
@@ -29,10 +29,4 @@ class CategoryNew extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  const categoriesState = state.categories;
-  const { categories } = categoriesState;
-  return { categories }
-}
-
-export default connect(mapStateToProps, null)(CategoryNew);
+export default connect(null, actions)(CategoryNew);
