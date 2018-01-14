@@ -1,17 +1,23 @@
 import React, { Component } from "react";
 import { Container, Row, Col } from "reactstrap";
 import { connect } from "react-redux";
-import CategoryForm from "./CategoryForm";
+import _CategoryForm from "./CategoryForm";
 import { reduxForm } from "redux-form";
+import Category from "../../../models/Category";
 import * as actions from "../../../actions";
+import * as queryString from "query-string";
 
-const NewCategoryForm = reduxForm({
-  initialValues: { type: "INCOME", parent: null },
-  form: "newCategory"
-})(CategoryForm);
+const newCategoryForm = ({ type, parent }) => {
+  return reduxForm({
+    initialValues: { type, parent },
+    form: "newCategory"
+  })(_CategoryForm);
+};
 
 class CategoryNew extends Component {
   render() {
+    const { createCategory, parent, type } = this.props;
+    const CategoryForm = newCategoryForm({ type, parent });
     return (
       <Container fluid>
         <Row>
@@ -21,7 +27,7 @@ class CategoryNew extends Component {
         </Row>
         <Row>
           <Col xs="12" lg="12">
-            <NewCategoryForm onSubmit={() => {}}/>
+            <CategoryForm onSubmit={(props) => createCategory(new Category(props))} />
           </Col>
         </Row>
       </Container>
@@ -29,4 +35,13 @@ class CategoryNew extends Component {
   }
 }
 
-export default connect(null, actions)(CategoryNew);
+const mapStateToProps = ({ router }) => {
+  const { location } = router;
+  const queryParams = queryString.parse(location.search);
+  return {
+    parent: queryParams.parent !== undefined ? queryParams.parent : null,
+    type: queryParams.type !== undefined ? queryParams.type : "INCOME"
+  };
+}
+
+export default connect(mapStateToProps, actions)(CategoryNew);

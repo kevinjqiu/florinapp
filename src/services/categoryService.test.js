@@ -16,4 +16,30 @@ describe("categoryService", () => {
       expect(categories.length).toEqual(57);
     });
   });
+
+  describe("categoryService.create", () => {
+    it("should create a top-level category with id being lowercased name", async () => {
+      const category = await categoryService.create({
+        name: "Awesome Category",
+        parent: null
+      });
+
+      expect(category._id).toEqual("awesomecategory");
+    });
+
+    it("should create a sub-category with id being the parent hyphen subcategory name", async () => {
+      await categoryService.create({
+        _id: "awesomecategory",
+        name: "Awesome Category",
+        parent: null
+      });
+
+      const subcategory = await categoryService.create({
+        name: "Sub awesome category",
+        parent: "awesomecategory"
+      });
+
+      expect(subcategory._id).toEqual("awesomecategory-subawesomecategory");
+    });
+  })
 });

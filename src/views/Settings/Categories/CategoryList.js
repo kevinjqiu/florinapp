@@ -16,6 +16,7 @@ import RefreshButton from "../../../components/RefreshButton/RefreshButton";
 import { categoryTypes } from "../../../models/CategoryType";
 import DeleteButton from "../../../components/ListActionButton/DeleteButton";
 import ViewButton from "../../../components/ListActionButton/ViewButton";
+import ListActionButton from "../../../components/ListActionButton/ListActionButton";
 
 class CategoryTable extends Component {
   render() {
@@ -59,23 +60,26 @@ class CategoryTable extends Component {
         </thead>
         <tbody>
           {categories.map(category => {
-            return (
-              <tr key={category._id}>
+            return <tr key={category._id}>
                 <td style={{ textAlign: "right" }}>
                   <ButtonGroup>
+                    {category.isParent() ? <Link to={`/settings/categories/new?parent=${category._id}&type=${category.type}`}>
+                        <ListActionButton id={category._id} tooltip="Create a subcategory in this top-level category" color="success" icon="fa-plus-square-o" />
+                      </Link> : <ListActionButton id={category._id} tooltip="Creating subcategory is only applicable to a top-level category" color="success" icon="fa-plus-square-o" disabled={true} />}
+
                     <Link to={`/settings/categories/${category._id}/view`}>
                       <ViewButton objectId={category._id} />
                     </Link>
-                    <DeleteButton objectId={category._id} onClick={() => { console.log("TODO") }} />
+                    <DeleteButton objectId={category._id} onClick={() => {
+                        console.log("TODO");
+                      }} />
                   </ButtonGroup>
                 </td>
                 <td>
                   <Link to={`/settings/categories/${category._id}/view`}>
-                    {category.parent ? (
-                      category.name
-                    ) : (
-                      <strong>{category.name}</strong>
-                    )}
+                    {category.parent ? category.name : <strong>
+                        <h4>{category.name}</h4>
+                      </strong>}
                   </Link>
                 </td>
                 <td>
@@ -85,13 +89,18 @@ class CategoryTable extends Component {
                 </td>
                 <td style={{ textAlign: "center" }}>
                   {category.allowTransactions ? (
-                    <i className="fa fa-check-square-o" aria-hidden="true" />
+                    <i
+                      className="fa fa-check-square-o"
+                      aria-hidden="true"
+                    />
                   ) : (
-                    <i className="fa fa-square-o" aria-hidden="true" />
+                    <i
+                      className="fa fa-square-o"
+                      aria-hidden="true"
+                    />
                   )}
                 </td>
-              </tr>
-            );
+              </tr>;
           })}
         </tbody>
       </Table>

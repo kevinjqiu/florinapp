@@ -10,7 +10,19 @@ export const fetch = async (): Promise<Array<Category>> => {
   return response.docs.map(doc => new Category(doc));
 };
 
+const generateId = (categoryData: Category): string => {
+  const { name, parent } = categoryData;
+  const normalizedCategoryName = name.replace(/[^A-Z0-9]/ig, "").toLowerCase();
+  if (parent) {
+    return `${parent}-${normalizedCategoryName}`;
+  }
+  return normalizedCategoryName;
+}
+
 export const create = async (categoryData: Category): Promise<Category> => {
-  // TODO: fill me
-  return new Category();
+  if (!categoryData._id) {
+    categoryData._id = generateId(categoryData);
+  } 
+  const response = await db.post(categoryData);
+  return new Category(await db.get(response.id));
 }
