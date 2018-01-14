@@ -9,6 +9,7 @@ import type FetchOptions from "../services/FetchOptions";
 import DateRange from "../models/DateRange";
 import Account from "../models/Account";
 import Transaction from "../models/Transaction";
+import Category from "../models/Category";
 import Sync from "../models/Sync";
 import { Location } from "react-router";
 import * as links from "../models/links";
@@ -152,6 +153,21 @@ export const seedCategories = () => async dispatch => {
     dispatch(actionCreators.seedCategoriesFailed(err));
   }
 };
+
+export const createCategory = (categoryData: Category) => async dispatch => {
+  dispatch(actionCreators.createCategoryRequested());
+  try {
+    const category = await categoryService.create(categoryData);
+    dispatch(actionCreators.createCategorySucceeded(category));
+    dispatch(push("/settings/categories"));
+    dispatch(actionCreators.showSuccessNotification("Category created"));
+  } catch (err) {
+    dispatch(
+      actionCreators.showErrorNotification("Cannot delete account", err)
+    );
+    dispatch(actionCreators.createCategoryFailed(err));
+  }
+}
 
 export const updateTransactionCategory = (
   transactionId: string,

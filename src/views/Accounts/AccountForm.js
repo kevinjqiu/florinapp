@@ -1,5 +1,5 @@
-import { Button, Col, Label, FormGroup, FormFeedback } from "reactstrap";
 import React from "react";
+import { Button, Col, Label, FormGroup, FormFeedback } from "reactstrap";
 import { Field } from "redux-form";
 import { Link } from "react-router-dom";
 import { accountTypes } from "../../models/AccountType";

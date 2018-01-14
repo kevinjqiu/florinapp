@@ -14,7 +14,7 @@ const Tags = () => {
 export default () => {
   return <div className="animated fadeIn">
       <Route exact path="/settings/general" component={General} />
-      <Route exact path="/settings/categories" component={Categories} />
+      <Route path="/settings/categories" component={Categories} />
       <Route exact path="/settings/tags" component={Tags} />
       <Route exact path="/settings/sync" component={Sync} />
     </div>;

@@ -14,4 +14,8 @@ export default class Category extends FlorinBase {
     super("Category");
     Object.assign(this, props);
   }
+
+  isParent() {
+    return this.parent === null;
+  }
 }
