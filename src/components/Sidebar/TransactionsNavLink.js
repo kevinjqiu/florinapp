@@ -70,9 +70,10 @@ class TransactionsNavLink extends Component {
   }
 }
 
-const mapStateToProps = ({ globals }) => {
+const mapStateToProps = ({ globals, router }) => {
   const { dateRange, uncategorizedTransactionsCount } = globals;
-  return { dateRange, uncategorizedTransactionsCount };
+  // have to map the router state to the custom component because the NavLink component expects router state to be available
+  return { dateRange, uncategorizedTransactionsCount, router };
 };
 
 export default connect(mapStateToProps, actions)(TransactionsNavLink);
