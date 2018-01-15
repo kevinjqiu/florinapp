@@ -97,6 +97,17 @@ export default (state = initState, action) => {
         ...state,
         transactions: newTransactions
       };
+    case actionTypes.DELETE_CATEGORY_SUCCEEDED:
+      newTransactions = [...state.transactions];
+      newTransactions.forEach(t => {
+        if (t.categoryId === action.categoryId) {
+          t.categoryId = undefined;
+        }
+      });
+      return {
+        ...state,
+        transactions: newTransactions
+      };
     case "@@router/LOCATION_CHANGE":
       const routerPayload = action.payload;
       const queryParams = queryString.parse(routerPayload.search);
