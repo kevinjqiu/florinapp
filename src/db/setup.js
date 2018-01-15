@@ -3,6 +3,7 @@ export const setupIndex = async db => {
     { index: { fields: ["date"] } },
     { index: { fields: ["categoryId", "metadata.type"] } },
     { index: { fields: ["accountId", "metadata.type"] } },
+    { index: { fields: ["parent", "metadata.type"] } },
     { index: { fields: ["metadata.type"] } }
   ];
 

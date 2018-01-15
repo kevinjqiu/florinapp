@@ -702,14 +702,14 @@ describe("transactionService.sumByCategory", () => {
       },
       {
         categoryId: "automobile-carpayment",
-        categoryName: "Automobile::Car Payment",
+        categoryName: "Car Payment",
         categoryType: categoryTypes.EXPENSE,
         parentCategoryId: "automobile",
         amount: -301.44
       },
       {
         categoryId: "diningout-restaurants",
-        categoryName: "Dining Out::Restaurants",
+        categoryName: "Restaurants",
         categoryType: categoryTypes.EXPENSE,
         parentCategoryId: "diningout",
         amount: -100.45

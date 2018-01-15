@@ -5,7 +5,7 @@ import { categoryTypes } from "../../models/CategoryType";
 import { connect } from "react-redux";
 import * as links from "../../models/links";
 
-const CategoryItemComponent = ({ item }) => {
+let CategoryItemComponent = ({ categoriesIdMap, item }) => {
   let color;
   switch (item.type) {
     case categoryTypes.EXPENSE:
@@ -23,8 +23,19 @@ const CategoryItemComponent = ({ item }) => {
     default:
       color = "black";
   }
-  return <span style={{ color }}>{item.name}</span>;
+  if (item.parent) {
+    const parent = categoriesIdMap[item.parent];
+    console.log(categoriesIdMap);
+    console.log(item.parent);
+    return <span style={{ color }}>{parent.name}::{item.name}</span>;
+  }
+  return <span style={{ color }}><strong>{item.name}</strong></span>;
 };
+
+CategoryItemComponent = connect(({categories}) => {
+  const { categoriesIdMap } = categories;
+  return { categoriesIdMap };
+}, null)(CategoryItemComponent);
 
 let CategoryValueComponent = ({item, location}) => {
   if (item) {

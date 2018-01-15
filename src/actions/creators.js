@@ -203,6 +203,21 @@ export const updateCategorySucceeded = (category: Category) => {
 
 export const updateCategoryFailed = actionFailed(actionTypes.UPDATE_CATEGORY_FAILED);
 
+export const deleteCategoryRequested = () => {
+  return {
+    type: actionTypes.DELETE_CATEGORY_REQUESTED
+  }
+}
+
+export const deleteCategorySucceeded = (categoryId) => {
+  return {
+    type: actionTypes.DELETE_CATEGORY_SUCCEEDED,
+    categoryId
+  }
+}
+
+export const deleteCategoryFailed = actionFailed(actionTypes.DELETE_CATEGORY_FAILED);
+
 export const updateTransactionCategoryRequested = (
   transactionId: string,
   categoryId: string

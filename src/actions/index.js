@@ -163,7 +163,7 @@ export const createCategory = (categoryData: Category) => async dispatch => {
     dispatch(actionCreators.showSuccessNotification("Category created"));
   } catch (err) {
     dispatch(
-      actionCreators.showErrorNotification("Cannot delete account", err)
+      actionCreators.showErrorNotification("Cannot create category", err)
     );
     dispatch(actionCreators.createCategoryFailed(err));
   }
@@ -181,6 +181,19 @@ export const updateCategory = (categoryId: string, categoryData: Category) => as
       actionCreators.showErrorNotification("Category update failed", err)
     );
     dispatch(actionCreators.updateCategoryFailed(err));
+  }
+}
+
+export const deleteCategory = (categoryId: string) => async dispatch => {
+  dispatch(actionCreators.deleteCategoryRequested());
+  try {
+    await categoryService.del(categoryId);
+    dispatch(actionCreators.deleteCategorySucceeded(categoryId));
+    dispatch(push("/settings/categories"));
+    dispatch(actionCreators.showSuccessNotification("Category deleted"));
+  } catch (err) {
+    dispatch(actionCreators.showErrorNotification("Cannot delete category", err));
+    dispatch(actionCreators.deleteCategoryFailed(err));
   }
 }
 

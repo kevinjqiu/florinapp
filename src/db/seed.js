@@ -16,77 +16,41 @@ const newCategory = (
 const categorySeeds = (): Array<Category> => {
   return [
     newCategory("automobile", "Automobile", null, false),
-    newCategory(
-      "automobile-carinsurance",
-      "Automobile::Car Insurance",
-      "automobile"
-    ),
-    newCategory(
-      "automobile-carpayment",
-      "Automobile::Car Payment",
-      "automobile"
-    ),
-    newCategory("automobile-gasoline", "Automobile::Gasoline", "automobile"),
-    newCategory(
-      "automobile-highwaytolls",
-      "Automobile::Highway Tolls",
-      "automobile"
-    ),
-    newCategory(
-      "automobile-maintenance",
-      "Automobile::Maintenance",
-      "automobile"
-    ),
-    newCategory("automobile-parking", "Automobile::Parking", "automobile"),
-    newCategory("automobile-other", "Automobile::Other", "automobile"),
+    newCategory("automobile-carinsurance", "Car Insurance", "automobile"),
+    newCategory("automobile-carpayment", "Car Payment", "automobile"),
+    newCategory("automobile-gasoline", "Gasoline", "automobile"),
+    newCategory("automobile-highwaytolls", "Highway Tolls", "automobile"),
+    newCategory("automobile-maintenance", "Maintenance", "automobile"),
+    newCategory("automobile-parking", "Parking", "automobile"),
+    newCategory("automobile-other", "Other", "automobile"),
 
     newCategory("bankcharges", "Bank Charges", null, false),
-    newCategory(
-      "bankcharges-interestpaid",
-      "Bank Charges::Interest Paid",
-      "bankcharges"
-    ),
-    newCategory(
-      "bankcharges-servicecharge",
-      "Bank Charges::Service Charge",
-      "bankcharges"
-    ),
-    newCategory("bankcharges-other", "Bank Charges::Other", "bankcharges"),
+    newCategory("bankcharges-interestpaid", "Interest Paid", "bankcharges"),
+    newCategory("bankcharges-servicecharge", "Service Charge", "bankcharges"),
+    newCategory("bankcharges-other", "Other", "bankcharges"),
 
     newCategory("bills", "Bills", null, false),
     newCategory(
       "bills-cablesatellitetv",
-      "Bills::Cable/Satellite Television",
+      "Cable/Satellite Television",
       "bills"
     ),
-    newCategory("bills-cellphone", "Bills::Cell Phone", "bills"),
-    newCategory("bills-hydro", "Bills::Hydro", "bills"),
-    newCategory("bills-gas", "Bills::Gas", "bills"),
-    newCategory(
-      "bills-onlineservice",
-      "Bills::Online/Internet Service",
-      "bills"
-    ),
-    newCategory("bills-telephone", "Bills::Telephone", "bills"),
-    newCategory("bills-other", "Bills::Other", "bills"),
+    newCategory("bills-cellphone", "Cell Phone", "bills"),
+    newCategory("bills-hydro", "Hydro", "bills"),
+    newCategory("bills-gas", "Gas", "bills"),
+    newCategory("bills-onlineservice", "Online/Internet Service", "bills"),
+    newCategory("bills-telephone", "Telephone", "bills"),
+    newCategory("bills-other", "Other", "bills"),
 
     newCategory("donations", "Donations", null, false),
-    newCategory("donations-charity", "Donations::Charity", "donations"),
-    newCategory("donations-church", "Donations::Church", "donations"),
-    newCategory("donations-other", "Donations::Other", "donations"),
+    newCategory("donations-charity", "Charity", "donations"),
+    newCategory("donations-church", "Church", "donations"),
+    newCategory("donations-other", "Other", "donations"),
 
     newCategory("diningout", "Dining Out", null, false),
-    newCategory(
-      "diningout-fastfood",
-      "Dining Out::Fast Food/Coffee Shops",
-      "diningout"
-    ),
-    newCategory(
-      "diningout-restaurants",
-      "Dining Out::Restaurants",
-      "diningout"
-    ),
-    newCategory("diningout-other", "Dining Out::Other", "diningout"),
+    newCategory("diningout-fastfood", "Fast Food/Coffee Shops", "diningout"),
+    newCategory("diningout-restaurants", "Restaurants", "diningout"),
+    newCategory("diningout-other", "Other", "diningout"),
 
     newCategory("publictransportation", "Public Transportation"),
 
@@ -95,35 +59,27 @@ const categorySeeds = (): Array<Category> => {
     newCategory("mortgage", "Mortgage"),
 
     newCategory("shopping", "Shopping", null, false),
-    newCategory("shopping-books", "Shopping::Books", "shopping"),
-    newCategory("shopping-electronics", "Shopping::Electronics", "shopping"),
-    newCategory(
-      "shopping-entertainment",
-      "Shopping::Entertainment",
-      "shopping"
-    ),
-    newCategory("shopping-hobbies", "Shopping::Hobbies", "shopping"),
-    newCategory("shopping-pets", "Shopping::Pets", "shopping"),
-    newCategory("shopping-gifts", "Shopping::Gifts", "shopping"),
-    newCategory("shopping-other", "Shopping::Other", "shopping"),
+    newCategory("shopping-books", "Books", "shopping"),
+    newCategory("shopping-electronics", "Electronics", "shopping"),
+    newCategory("shopping-entertainment", "Entertainment", "shopping"),
+    newCategory("shopping-hobbies", "Hobbies", "shopping"),
+    newCategory("shopping-pets", "Pets", "shopping"),
+    newCategory("shopping-gifts", "Gifts", "shopping"),
+    newCategory("shopping-other", "Other", "shopping"),
 
     newCategory("travel", "Travel/Vacation", null, false),
-    newCategory("travel-lodging", "Travel/Vacation::Lodging", "travel"),
-    newCategory("travel-flights", "Travel/Vacation::Flights", "travel"),
-    newCategory("travel-membership", "Travel/Vacation::Membership", "travel"),
-    newCategory("travel-other", "Travel/Vacation::Other", "travel"),
+    newCategory("travel-lodging", "Lodging", "travel"),
+    newCategory("travel-flights", "Flights", "travel"),
+    newCategory("travel-membership", "Membership", "travel"),
+    newCategory("travel-other", "Other", "travel"),
 
     newCategory("healthcare", "Health Care", null, false),
-    newCategory("healthcare-dental", "Health Care::Dental", "healthcare"),
-    newCategory("healthcare-eyecare", "Health Care::Eyecare", "healthcare"),
-    newCategory("healthcare-hospital", "Health Care::Hospital", "healthcare"),
-    newCategory(
-      "healthcare-prescription",
-      "Health Care::Prescription",
-      "healthcare"
-    ),
-    newCategory("healthcare-petcare", "Health Care::Pet Care", "healthcare"),
-    newCategory("healthcare-other", "Health Care::Other", "healthcare"),
+    newCategory("healthcare-dental", "Dental", "healthcare"),
+    newCategory("healthcare-eyecare", "Eyecare", "healthcare"),
+    newCategory("healthcare-hospital", "Hospital", "healthcare"),
+    newCategory("healthcare-prescription", "Prescription", "healthcare"),
+    newCategory("healthcare-petcare", "Pet Care", "healthcare"),
+    newCategory("healthcare-other", "Other", "healthcare"),
 
     newCategory(
       "income-interest",
@@ -159,7 +115,7 @@ const categorySeeds = (): Array<Category> => {
   ];
 };
 
-export default async (db) => {
+export default async db => {
   const promises = categorySeeds().map(async doc => {
     try {
       try {

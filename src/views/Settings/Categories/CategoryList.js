@@ -18,9 +18,57 @@ import DeleteButton from "../../../components/ListActionButton/DeleteButton";
 import ViewButton from "../../../components/ListActionButton/ViewButton";
 import ListActionButton from "../../../components/ListActionButton/ListActionButton";
 
-class CategoryTable extends Component {
+class _DeleteCategoryButton extends Component {
   render() {
-    const { categories, loading, failed } = this.props;
+    const {categoryId, showGlobalModal, deleteCategory, hideGlobalModal } = this.props
+    return (
+    <DeleteButton
+      objectId={categoryId}
+      onClick={() => {
+        showGlobalModal({
+          title: "Are you sure?",
+          body: (
+            <div><h3>Do you want to delete this category?</h3>
+            <br/>Deleting this category will:
+            <ul>
+              <li>Unassign all transactions previously of this category.</li>
+              <li>If this category is top-level, its sub-categories will become "parentless" (i.e., they will become top-level categories)</li>
+            </ul>
+            </div>
+          ),
+          positiveActionLabel: "Yes",
+          positiveAction: () => {
+            deleteCategory(categoryId);
+            hideGlobalModal();
+          },
+          negativeActionLabel: "No"
+        });
+      }}
+    />
+    );
+  }
+}
+
+const DeleteCategoryButton = connect(null, actions)(_DeleteCategoryButton);
+
+class CategoryTable extends Component {
+  reorgCategories = (categories: Array<Category>) => {
+    const topLevelCategories = categories.filter(c => c.isParent());
+    topLevelCategories.sort((a, b) => a.name.localeCompare(b.name));
+    let retval = [];
+    topLevelCategories.forEach(topLevelCategory => {
+      retval.push(topLevelCategory);
+      const subCategories = categories.filter(c => c.parent === topLevelCategory._id);
+      subCategories.sort((a, b) => a.name.localeCompare(b.name));
+      retval = [...retval, ...subCategories];
+    });
+    return retval;
+  }
+
+  render() {
+    let { categories } = this.props;
+    const { loading, failed } = this.props;
+    categories = this.reorgCategories(categories);
     const categoryTypeToColor = {
       [categoryTypes.EXPENSE]: "danger",
       [categoryTypes.INCOME]: "success",
@@ -70,9 +118,7 @@ class CategoryTable extends Component {
                     <Link to={`/settings/categories/${category._id}/view`}>
                       <ViewButton objectId={category._id} />
                     </Link>
-                    <DeleteButton objectId={category._id} onClick={() => {
-                        console.log("TODO");
-                      }} />
+                    <DeleteCategoryButton categoryId={category._id} />
                   </ButtonGroup>
                 </td>
                 <td>
