@@ -7,6 +7,7 @@ const initState = {
 };
 
 export default (state = initState, action) => {
+  let categories;
   switch (action.type) {
     case actionTypes.FETCH_CATEGORIES_SUCCEEDED:
       return {
@@ -28,9 +29,19 @@ export default (state = initState, action) => {
         failed: true
       };
     case actionTypes.CREATE_CATEGORY_SUCCEEDED:
-      let { categories } = state;
-      categories = [...categories, action.category]
+      categories = [...state.categories, action.category]
       categories.sort((a, b) => a._id.localeCompare(b._id))
+      return {
+        ...state,
+        categories
+      }
+    case actionTypes.DELETE_CATEGORY_SUCCEEDED:
+      categories = state.categories.filter(category => category._id !== action.categoryId);
+      categories.forEach((category) => {
+        if (category.parent === action.categoryId) {
+          category.parent = undefined;
+        }
+      });
       return {
         ...state,
         categories

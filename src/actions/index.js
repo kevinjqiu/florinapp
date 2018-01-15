@@ -188,7 +188,7 @@ export const deleteCategory = (categoryId: string) => async dispatch => {
   dispatch(actionCreators.deleteCategoryRequested());
   try {
     await categoryService.del(categoryId);
-    dispatch(actionCreators.deleteCategorySucceeded());
+    dispatch(actionCreators.deleteCategorySucceeded(categoryId));
     dispatch(push("/settings/categories"));
     dispatch(actionCreators.showSuccessNotification("Category deleted"));
   } catch (err) {

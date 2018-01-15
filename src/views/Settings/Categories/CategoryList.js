@@ -20,7 +20,7 @@ import ListActionButton from "../../../components/ListActionButton/ListActionBut
 
 class _DeleteCategoryButton extends Component {
   render() {
-    const {categoryId, showGlobalModal, deleteCategory, fetchCategories, hideGlobalModal } = this.props
+    const {categoryId, showGlobalModal, deleteCategory, hideGlobalModal } = this.props
     return (
     <DeleteButton
       objectId={categoryId}
@@ -40,7 +40,6 @@ class _DeleteCategoryButton extends Component {
           positiveAction: () => {
             deleteCategory(categoryId);
             hideGlobalModal();
-            fetchCategories();
           },
           negativeActionLabel: "No"
         });

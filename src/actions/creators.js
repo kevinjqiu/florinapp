@@ -209,9 +209,10 @@ export const deleteCategoryRequested = () => {
   }
 }
 
-export const deleteCategorySucceeded = () => {
+export const deleteCategorySucceeded = (categoryId) => {
   return {
     type: actionTypes.DELETE_CATEGORY_SUCCEEDED,
+    categoryId
   }
 }
 

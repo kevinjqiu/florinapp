@@ -16,6 +16,6 @@ export default class Category extends FlorinBase {
   }
 
   isParent() {
-    return this.parent === null;
+    return this.parent === null || this.parent === undefined;
   }
 }
