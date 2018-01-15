@@ -12,11 +12,11 @@ export const Divider = () => {
   return <li className={"divider"} />;
 };
 
-export const SidebarNavLink = ({url, icon, name, children}) => {
+export const SidebarNavLink = ({url, icon, name, children, ...opts}) => {
   url = url || "";
   return (
     <NavItem>
-      <NavLink to={url} className="nav-link" activeClassName="active">
+      <NavLink to={url} className="nav-link" activeClassName="active" {...opts}>
         <i className={icon} />
         {name}{children}
       </NavLink>
