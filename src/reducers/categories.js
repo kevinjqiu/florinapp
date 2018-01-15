@@ -2,9 +2,17 @@ import * as actionTypes from "../actions/types";
 
 const initState = {
   categories: [],
+  categoriesIdMap: {}, // this is derived from categories
   loading: false,
   failed: false
 };
+
+const idMap = (categories) => {
+  return categories.reduce((aggregate, category) => {
+    aggregate[category._id] = category;
+    return aggregate;
+  }, {});
+}
 
 export default (state = initState, action) => {
   let categories;
@@ -13,6 +21,7 @@ export default (state = initState, action) => {
       return {
         ...state,
         categories: action.payload,
+        categoriesIdMap: idMap(action.payload),
         loading: false,
         failed: false
       };
@@ -33,7 +42,8 @@ export default (state = initState, action) => {
       categories.sort((a, b) => a._id.localeCompare(b._id))
       return {
         ...state,
-        categories
+        categories,
+        categoriesIdMap: idMap(categories)
       }
     case actionTypes.DELETE_CATEGORY_SUCCEEDED:
       categories = state.categories.filter(category => category._id !== action.categoryId);
@@ -44,7 +54,8 @@ export default (state = initState, action) => {
       });
       return {
         ...state,
-        categories
+        categories,
+        categoriesIdMap: idMap(categories)
       }
     default:
       return state;

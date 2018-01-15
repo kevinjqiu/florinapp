@@ -119,9 +119,6 @@ class CategoryTable extends Component {
                       <ViewButton objectId={category._id} />
                     </Link>
                     <DeleteCategoryButton categoryId={category._id} />
-                    {/* <DeleteButton objectId={category._id} onClick={() => {
-                        console.log("TODO");
-                      }} /> */}
                   </ButtonGroup>
                 </td>
                 <td>
