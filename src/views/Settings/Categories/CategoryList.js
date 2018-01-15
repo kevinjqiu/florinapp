@@ -52,8 +52,23 @@ class _DeleteCategoryButton extends Component {
 const DeleteCategoryButton = connect(null, actions)(_DeleteCategoryButton);
 
 class CategoryTable extends Component {
+  reorgCategories = (categories: Array<Category>) => {
+    const topLevelCategories = categories.filter(c => c.isParent());
+    topLevelCategories.sort((a, b) => a.name.localeCompare(b.name));
+    let retval = [];
+    topLevelCategories.forEach(topLevelCategory => {
+      retval.push(topLevelCategory);
+      const subCategories = categories.filter(c => c.parent === topLevelCategory._id);
+      subCategories.sort((a, b) => a.name.localeCompare(b.name));
+      retval = [...retval, ...subCategories];
+    });
+    return retval;
+  }
+
   render() {
-    const { categories, loading, failed } = this.props;
+    let { categories } = this.props;
+    const { loading, failed } = this.props;
+    categories = this.reorgCategories(categories);
     const categoryTypeToColor = {
       [categoryTypes.EXPENSE]: "danger",
       [categoryTypes.INCOME]: "success",
