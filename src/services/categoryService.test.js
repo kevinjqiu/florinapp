@@ -41,5 +41,18 @@ describe("categoryService", () => {
 
       expect(subcategory._id).toEqual("awesomecategory-subawesomecategory");
     });
-  })
+  });
+
+  describe("categoryService.update", () => {
+    it("should update the existing category", async () => {
+      await categoryService.create({
+        _id: "awesomecategory",
+        name: "Awesome Category",
+        parent: null
+      });
+      const category = await categoryService.update("awesomecategory", {name: "AWESOME"})
+      expect(category._id).toEqual("awesomecategory");
+      expect(category.name).toEqual("AWESOME");
+    });
+  });
 });

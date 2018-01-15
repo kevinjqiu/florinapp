@@ -188,6 +188,21 @@ export const createCategorySucceeded = (category: Category) => {
 
 export const createCategoryFailed = actionFailed(actionTypes.CREATE_CATEGORY_FAILED);
 
+export const updateCategoryRequested = () => {
+  return {
+    type: actionTypes.UPDATE_CATEGORY_REQUESTED
+  }
+}
+
+export const updateCategorySucceeded = (category: Category) => {
+  return {
+    type: actionTypes.UPDATE_CATEGORY_SUCCEEDED,
+    category
+  }
+}
+
+export const updateCategoryFailed = actionFailed(actionTypes.UPDATE_CATEGORY_FAILED);
+
 export const updateTransactionCategoryRequested = (
   transactionId: string,
   categoryId: string
