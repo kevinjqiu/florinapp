@@ -18,6 +18,40 @@ import DeleteButton from "../../../components/ListActionButton/DeleteButton";
 import ViewButton from "../../../components/ListActionButton/ViewButton";
 import ListActionButton from "../../../components/ListActionButton/ListActionButton";
 
+class _DeleteCategoryButton extends Component {
+  render() {
+    const {categoryId, showGlobalModal, deleteCategory, fetchCategories, hideGlobalModal } = this.props
+    return (
+    <DeleteButton
+      objectId={categoryId}
+      onClick={() => {
+        showGlobalModal({
+          title: "Are you sure?",
+          body: (
+            <div><h3>Do you want to delete this category?</h3>
+            <br/>Deleting this category will:
+            <ul>
+              <li>Unassign all transactions previously of this category.</li>
+              <li>If this category is top-level, its sub-categories will become "parentless" (i.e., they will become top-level categories)</li>
+            </ul>
+            </div>
+          ),
+          positiveActionLabel: "Yes",
+          positiveAction: () => {
+            deleteCategory(categoryId);
+            hideGlobalModal();
+            fetchCategories();
+          },
+          negativeActionLabel: "No"
+        });
+      }}
+    />
+    );
+  }
+}
+
+const DeleteCategoryButton = connect(null, actions)(_DeleteCategoryButton);
+
 class CategoryTable extends Component {
   render() {
     const { categories, loading, failed } = this.props;
@@ -70,9 +104,10 @@ class CategoryTable extends Component {
                     <Link to={`/settings/categories/${category._id}/view`}>
                       <ViewButton objectId={category._id} />
                     </Link>
-                    <DeleteButton objectId={category._id} onClick={() => {
+                    <DeleteCategoryButton categoryId={category._id} />
+                    {/* <DeleteButton objectId={category._id} onClick={() => {
                         console.log("TODO");
-                      }} />
+                      }} /> */}
                   </ButtonGroup>
                 </td>
                 <td>
