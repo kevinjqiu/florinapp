@@ -16,6 +16,16 @@ describe("categoryService", () => {
       const categories = await categoryService.fetch();
       expect(categories.length).toEqual(57);
     });
+
+    it("should group by type if group by is set to type", async () => {
+      const categories = await categoryService.fetch({
+        filters: {
+          type: "INCOME"
+        }
+      });
+
+      expect(categories.filter(c => c.type !== "INCOME").length).toBe(0);
+    })
   });
 
   describe("categoryService.create", () => {

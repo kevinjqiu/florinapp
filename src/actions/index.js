@@ -197,6 +197,12 @@ export const deleteCategory = (categoryId: string) => async dispatch => {
   }
 }
 
+export const changeCategoryFilters = (categoryFilters) => dispatch => {
+  console.log("####################");
+  console.log(categoryFilters);
+  dispatch(actionCreators.changeCategoryFilters(categoryFilters));
+}
+
 export const updateTransactionCategory = (
   transactionId: string,
   previousCategoryId: string,

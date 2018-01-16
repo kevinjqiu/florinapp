@@ -194,6 +194,13 @@ export const updateCategoryRequested = () => {
   }
 }
 
+export const changeCategoryFilters = (categoryFilters) => {
+  return {
+    type: actionTypes.CHANGE_CATEGORY_FILTERS,
+    categoryFilters
+  }
+}
+
 export const updateCategorySucceeded = (category: Category) => {
   return {
     type: actionTypes.UPDATE_CATEGORY_SUCCEEDED,

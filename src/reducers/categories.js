@@ -1,7 +1,9 @@
 import * as actionTypes from "../actions/types";
+import { defaultFetchOptions } from "../services/categoryService";
 
 const initState = {
   categories: [],
+  fetchOptions: defaultFetchOptions,
   categoriesIdMap: {}, // this is derived from categories
   loading: false,
   failed: false
@@ -56,6 +58,15 @@ export default (state = initState, action) => {
         ...state,
         categories,
         categoriesIdMap: idMap(categories)
+      }
+    case actionTypes.CHANGE_CATEGORY_FILTERS:
+      const { fetchOptions } = state;
+      return {
+        ...state,
+        fetchOptions: {
+          ...state.fetchOptions,
+          filters: action.categoryFilters
+        }
       }
     default:
       return state;

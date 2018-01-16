@@ -3,11 +3,34 @@ import db from "../db";
 import { MAX_NUMBER } from "./const";
 import * as transactionService from "../services/transactionService";
 
-export const fetch = async (): Promise<Array<Category>> => {
-  const response = await db.find({
-    selector: { "metadata.type": "Category" },
+export type FetchOptions = {
+  filters: {
+    type: string
+  }
+};
+
+export const defaultFetchOptions = {
+  filters: {}
+}
+
+export const fetch = async (options: FetchOptions = defaultFetchOptions): Promise<Array<Category>> => {
+  let query = {
+    selector: {
+      "metadata.type": "Category"
+    },
     limit: MAX_NUMBER
-  });
+  };
+
+  if (options.filters.type !== undefined) {
+    query = {
+      ...query,
+      selector: {
+        ...query.selector,
+        type: options.filters.type
+      }
+    }
+  }
+  const response = await db.find(query);
   return response.docs.map(doc => new Category(doc));
 };
 

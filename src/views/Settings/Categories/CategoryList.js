@@ -7,7 +7,10 @@ import {
   Table,
   Badge,
   Button,
-  ButtonGroup
+  ButtonGroup,
+  FormGroup,
+  Input,
+  Label
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
@@ -58,15 +61,17 @@ class CategoryTable extends Component {
     let retval = [];
     topLevelCategories.forEach(topLevelCategory => {
       retval.push(topLevelCategory);
-      const subCategories = categories.filter(c => c.parent === topLevelCategory._id);
+      const subCategories = categories.filter(
+        c => c.parent === topLevelCategory._id
+      );
       subCategories.sort((a, b) => a.name.localeCompare(b.name));
       retval = [...retval, ...subCategories];
     });
     return retval;
-  }
+  };
 
   render() {
-    let { categories } = this.props;
+    let { changeCategoryFilters, categories, fetchOptions } = this.props;
     const { loading, failed } = this.props;
     categories = this.reorgCategories(categories);
     const categoryTypeToColor = {
@@ -100,7 +105,69 @@ class CategoryTable extends Component {
       <Table responsive>
         <thead>
           <tr>
-            <th></th>
+            <th colSpan="4" style={{ textAlign: "center" }}>
+                <FormGroup style={{ margin: "0px; auto" }}>
+                  <Label check>Filter by Type:</Label>{" "}
+                  <Label check htmlFor="filters-type">
+                    <Input
+                      type="radio"
+                      id="filters-type"
+                      name="filters-type"
+                      value="ALL"
+                      defaultChecked={fetchOptions.filters.type === undefined}
+                      onChange={() => {
+                        changeCategoryFilters(undefined);
+                      }}
+                    />
+                    <span style={{ fontWeight: "normal" }}>All</span>
+                  </Label>{" "}
+                  <Label check htmlFor="filters-type">
+                    <Input
+                      type="radio"
+                      id="filters-type"
+                      name="filters-type"
+                      value="INCOME"
+                      defaultChecked={fetchOptions.filters.type === "INCOME"}
+                      onChange={() => {
+                        console.log("here");
+                        changeCategoryFilters("INCOME");
+                      }}
+                    />
+                    <span style={{ fontWeight: "normal" }}>INCOME</span>
+                  </Label>{" "}
+                  <Label check htmlFor="filters-type">
+                    <Input
+                      type="radio"
+                      id="filters-type"
+                      name="filters-type"
+                      value="EXPENSE"
+                      defaultChecked={fetchOptions.filters.type === "EXPENSE"}
+                      onChange={() => {
+                        changeCategoryFilters("EXPENSE");
+                      }}
+                    />
+                    <span style={{ fontWeight: "normal" }}>EXPENSE</span>
+                  </Label>{" "}
+                  <Label check htmlFor="filters-type">
+                    <Input
+                      type="radio"
+                      id="filters-type"
+                      name="filters-type"
+                      value="TRANSFER"
+                      defaultChecked={fetchOptions.filters.type === "TRANSFER"}
+                      onChange={() => {
+                        changeCategoryFilters("TRANSFER");
+                      }}
+                    />
+                    <span style={{ fontWeight: "normal" }}>TRANSFER</span>
+                  </Label>
+                </FormGroup>
+            </th>
+          </tr>
+        </thead>
+        <thead>
+          <tr>
+            <th />
             <th>Name</th>
             <th>Type</th>
             <th style={{ textAlign: "center" }}>Allow Transactions</th>
@@ -108,12 +175,32 @@ class CategoryTable extends Component {
         </thead>
         <tbody>
           {categories.map(category => {
-            return <tr key={category._id}>
+            return (
+              <tr key={category._id}>
                 <td style={{ textAlign: "right" }}>
                   <ButtonGroup>
-                    {category.isParent() ? <Link to={`/settings/categories/new?parent=${category._id}&type=${category.type}`}>
-                        <ListActionButton id={category._id} tooltip="Create a subcategory in this top-level category" color="success" icon="fa-plus-square-o" />
-                      </Link> : <ListActionButton id={category._id} tooltip="Creating subcategory is only applicable to a top-level category" color="success" icon="fa-plus-square-o" disabled={true} />}
+                    {category.isParent() ? (
+                      <Link
+                        to={`/settings/categories/new?parent=${
+                          category._id
+                        }&type=${category.type}`}
+                      >
+                        <ListActionButton
+                          id={category._id}
+                          tooltip="Create a subcategory in this top-level category"
+                          color="success"
+                          icon="fa-plus-square-o"
+                        />
+                      </Link>
+                    ) : (
+                      <ListActionButton
+                        id={category._id}
+                        tooltip="Creating subcategory is only applicable to a top-level category"
+                        color="success"
+                        icon="fa-plus-square-o"
+                        disabled={true}
+                      />
+                    )}
 
                     <Link to={`/settings/categories/${category._id}/view`}>
                       <ViewButton objectId={category._id} />
@@ -123,9 +210,13 @@ class CategoryTable extends Component {
                 </td>
                 <td>
                   <Link to={`/settings/categories/${category._id}/view`}>
-                    {category.parent ? category.name : <strong>
+                    {category.parent ? (
+                      category.name
+                    ) : (
+                      <strong>
                         <h4>{category.name}</h4>
-                      </strong>}
+                      </strong>
+                    )}
                   </Link>
                 </td>
                 <td>
@@ -135,18 +226,13 @@ class CategoryTable extends Component {
                 </td>
                 <td style={{ textAlign: "center" }}>
                   {category.allowTransactions ? (
-                    <i
-                      className="fa fa-check-square-o"
-                      aria-hidden="true"
-                    />
+                    <i className="fa fa-check-square-o" aria-hidden="true" />
                   ) : (
-                    <i
-                      className="fa fa-square-o"
-                      aria-hidden="true"
-                    />
+                    <i className="fa fa-square-o" aria-hidden="true" />
                   )}
                 </td>
-              </tr>;
+              </tr>
+            );
           })}
         </tbody>
       </Table>
@@ -155,7 +241,17 @@ class CategoryTable extends Component {
 }
 class CategoryList extends Component {
   componentWillMount() {
-    this.props.fetchCategories();
+    this.props.fetchCategories(this.props.categoriesState.fetchOptions);
+  }
+
+  componentDidUpdate(nextProps, nextState) {
+    console.log(this.props);
+    console.log(nextProps);
+    const fetchOptions = this.props.categoriesState.fetchOptions;
+    const nextFetchOptions = nextProps.categoriesState.fetchOptions;
+    if (JSON.stringify(fetchOptions) !== JSON.stringify(nextFetchOptions)) {
+      this.props.fetchCategories(nextFetchOptions);
+    }
   }
 
   render() {
@@ -171,11 +267,7 @@ class CategoryList extends Component {
           <Col xs="12" lg="12">
             <ButtonGroup>
               <Link to="/settings/categories/new">
-                <Button
-                  color="success"
-                  size="sm"
-                  outline
-                >
+                <Button color="success" size="sm" outline>
                   <i className="fa fa-plus" aria-hidden="true" />
                   {"\u00A0"}Add
                 </Button>
@@ -199,7 +291,7 @@ class CategoryList extends Component {
         <hr />
         <Row>
           <Col xs="12" lg="12">
-            <CategoryTable {...categoriesState} />
+            <CategoryTable {...actions} {...categoriesState} />
           </Col>
         </Row>
       </Container>
