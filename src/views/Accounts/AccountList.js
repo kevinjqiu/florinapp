@@ -143,8 +143,17 @@ const GroupByOption = ({uiOptions, changeAccountListGroupByOption}) => {
 };
 
 const AccountsTable = ({accounts, deleteAccountWithConfirmation, showGlobalModal, hideGlobalModal, deleteAccount, fetchAccounts}) => {
-  return (
-    <Table>
+  const accountsTally = accounts.reduce((aggregateByCurrency, currentAccount) => {
+    // TODO: I'm not able to get decimal.js to work with ES6...
+    // It compalins:
+    // TypeError: __WEBPACK_IMPORTED_MODULE_9_decimal_js__ is not a constructor
+    // Temporarily use the imprecise float point arithmatic for summing monies
+    aggregateByCurrency[currentAccount.currency] = aggregateByCurrency[currentAccount.currency] || 0;
+    const currentBalance = currentAccount.history ? currentAccount.history[currentAccount.history.length - 1].balance : "0";
+    aggregateByCurrency[currentAccount.currency] = aggregateByCurrency[currentAccount.currency] + parseFloat(currentBalance);
+    return aggregateByCurrency;
+  }, {})
+  return <Table>
       <thead>
         <tr>
           <th />
@@ -156,25 +165,21 @@ const AccountsTable = ({accounts, deleteAccountWithConfirmation, showGlobalModal
         </tr>
       </thead>
       <tbody>
-        {accounts.map(account => (
-          <tr key={account._id}>
+        {accounts.map(account => <tr key={account._id}>
             <td>
               <ButtonGroup className="float-right">
                 <Link to={`/accounts/${account._id}/view`}>
                   <ViewButton objectId={account._id} />
                 </Link>
-                <DeleteButton
-                  objectId={account._id}
-                  onClick={() =>
-                    deleteAccountWithConfirmation({
-                      accountId: account._id,
-                      showGlobalModal,
-                      hideGlobalModal,
-                      deleteAccount,
-                      fetchAccounts
-                    })
-                  }
-                />
+                <DeleteButton objectId={account._id} onClick={() => deleteAccountWithConfirmation(
+                      {
+                        accountId: account._id,
+                        showGlobalModal,
+                        hideGlobalModal,
+                        deleteAccount,
+                        fetchAccounts
+                      }
+                    )} />
               </ButtonGroup>
             </td>
             <td>
@@ -186,11 +191,19 @@ const AccountsTable = ({accounts, deleteAccountWithConfirmation, showGlobalModal
             <td style={{ textAlign: "right" }}>
               {getLatestAccountBalance(account)}
             </td>
-          </tr>
-        ))}
+          </tr>)}
       </tbody>
-    </Table>
-  );
+      <tfoot>
+        <tr>
+          <th colSpan="6">
+            {Object.keys(accountsTally).map((currency, idx) => {
+              console.log(currency);
+              return <div key={`${currency}-${idx}`}>{currency}: <Currency amount={accountsTally[currency]} code={currency} /></div>
+            })}
+          </th>
+        </tr>
+      </tfoot>
+    </Table>;
 };
 
 const groupAccountsByKey = (accounts: Array<Account>, key: string) => {
@@ -237,7 +250,7 @@ const AccountCardBody = ({
   const accountsTable = (accounts, key) => {
     accounts.sort((a, b) => a.name.localeCompare(b.name));
     return <AccountsTable key={key} accounts={accounts} deleteAccountWithConfirmation={deleteAccountWithConfirmation} showGlobalModal={showGlobalModal} hideGlobalModal={hideGlobalModal} deleteAccount={deleteAccount} fetchAccounts={fetchAccounts} />;
-  }
+  };
 
   const renderGroupedAccounts = groupedAccounts => {
     return Object.keys(groupedAccounts).map((key, idx) => {
