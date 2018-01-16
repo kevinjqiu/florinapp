@@ -4,7 +4,6 @@ import Account from "../models/Account";
 import Transaction from "../models/Transaction";
 import db from "../db";
 import OfxAdapter from "./OfxAdapter";
-import type FetchOptions from "./FetchOptions";
 import PaginationResult from "./PaginationResult";
 import { thisMonth } from "../models/presetDateRanges";
 import { transactionTypes } from "../models/TransactionType";
@@ -13,6 +12,19 @@ import Category from "../models/Category";
 import { categoryTypes } from "../models/CategoryType";
 
 const thisMonthDateRange = thisMonth();
+
+export type FetchOptions = {
+  orderBy: [string, string],
+  pagination: {
+    page: Number, perPage: Number
+  },
+  filters: {
+    dateFrom: string,
+    dateTo: string,
+    showAccountTransfers: boolean,
+    showOnlyUncategorized: boolean
+  }
+};
 
 // TODO: make this a function
 export const defaultFetchOptions = {
