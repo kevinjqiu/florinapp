@@ -1,5 +1,14 @@
 import React, { Component } from "react";
-import { Progress } from "reactstrap";
+import {
+  TabPane,
+  TabContent,
+  Nav,
+  NavItem,
+  NavLink,
+  Button,
+  ButtonGroup,
+  Progress
+} from "reactstrap";
 import { connect } from "react-redux";
 import * as actions from "../../actions";
 import Currency from "../../components/Currency/Currency";
@@ -59,45 +68,76 @@ const CallhoutBar = ({
   );
 };
 
-const CategorySummary = ({
-  categorySummary,
-  type,
-  title,
-  colorTitle,
-  colorBar
-}) => {
-  if (!categorySummary) {
+class CategorySummary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      activeTab: "1"
+    }
+  }
+
+  toggleTab(tabId) {
+    if (this.state.activeTab !== tabId) {
+      this.setState({
+        activeTab: tabId
+      });
+    }
+  }
+
+  render() {
+    const { categorySummary, type, title, colorTitle, colorBar } = this.props;
+    if (!categorySummary) {
+      return (
+        <div>
+          <Section>{title}</Section>
+          <span>N/A</span>
+        </div>
+      );
+    }
+
+    const totalAmount = categorySummary
+      .map(s => s.amount)
+      .reduce((a, b) => a + b, 0);
+
     return (
       <div>
         <Section>{title}</Section>
-        <span>N/A</span>
+        <Nav tabs>
+          <NavItem>
+            <NavLink className={this.state.activeTab === "1" ? "active" : ""} onClick={() => { this.toggleTab("1") }}>
+              <i className="fa fa-list" />
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink className={this.state.activeTab === "2" ? "active" : ""} onClick={() => { this.toggleTab("2") }}>
+              <i className="fa fa-pie-chart" />
+            </NavLink>
+          </NavItem>
+        </Nav>
+        <TabContent activeTab={this.state.activeTab}>
+          <TabPane tabId="1">
+            {categorySummary.map((s, idx) => {
+              return (
+                <CallhoutBar
+                  key={`${type}-${idx}`}
+                  id={`${type}-${idx}`}
+                  text={s.categoryName}
+                  percentage={String(100 * s.amount / totalAmount)}
+                  colorTitle={colorTitle}
+                  colorBar={colorBar}
+                  amount={s.amount}
+                />
+              );
+            })}
+          </TabPane>
+          <TabPane tabId="2">
+            TODO
+          </TabPane>
+        </TabContent>
       </div>
     );
   }
-
-  const totalAmount = categorySummary
-    .map(s => s.amount)
-    .reduce((a, b) => a + b, 0);
-
-  return (
-    <div>
-      <Section>{title}</Section>
-      {categorySummary.map((s, idx) => {
-        return (
-          <CallhoutBar
-            key={`${type}-${idx}`}
-            id={`${type}-${idx}`}
-            text={s.categoryName}
-            percentage={String(100 * s.amount / totalAmount)}
-            colorTitle={colorTitle}
-            colorBar={colorBar}
-            amount={s.amount}
-          />
-        );
-      })}
-    </div>
-  );
-};
+}
 
 class TransactionListAside extends Component {
   render() {
