@@ -80,7 +80,7 @@ const CategorySummaryPieChartTab = ({ tabId, type, title, categorySummary }) => 
           {/* # TODO: currency */}
           <Tooltip formatter={
             (amount, _, categorySummary) => {
-              amount = type === "INCOME" ? amount : -1 * amount;
+              amount = (type === "INCOME" ? amount : -1 * amount);
               return <div>
                 <Currency amount={amount} />
                 {" "}<span>({Math.round(100 * Math.abs(amount) / Math.abs(totalAmount))}%)</span>

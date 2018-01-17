@@ -51,7 +51,7 @@ class TransactionListAside extends Component {
           title="Income By Category"
           colorTitle="success"
           colorBar="success"
-          type="income"
+          type="INCOME"
         />
         <CategorySummary
           categorySummary={
@@ -60,7 +60,7 @@ class TransactionListAside extends Component {
           title="Expenses By Category"
           colorTitle="danger"
           colorBar="danger"
-          type="expenses"
+          type="EXPENSE"
         />
       </div>
     );
