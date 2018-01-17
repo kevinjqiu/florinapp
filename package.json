@@ -30,6 +30,7 @@
     "react-widgets": "^4.1.1",
     "react-widgets-moment": "^4.0.4",
     "reactstrap": "5.0.0-alpha.4",
+    "recharts": "^1.0.0-beta.9",
     "redux": "^3.7.2",
     "redux-form": "^7.2.0",
     "redux-logger": "^3.0.6",
