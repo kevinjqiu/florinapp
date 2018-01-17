@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import {
   Container,
+  Button,
   Badge,
   Row,
   Col,
@@ -11,6 +12,7 @@ import { connect } from "react-redux";
 import * as actions from "../../actions";
 import TransactionTable from "./TransactionTable";
 import RefreshButton from "../../components/RefreshButton/RefreshButton";
+import NewButton from "../../components/NewButton/NewButton";
 import Switch from "../../components/Switch/Switch";
 import * as links from "../../models/links";
 
@@ -104,8 +106,11 @@ class TransactionList extends Component {
         <Row>
           <Col xs="12" lg="12">
             <h3 className="float-left">Transactions</h3>
+          </Col>
+          <Col xs="12" lg="12">
             <ButtonGroup style={{ marginLeft: 5 }}>
-              <RefreshButton withCaption={false} onClick={() => {
+              <NewButton linkUrl="/transactions/new" caption="New Transaction" />
+              <RefreshButton withCaption={true} onClick={() => {
                   fetchTransactions(this.props.transactionsState.fetchOptions);
                 }} />
             </ButtonGroup>

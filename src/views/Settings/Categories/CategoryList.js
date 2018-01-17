@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import * as actions from "../../../actions";
 import RefreshButton from "../../../components/RefreshButton/RefreshButton";
+import NewButton from "../../../components/NewButton/NewButton";
 import { categoryTypes } from "../../../models/CategoryType";
 import DeleteButton from "../../../components/ListActionButton/DeleteButton";
 import ViewButton from "../../../components/ListActionButton/ViewButton";
@@ -170,16 +171,7 @@ class CategoryList extends Component {
         <Row>
           <Col xs="12" lg="12">
             <ButtonGroup>
-              <Link to="/settings/categories/new">
-                <Button
-                  color="success"
-                  size="sm"
-                  outline
-                >
-                  <i className="fa fa-plus" aria-hidden="true" />
-                  {"\u00A0"}Add
-                </Button>
-              </Link>
+              <NewButton linkUrl="/settings/categories/new" caption="New Category" />
               <Button
                 color="success"
                 size="sm"
