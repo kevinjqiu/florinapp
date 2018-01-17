@@ -26,6 +26,58 @@ const PRESET_COLOR_MAP = {
 	'dark-grey': '#b8c2cc'
 };
 
+const CategorySummaryLineChartTab = ({ tabId, type, categorySummary, colorTitle, colorBar }) => {
+  const totalAmount = categorySummary
+    .map(s => s.amount)
+    .reduce((a, b) => a + b, 0);
+
+  return (
+    <TabPane tabId={tabId}>
+      {categorySummary.map((s, idx) => {
+        return (
+          <CalloutBar
+            key={`${type}-${idx}`}
+            id={`${type}-${idx}`}
+            text={s.categoryName}
+            percentage={String(100 * s.amount / totalAmount)}
+            colorTitle={colorTitle}
+            colorBar={colorBar}
+            amount={s.amount}
+          />
+        );
+      })}
+    </TabPane>
+  );
+};
+
+const CategorySummaryPieChartTab = ({ tabId, type, categorySummary }) => {
+  categorySummary = categorySummary.map(s => {
+    return { ...s, amount: Math.abs(s.amount) };
+  });
+  return (
+    <TabPane tabId="2" style={{ minHeight: 250 }}>
+      <ResponsiveContainer width="100%" height={250}>
+        <PieChart width={200} height={200}>
+          <Pie data={categorySummary} dataKey="amount" nameKey="categoryName">
+            {categorySummary.map((_, idx) => (
+              <Cell
+                key={idx}
+                fill={
+                  Object.values(PRESET_COLOR_MAP)[
+                    idx % Object.values(PRESET_COLOR_MAP).length
+                  ]
+                }
+              />
+            ))}
+            <LabelList dataKey="categoryName" position="top" />
+            <Tooltip />
+          </Pie>
+        </PieChart>
+      </ResponsiveContainer>
+    </TabPane>
+  );
+};
+
 export default class CategorySummary extends Component {
   constructor(props) {
     super(props);
@@ -79,24 +131,8 @@ export default class CategorySummary extends Component {
           </NavItem>
         </Nav>
         <TabContent activeTab={this.state.activeTab}>
-          <TabPane tabId="1">
-            {categorySummary.map((s, idx) => {
-              return <CalloutBar key={`${type}-${idx}`} id={`${type}-${idx}`} text={s.categoryName} percentage={String(100 * s.amount / totalAmount)} colorTitle={colorTitle} colorBar={colorBar} amount={s.amount} />;
-            })}
-          </TabPane>
-          <TabPane tabId="2" style={{minHeight: 250}}>
-            <ResponsiveContainer width="100%" height={250}>
-              <PieChart width={200} height={200}>
-                <Pie data={x} dataKey="amount" nameKey="categoryName">
-                {
-                  x.map((_, idx) => <Cell key={idx} fill={Object.values(PRESET_COLOR_MAP)[idx % Object.values(PRESET_COLOR_MAP).length]}/>)
-                }
-                <LabelList dataKey="categoryName" position="top" />
-                <Tooltip />
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-          </TabPane>
+          <CategorySummaryLineChartTab tabId="1" type={type} categorySummary={categorySummary} colorTitle={colorTitle} colorBar={colorBar} />
+          <CategorySummaryPieChartTab tabId="2" type={type} categorySummary={categorySummary} />
         </TabContent>
       </div>;
   }
