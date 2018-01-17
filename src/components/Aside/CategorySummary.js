@@ -1,0 +1,103 @@
+import React, { Component } from "react";
+import {
+  TabPane,
+  TabContent,
+  Nav,
+  NavItem,
+  NavLink
+} from "reactstrap";
+import { LabelList, Cell, ResponsiveContainer, PieChart, Pie, Tooltip } from "recharts";
+import { CalloutBar, Section } from "./Section";
+
+const PRESET_COLOR_MAP = {
+	'light-blue': '#7cd6fd',
+	'blue': '#5e64ff',
+	'violet': '#743ee2',
+	'red': '#ff5858',
+	'orange': '#ffa00a',
+	'yellow': '#feef72',
+	'green': '#28a745',
+	'light-green': '#98d85b',
+	'purple': '#b554ff',
+	'magenta': '#ffa3ef',
+	'black': '#36114C',
+	'grey': '#bdd3e6',
+	'light-grey': '#f0f4f7',
+	'dark-grey': '#b8c2cc'
+};
+
+export default class CategorySummary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      activeTab: "2"
+    }
+  }
+
+  toggleTab(tabId) {
+    if (this.state.activeTab !== tabId) {
+      this.setState({
+        activeTab: tabId
+      });
+    }
+  }
+
+  render() {
+    const { categorySummary, type, title, colorTitle, colorBar } = this.props;
+    if (!categorySummary) {
+      return (
+        <div>
+          <Section>{title}</Section>
+          <span>N/A</span>
+        </div>
+      );
+    }
+
+    const totalAmount = categorySummary
+      .map(s => s.amount)
+      .reduce((a, b) => a + b, 0);
+
+    const x = categorySummary.map(s => {
+      return {...s, amount: Math.abs(s.amount)}
+    })
+    return <div>
+        <Section>{title}</Section>
+        <Nav tabs>
+          <NavItem>
+            <NavLink className={this.state.activeTab === "1" ? "active" : ""} onClick={() => {
+                this.toggleTab("1");
+              }}>
+              <i className="fa fa-list" />
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink className={this.state.activeTab === "2" ? "active" : ""} onClick={() => {
+                this.toggleTab("2");
+              }}>
+              <i className="fa fa-pie-chart" />
+            </NavLink>
+          </NavItem>
+        </Nav>
+        <TabContent activeTab={this.state.activeTab}>
+          <TabPane tabId="1">
+            {categorySummary.map((s, idx) => {
+              return <CalloutBar key={`${type}-${idx}`} id={`${type}-${idx}`} text={s.categoryName} percentage={String(100 * s.amount / totalAmount)} colorTitle={colorTitle} colorBar={colorBar} amount={s.amount} />;
+            })}
+          </TabPane>
+          <TabPane tabId="2" style={{minHeight: 250}}>
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart width={200} height={200}>
+                <Pie data={x} dataKey="amount" nameKey="categoryName">
+                {
+                  x.map((_, idx) => <Cell key={idx} fill={Object.values(PRESET_COLOR_MAP)[idx % Object.values(PRESET_COLOR_MAP).length]}/>)
+                }
+                <LabelList dataKey="categoryName" position="top" />
+                <Tooltip />
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+          </TabPane>
+        </TabContent>
+      </div>;
+  }
+}
