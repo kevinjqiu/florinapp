@@ -8,6 +8,8 @@ import {
 } from "reactstrap";
 import { LabelList, Cell, ResponsiveContainer, PieChart, Pie, Tooltip } from "recharts";
 import { CalloutBar, Section } from "./Section";
+import Currency from "../Currency/Currency";
+// import FrappeChart from "../FrappeChart/FrappeChart";
 
 const PRESET_COLOR_MAP = {
 	'light-blue': '#7cd6fd',
@@ -50,14 +52,18 @@ const CategorySummaryLineChartTab = ({ tabId, type, categorySummary, colorTitle,
   );
 };
 
-const CategorySummaryPieChartTab = ({ tabId, type, categorySummary }) => {
+const CategorySummaryPieChartTab = ({ tabId, type, title, categorySummary }) => {
+  const totalAmount = categorySummary
+    .map(s => s.amount)
+    .reduce((a, b) => a + b, 0);
+
   categorySummary = categorySummary.map(s => {
     return { ...s, amount: Math.abs(s.amount) };
   });
   return (
-    <TabPane tabId="2" style={{ minHeight: 250 }}>
+    <TabPane tabId={tabId} style={{ minHeight: 250 }}>
       <ResponsiveContainer width="100%" height={250}>
-        <PieChart width={200} height={200}>
+        <PieChart >
           <Pie data={categorySummary} dataKey="amount" nameKey="categoryName">
             {categorySummary.map((_, idx) => (
               <Cell
@@ -69,9 +75,17 @@ const CategorySummaryPieChartTab = ({ tabId, type, categorySummary }) => {
                 }
               />
             ))}
-            <LabelList dataKey="categoryName" position="top" />
-            <Tooltip />
+            <LabelList dataKey="categoryName" position="outside" />
           </Pie>
+          {/* # TODO: currency */}
+          <Tooltip formatter={
+            (amount, _, categorySummary) => {
+              amount = type === "INCOME" ? amount : -1 * amount;
+              return <div>
+                <Currency amount={amount} />
+                {" "}<span>({Math.round(100 * Math.abs(amount) / Math.abs(totalAmount))}%)</span>
+              </div>;
+            }}/>
         </PieChart>
       </ResponsiveContainer>
     </TabPane>
@@ -105,13 +119,6 @@ export default class CategorySummary extends Component {
       );
     }
 
-    const totalAmount = categorySummary
-      .map(s => s.amount)
-      .reduce((a, b) => a + b, 0);
-
-    const x = categorySummary.map(s => {
-      return {...s, amount: Math.abs(s.amount)}
-    })
     return <div>
         <Section>{title}</Section>
         <Nav tabs>
@@ -131,8 +138,8 @@ export default class CategorySummary extends Component {
           </NavItem>
         </Nav>
         <TabContent activeTab={this.state.activeTab}>
-          <CategorySummaryLineChartTab tabId="1" type={type} categorySummary={categorySummary} colorTitle={colorTitle} colorBar={colorBar} />
-          <CategorySummaryPieChartTab tabId="2" type={type} categorySummary={categorySummary} />
+          <CategorySummaryLineChartTab tabId="1" type={type} title={title} categorySummary={categorySummary} colorTitle={colorTitle} colorBar={colorBar} />
+          <CategorySummaryPieChartTab tabId="2" type={type} title={title} categorySummary={categorySummary} />
         </TabContent>
       </div>;
   }
