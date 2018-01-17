@@ -15,11 +15,15 @@ Features
 
 * Single Page React App
 * Upload your bank statements
-* Quickly see where your money goes every month through dashboard charts (TODO)
-* Budgeting (TODO)
-* Fully client-side - no server component required
 * Offline ready
-* Have the option to sync client-side data to a CouchDB server
+* Dashboard charts and reports
+* Fully client-side - no server component required
+* Bi-directional sync client-side data with a CouchDB-compatible server
+
+Roadmap
+=======
+
+* Budgeting (TODO)
 * Automatically categorize transactions using machine learning (TODO)
 
 Tech Stack
@@ -27,8 +31,9 @@ Tech Stack
 
 * React
 * Redux
+* PouchDB
 * Bootstrap
 * React-Router
-* PouchDB
+* ReduxForm
 * CoreUI
 * Flow

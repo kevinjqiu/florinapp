@@ -21,7 +21,7 @@ class TransactionNew extends Component {
         </Row>
         <Row>
           <Col xs="12" lg="12">
-            <TransactionForm onSubmit={(props) => console.log(props)} />
+            <TransactionForm editMode={false} onSubmit={(props) => console.log(props)} />
           </Col>
         </Row>
       </Container>
