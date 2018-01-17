@@ -11,6 +11,7 @@ import { transactionTypes } from "../models/TransactionType";
 import { CategorySummary, Summary } from "../models/CategorySummary";
 import Category from "../models/Category";
 import { categoryTypes } from "../models/CategoryType";
+import { MAX_NUMBER } from "../common/const";
 
 const thisMonthDateRange = thisMonth();
 
@@ -81,7 +82,7 @@ const getTotalRows = async (query): Promise<Number> => {
   const queryForTotalRows = {
     ...query,
     fields: [],
-    limit: Number.MAX_SAFE_INTEGER,
+    limit: MAX_NUMBER,
     skip: 0
   }
   const resultForTotalRows = await db.find(queryForTotalRows);

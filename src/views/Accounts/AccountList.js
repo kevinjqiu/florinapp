@@ -197,7 +197,6 @@ const AccountsTable = ({accounts, deleteAccountWithConfirmation, showGlobalModal
         <tr>
           <th colSpan="6">
             {Object.keys(accountsTally).map((currency, idx) => {
-              console.log(currency);
               return <div key={`${currency}-${idx}`}>{currency}: <Currency amount={accountsTally[currency]} code={currency} /></div>
             })}
           </th>

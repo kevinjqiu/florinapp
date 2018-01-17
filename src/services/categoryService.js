@@ -1,6 +1,6 @@
 import Category from "../models/Category";
 import db from "../db";
-import { MAX_NUMBER } from "./const";
+import { MAX_NUMBER } from "../common/const";
 import * as transactionService from "../services/transactionService";
 
 export const fetch = async (): Promise<Array<Category>> => {
