@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import * as actions from "../../actions";
 import { DropdownList, DateTimePicker } from "react-widgets";
-import * as moment from "moment";
 
 const CategoryField = ({
   input,
@@ -38,10 +37,6 @@ const CategoryField = ({
 };
 
 const DateField = ({ input, label, meta: { touched, error } }) => {
-  let defaultValue = moment().toDate();
-  if (input.value) {
-    defaultValue = input.value;
-  }
   let options = touched ? { ...input, valid: !error } : { ...input };
   return (
     <div className="form-group">
@@ -50,7 +45,7 @@ const DateField = ({ input, label, meta: { touched, error } }) => {
           <Label htmlFor="{input.name}">{label}</Label>
         </Col>
         <Col xs="12" md="9">
-          <DateTimePicker date={true} time={false} defaultValue={defaultValue} {...options} />
+          <DateTimePicker date={true} time={false} {...options} />
           <FormFeedback>{error}</FormFeedback>
         </Col>
       </FormGroup>
@@ -60,6 +55,7 @@ const DateField = ({ input, label, meta: { touched, error } }) => {
 
 const AccountField = ({ input, label, accounts, meta: { touched, error } }) => {
   let options = touched ? { ...input, valid: !error } : { ...input };
+  console.log(options);
   return (
     <div className="form-group">
       <FormGroup row>
@@ -102,18 +98,8 @@ class TransactionForm extends Component {
       <form className="form-horizontal" onSubmit={handleSubmit(onSubmit)}>
         <Field
           name="date"
-          label="Date (required)"
+          label="Date (*)"
           component={DateField}
-          parse={(value, name) => {
-            if (value) {
-              return moment(value)
-                .startOf("day")
-                .toDate();
-            }
-            return moment()
-              .startOf("day")
-              .toDate();
-          }}
         />
         <Field
           name="accountId"
@@ -121,7 +107,7 @@ class TransactionForm extends Component {
           component={AccountField}
           accounts={accounts}
           validate={[required]}
-          parse={(value, name) => {console.log(value, name); return value }}
+          parse={(value, name) => value ? value._id : undefined }
         />
         <Field
           name="name"
@@ -146,6 +132,7 @@ class TransactionForm extends Component {
           label="Category"
           component={CategoryField}
           categories={categories}
+          parse={(value, name) => value ? value._id : undefined }
         />
         <Field
           name="info"
@@ -153,6 +140,7 @@ class TransactionForm extends Component {
           type="textarea"
           component={InputField}
         />
+
         {/* <Field
           name="linked"
           label="Linked Transaction"

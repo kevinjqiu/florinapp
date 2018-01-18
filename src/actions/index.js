@@ -385,3 +385,18 @@ export const fetchUncategorizedTransactionsCount = (filter: {dateFrom: string, d
 export const changeAccountListGroupByOption = (groupBy: ?string) => dispatch => {
   dispatch(actionCreators.changeAccountListGroupByOptionSucceeded(groupBy));
 }
+
+export const createTransaction = (transactionData: Transaction) => async dispatch => {
+  dispatch(actionCreators.createTransactionRequested());
+  try {
+    const transaction = await transactionService.create(transactionData);
+    dispatch(actionCreators.createTransactionSucceeded(transaction));
+    dispatch(push("/transactions"));
+    dispatch(actionCreators.showSuccessNotification("Transaction created"));
+  } catch (err) {
+    dispatch(
+      actionCreators.showErrorNotification("Cannot create transaction", err)
+    );
+    dispatch(actionCreators.createTransactionFailed(err));
+  }
+}

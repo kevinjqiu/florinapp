@@ -138,6 +138,7 @@ class CategoryForm extends Component {
             component={ParentCategorySelector}
             parentCategories={parentCategories}
             onRefresh={fetchCategories}
+            parse={(value, name) => value ? value._id : undefined }
           />
         ) : (
           ""
