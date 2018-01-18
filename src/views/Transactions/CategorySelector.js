@@ -25,8 +25,6 @@ let CategoryItemComponent = ({ categoriesIdMap, item }) => {
   }
   if (item.parent) {
     const parent = categoriesIdMap[item.parent];
-    console.log(categoriesIdMap);
-    console.log(item.parent);
     return <span style={{ color }}>{parent.name}::{item.name}</span>;
   }
   return <span style={{ color }}><strong>{item.name}</strong></span>;

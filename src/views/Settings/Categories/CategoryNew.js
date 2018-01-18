@@ -27,7 +27,9 @@ class CategoryNew extends Component {
         </Row>
         <Row>
           <Col xs="12" lg="12">
-            <CategoryForm onSubmit={(props) => createCategory(new Category(props))} />
+            <CategoryForm
+              onSubmit={props => createCategory(new Category(props))}
+            />
           </Col>
         </Row>
       </Container>
@@ -42,6 +44,6 @@ const mapStateToProps = ({ router }) => {
     parent: queryParams.parent !== undefined ? queryParams.parent : null,
     type: queryParams.type !== undefined ? queryParams.type : "INCOME"
   };
-}
+};
 
 export default connect(mapStateToProps, actions)(CategoryNew);

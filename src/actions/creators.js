@@ -441,3 +441,18 @@ export const changeAccountListGroupByOptionSucceeded = (groupBy) => {
     groupBy
   }
 }
+
+export const createTransactionRequested = () => {
+  return {
+    type: actionTypes.CREATE_TRANSACTION_REQUESTED
+  }
+}
+
+export const createTransactionSucceeded = (transaction: Transaction) => {
+  return {
+    type: actionTypes.CREATE_TRANSACTION_SUCCEEDED,
+    transaction
+  }
+}
+
+export const createTransactionFailed = actionFailed(actionTypes.CREATE_TRANSACTION_FAILED);

@@ -5,7 +5,6 @@ import {
   Col,
   Container,
   Table,
-  Button,
   ButtonGroup,
   FormGroup,
   Label,
@@ -18,21 +17,10 @@ import Currency from "../../components/Currency/Currency";
 import RefreshButton from "../../components/RefreshButton/RefreshButton";
 import ViewButton from "../../components/ListActionButton/ViewButton";
 import DeleteButton from "../../components/ListActionButton/DeleteButton";
+import NewButton from "../../components/NewButton/NewButton";
 
 const NewAccountButton = ({ alignRight }) => {
-  return (
-    <Link to="/accounts/new">
-      <Button
-        color="primary"
-        size="sm"
-        outline
-        className={alignRight ? "float-right" : ""}
-      >
-        <i className="fa fa-plus" aria-hidden="true" />
-        {"\u00A0"}New
-      </Button>
-    </Link>
-  );
+  return <NewButton linkUrl="/accounts/new" caption="New Account" className={alignRight ? "float-right" : ""} />
 };
 
 const deleteAccountWithConfirmation = ({

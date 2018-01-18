@@ -193,7 +193,7 @@ export const updateCategory = async (
   await db.put(txn);
 };
 
-export const saveNewTransaction = async (transaction: Transaction) => {
+export const saveNewTransaction = async (transaction: Transaction): Promise<String> => {
   const response = await db.find({
     selector: {
       "metadata.type": {
@@ -207,7 +207,7 @@ export const saveNewTransaction = async (transaction: Transaction) => {
   if (response.docs.length !== 0) {
     throw { error: "Transaction is already imported" };
   }
-  await db.post(transaction);
+  return (await db.post(transaction)).id;
 };
 
 export const importAccountStatement = async (
@@ -262,6 +262,11 @@ export const linkTransactions = async (
   await db.put(transaction1);
   await db.put(transaction2);
 };
+
+export const create = async (transactionData: Transaction): Promise<Transaction> => {
+  const id = await saveNewTransaction(transactionData);
+  return new Transaction(await db.get(id));
+}
 
 export const sumByType = async (filter: { dateFrom: string, dateTo: string }) => {
   let result = await db.query("transactions/byType", {

@@ -8,7 +8,7 @@ export default ({
   meta: { touched, error, warning },
   otherProps = {}
 }) => {
-  const options = touched ? { ...input, valid: !error } : { ...input };
+  const options = touched ? { ...input, valid: !error } : { ...input, type };
   return (
     <div className="form-group">
       <FormGroup row>
