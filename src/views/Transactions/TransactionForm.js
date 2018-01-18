@@ -108,7 +108,6 @@ class TransactionForm extends Component {
         <Field
           name="date"
           label="Date (*)"
-          parse={(value, name) => { console.log(value); return value; }}
           component={DateField}
         />
         <Field

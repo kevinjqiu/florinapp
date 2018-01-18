@@ -6,8 +6,12 @@ import TransactionForm from "./TransactionForm";
 import { reduxForm } from "redux-form";
 import { connect } from "react-redux";
 
+const EditTransactionForm = reduxForm({
+  form: "editTransaction"
+})(TransactionForm);
+
 class TransactionDetails extends Component {
-  componentDidMount() {
+  componentWillMount() {
     const { transactionId } = this.props.match.params;
     this.props.fetchTransactionById(transactionId);
   }
@@ -20,10 +24,7 @@ class TransactionDetails extends Component {
     if (!currentTransaction) {
       return <h3>No such transaction</h3>;
     }
-    const EditTransactionForm = reduxForm({
-      initialValues: currentTransaction,
-      form: "editTransaction"
-    })(TransactionForm);
+
     return (
       <Container fluid>
         <Row>
@@ -34,6 +35,7 @@ class TransactionDetails extends Component {
         <Row>
           <Col xs="12" lg="12">
             <EditTransactionForm
+              initialValues={currentTransaction}
               editMode
               onSubmit={props => {
                 console.log(props);

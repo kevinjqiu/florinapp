@@ -6,6 +6,10 @@ import { reduxForm } from "redux-form";
 import * as actions from "../../../actions";
 import Category from "../../../models/Category";
 
+const EditCategoryForm = reduxForm({
+  form: "editCategory"
+})(CategoryForm);
+
 class CategoryDetails extends Component {
 
   render() {
@@ -18,11 +22,6 @@ class CategoryDetails extends Component {
       return <h3>No such category found</h3>
     }
 
-    const EditCategoryForm = reduxForm({
-        initialValues: category,
-        form: "editCategory"
-      })(CategoryForm);
-
     return <Container fluid>
         <Row>
           <Col xs="12" lg="12">
@@ -31,7 +30,7 @@ class CategoryDetails extends Component {
         </Row>
         <Row>
           <Col xs="12" lg="12">
-            <EditCategoryForm editMode onSubmit={props => {
+            <EditCategoryForm editMode initialValues={category} onSubmit={props => {
               updateCategory(categoryId, new Category(props));
             }} />
           </Col>

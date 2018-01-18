@@ -51,6 +51,7 @@ export default (state = initState, action) => {
         failed: false
       };
     case actionTypes.FETCH_TRANSACTION_BY_ID_SUCCEEDED:
+      console.log(action.transaction);
       return {
         ...state,
         currentTransaction: action.transaction

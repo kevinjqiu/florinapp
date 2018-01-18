@@ -171,6 +171,16 @@ export const fetchById = async (transactionId: string): Promise<Transaction> => 
   return transaction;
 }
 
+export const update = async (transactionId: string, transactionData: Transaction): Promise<Transaction> => {
+  let transaction = {
+    ...(await db.get(transactionId)),
+    ...transactionData
+  };
+
+  await db.put(transaction);
+  return (await fetchById(transactionId));
+}
+
 export const fetchUncategorizedTransactionsCount = async (filters: {dateFrom: string, dateTo: string}): Promise<Number> => {
   let query = {
     selector: {
