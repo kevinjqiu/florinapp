@@ -456,3 +456,18 @@ export const createTransactionSucceeded = (transaction: Transaction) => {
 }
 
 export const createTransactionFailed = actionFailed(actionTypes.CREATE_TRANSACTION_FAILED);
+
+export const deleteTransactionRequested = () => {
+  return {
+    type: actionTypes.DELETE_TRANSACTION_REQUESTED
+  }
+}
+
+export const deleteTransactionSucceeded = (transactionId: string) => {
+  return {
+    type: actionTypes.DELETE_TRANSACTION_SUCCEEDED,
+    transactionId
+  }
+}
+
+export const deleteTransactionFailed = actionFailed(actionTypes.DELETE_TRANSACTION_FAILED);

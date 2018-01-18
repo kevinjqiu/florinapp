@@ -717,3 +717,26 @@ describe("transactionService.sumByCategory", () => {
     ]);
   });
 });
+
+describe("transactionService.del", () => {
+  beforeEach(async () => {
+    await reset();
+    await seed(db);
+    await setupIndex(db);
+    await setupViews(db);
+  });
+
+  it("should delete existing transaction", async () => {
+      await db.post(new Transaction({_id: "txn1"}));
+      await db.post(new Transaction({_id: "txn2"}));
+      await db.post(new Transaction({_id: "txn3"}));
+
+      await transactionService.del("txn1");
+      const result = await db.find({
+        selector: {
+          "metadata.type": "Transaction"
+        }
+      });
+      expect(result.docs.length).toBe(2);
+  })
+})
