@@ -268,6 +268,11 @@ export const create = async (transactionData: Transaction): Promise<Transaction>
   return new Transaction(await db.get(id));
 }
 
+export const del = async (transactionId: string) => {
+  const doc = await db.get(transactionId);
+  await db.remove(doc);
+}
+
 export const sumByType = async (filter: { dateFrom: string, dateTo: string }) => {
   let result = await db.query("transactions/byType", {
     startkey: [transactionTypes.CREDIT, filter.dateFrom],

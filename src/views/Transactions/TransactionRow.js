@@ -11,6 +11,39 @@ import * as actions from "../../actions";
 import * as links from "../../models/links";
 import CategorySelector from "./CategorySelector";
 
+class _DeleteTransactionButton extends Component {
+  render() {
+    const {transactionId, showGlobalModal, deleteTransaction, hideGlobalModal, fetchTransactions } = this.props
+    return (
+    <DeleteButton
+      objectId={transactionId}
+      onClick={() => {
+        showGlobalModal({
+          title: "Are you sure?",
+          body: (
+            <div><h3>Do you want to delete this transaction?</h3>
+            </div>
+          ),
+          positiveActionLabel: "Yes",
+          positiveAction: () => {
+            deleteTransaction(transactionId);
+            hideGlobalModal();
+            fetchTransactions(this.props.transactionsState.fetchOptions);
+          },
+          negativeActionLabel: "No"
+        });
+      }}
+    />
+    );
+  }
+}
+
+const DeleteTransactionButton = connect(({ transactions }) => {
+  return {
+    transactionsState: transactions
+  };
+}, actions)(_DeleteTransactionButton);
+
 const TransactionAccount = ({ transaction, location }) => {
   const newLink = links.createTransactionLink(location, (queryParams) => {
     return {
@@ -114,12 +147,7 @@ class TransactionRow extends Component {
                   openLinkTransactionsDialog(transaction);
                 }}
               />
-              <DeleteButton
-                objectId={transaction._id}
-                onClick={() => {
-                  console.log("TODO");
-                }}
-              />
+              <DeleteTransactionButton transactionId={transaction._id} />
             </ButtonGroup>
           </td>
           <td>
