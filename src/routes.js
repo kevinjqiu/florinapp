@@ -7,6 +7,7 @@ const routes = {
 
   "/transactions": "Transactions",
   "/transactions/new": "New",
+  "/transactions/:transactionId/view": "New",
 
   "/settings/general": "General",
 

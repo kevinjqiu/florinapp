@@ -471,3 +471,18 @@ export const deleteTransactionSucceeded = (transactionId: string) => {
 }
 
 export const deleteTransactionFailed = actionFailed(actionTypes.DELETE_TRANSACTION_FAILED);
+
+export const fetchTransactionByIdRequested = () => {
+  return {
+    type: actionTypes.FETCH_TRANSACTION_BY_ID_REQUESTED
+  }
+}
+
+export const fetchTransactionByIdSucceeded = (transaction: Transaction) => {
+  return {
+    type: actionTypes.FETCH_TRANSACTION_BY_ID_SUCCEEDED,
+    transaction
+  }
+}
+
+export const fetchTransactionByIdFailed = actionFailed(actionTypes.FETCH_TRANSACTIONS_FAILED);

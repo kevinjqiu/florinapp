@@ -414,3 +414,16 @@ export const deleteTransaction = (transactionId: string) => async dispatch => {
     dispatch(actionCreators.deleteTransactionFailed(err));
   }
 };
+
+export const fetchTransactionById = (transactionId: string) => async dispatch => {
+  dispatch(actionCreators.fetchTransactionByIdRequested());
+  try {
+    const transaction = await transactionService.fetchById(transactionId);
+    dispatch(actionCreators.fetchTransactionByIdSucceeded(transaction));
+  } catch (err) {
+    dispatch(actionCreators.fetchTransactionByIdFailed(err));
+    dispatch(
+      actionCreators.showErrorNotification("Failed to get transaction", err)
+    );
+  }
+};

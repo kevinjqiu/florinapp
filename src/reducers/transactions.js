@@ -6,6 +6,7 @@ import * as queryString from "query-string";
 const initState = {
   fetchOptions: defaultFetchOptions,
   transactions: [],
+  currentTransaction: null,
   total: null,
   loading: false,
   failed: false
@@ -48,6 +49,11 @@ export default (state = initState, action) => {
         ...state,
         loading: true,
         failed: false
+      };
+    case actionTypes.FETCH_TRANSACTION_BY_ID_SUCCEEDED:
+      return {
+        ...state,
+        currentTransaction: action.transaction
       };
     case actionTypes.FETCH_TRANSACTIONS_FAILED:
       return {

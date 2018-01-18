@@ -5,6 +5,7 @@ import Currency from "../../components/Currency/Currency";
 import Date from "../../components/Date/Date";
 import ListActionButton from "../../components/ListActionButton/ListActionButton";
 import DeleteButton from "../../components/ListActionButton/DeleteButton";
+import ViewButton from "../../components/ListActionButton/ViewButton";
 import { reduxForm } from "redux-form";
 import { connect } from "react-redux";
 import * as actions from "../../actions";
@@ -129,6 +130,9 @@ class TransactionRow extends Component {
                   });
                 }}
               />
+              <Link to={`/transactions/${transaction._id}/view`}>
+                <ViewButton objectId={transaction._id} />
+              </Link>
               <ListActionButton
                 id={`btn-split-${transaction._id}`}
                 color="primary"

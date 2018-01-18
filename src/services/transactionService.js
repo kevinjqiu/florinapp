@@ -164,6 +164,13 @@ export const fetch = async (options: FetchOptions = defaultFetchOptions):  Promi
   return new PaginationResult(transactions, totalRows);
 }
 
+export const fetchById = async (transactionId: string): Promise<Transaction> => {
+  const transaction = new Transaction(await db.get(transactionId))
+  await fetchTransactionAccounts([transaction]);
+  await fetchLinkedTransactions([transaction]);
+  return transaction;
+}
+
 export const fetchUncategorizedTransactionsCount = async (filters: {dateFrom: string, dateTo: string}): Promise<Number> => {
   let query = {
     selector: {
