@@ -79,8 +79,7 @@ const AccountField = ({ input, label, accounts, meta: { touched, error } }) => {
 };
 
 const validAmount = (value: string)=> {
-  const result = parseFloat(value)
-  if (isNaN(result)) {
+  if (isNaN(value)) {
     return "Must be a valid amount";
   }
   return undefined;
