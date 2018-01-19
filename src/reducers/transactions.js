@@ -115,7 +115,7 @@ export default (state = initState, action) => {
         ...state,
         transactions: newTransactions
       };
-    case actionTypes.UPDATE_TRANSACTION_CATEGORY_SUCCEEDED:
+    case actionTypes.UPDATE_TRANSACTION_SUCCEEDED:
       return {
         ...state,
         currentTransaction: action.transaction
