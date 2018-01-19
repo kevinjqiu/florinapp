@@ -1,19 +1,20 @@
 const routes = {
   "/": "Home",
   "/dashboard": "Dashboard",
+
   "/accounts": "Accounts",
   "/accounts/new": "New",
-  "/accounts/:accountId/view": "View",
+  "/accounts/[0-9a-f-]+/view": "View",
 
   "/transactions": "Transactions",
   "/transactions/new": "New",
-  "/transactions/:transactionId/view": "New",
+  "/transactions/[0-9a-f-]+/view": "View",
 
   "/settings/general": "General",
 
   "/settings/categories": "Categories",
   "/settings/categories/new": "New",
-  "/settings/categories/:categoryId/view": "View",
+  "/settings/categories/.+/view": "View",
 
   "/settings/tags": "Tags",
   "/settings/sync": "Sync"
