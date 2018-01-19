@@ -11,15 +11,14 @@ const EditTransactionForm = reduxForm({
 })(TransactionForm);
 
 class TransactionDetails extends Component {
-  componentWillMount() {
+  componentDidMount() {
     const { transactionId } = this.props.match.params;
     this.props.fetchTransactionById(transactionId);
   }
 
   render() {
-    const { currentTransaction } = this.props;
-
-    console.log(currentTransaction);
+    const { transactionId } = this.props.match.params;
+    const { currentTransaction, updateTransaction } = this.props;
 
     if (!currentTransaction) {
       return <h3>No such transaction</h3>;
@@ -38,7 +37,7 @@ class TransactionDetails extends Component {
               initialValues={currentTransaction}
               editMode
               onSubmit={props => {
-                console.log(props);
+                updateTransaction(transactionId, new Transaction(props));
               }}
             />
           </Col>

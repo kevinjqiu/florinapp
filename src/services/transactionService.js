@@ -172,7 +172,7 @@ export const fetchById = async (transactionId: string): Promise<Transaction> => 
 }
 
 export const update = async (transactionId: string, transactionData: Transaction): Promise<Transaction> => {
-  let transaction = {
+  const transaction = {
     ...(await db.get(transactionId)),
     ...transactionData
   };

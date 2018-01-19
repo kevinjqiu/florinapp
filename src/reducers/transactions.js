@@ -115,6 +115,11 @@ export default (state = initState, action) => {
         ...state,
         transactions: newTransactions
       };
+    case actionTypes.UPDATE_TRANSACTION_CATEGORY_SUCCEEDED:
+      return {
+        ...state,
+        currentTransaction: action.transaction
+      };
     case "@@router/LOCATION_CHANGE":
       const routerPayload = action.payload;
       const queryParams = queryString.parse(routerPayload.search);

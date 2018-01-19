@@ -486,3 +486,18 @@ export const fetchTransactionByIdSucceeded = (transaction: Transaction) => {
 }
 
 export const fetchTransactionByIdFailed = actionFailed(actionTypes.FETCH_TRANSACTIONS_FAILED);
+
+export const updateTransactionRequested = () => {
+  return {
+    type: actionTypes.UPDATE_TRANSACTION_REQUESTED
+  }
+}
+
+export const updateTransactionSucceeded = (transaction: Transaction) => {
+  return {
+    type: actionTypes.UPDATE_TRANSACTION_SUCCEEDED,
+    transaction
+  }
+}
+
+export const updateTransactionFailed = actionFailed(actionTypes.UPDATE_TRANSACTION_FAILED);

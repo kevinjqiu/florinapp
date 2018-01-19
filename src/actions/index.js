@@ -427,3 +427,18 @@ export const fetchTransactionById = (transactionId: string) => async dispatch =>
     );
   }
 };
+
+export const updateTransaction = (transactionId: string, transactionData: Transaction) => async dispatch => {
+  dispatch(actionCreators.updateTransactionRequested());
+  try {
+    const account = await transactionService.update(transactionId, transactionData);
+    dispatch(actionCreators.updateTransactionSucceeded(account));
+    dispatch(push("/transactions"));
+    dispatch(actionCreators.showSuccessNotification("Transaction updated"));
+  } catch (err) {
+    dispatch(
+      actionCreators.showErrorNotification("Transaction update failed", err)
+    );
+    dispatch(actionCreators.updateTransactionFailed(err));
+  }
+}
