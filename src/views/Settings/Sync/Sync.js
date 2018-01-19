@@ -20,6 +20,7 @@ import RefreshButton from "../../../components/RefreshButton/RefreshButton";
 import { syncStatuses } from "../../../models/SyncStatus";
 import ListActionButton from "../../../components/ListActionButton/ListActionButton";
 import DeleteButton from "../../../components/ListActionButton/DeleteButton";
+import ReactTooltip from "react-tooltip";
 
 const validUrl = value =>
   vu.isWebUri(value) ? undefined : "Must be a valid url";
@@ -52,29 +53,41 @@ const renderStatus = sync => {
   const { status } = sync;
   if (status === syncStatuses.FAILED) {
     return (
-      <Badge pill color="danger">
+      <Badge pill color="danger" data-tip data-for={`${sync.remote}`}>
         Failed
+        <ReactTooltip place="top" id={`${sync.remote}`} type="info" effect="solid">
+          Synchronization failed.
+        </ReactTooltip>
       </Badge>
     );
   }
   if (status === syncStatuses.ACTIVE) {
     return (
-      <Badge pill color="success">
+      <Badge pill color="success" data-tip data-for={`${sync.remote}`}>
         Active
+        <ReactTooltip place="top" id={`${sync.remote}`} type="info" effect="solid">
+          Synchronization is active.
+        </ReactTooltip>
       </Badge>
     );
   }
   if (status === syncStatuses.CANCELED) {
     return (
-      <Badge pill color="secondary">
+      <Badge pill color="secondary" data-tip data-for={`${sync.remote}`}>
         Canceled
+        <ReactTooltip place="top" id={`${sync.remote}`} type="info" effect="solid">
+          Synchronization canceled.
+        </ReactTooltip>
       </Badge>
     );
   }
 
   return (
-    <Badge pill color="secondary">
+    <Badge pill color="secondary" data-tip data-for={`${sync.remote}`}>
       Not Started
+      <ReactTooltip place="top" id={`${sync.remote}`} type="info" effect="solid">
+        Synchronization has not started.
+      </ReactTooltip>
     </Badge>
   );
 };
@@ -106,7 +119,7 @@ class SyncView extends Component {
           </Card>
           <Card>
             <CardHeader>
-              <strong>Current Syncs</strong>
+              <strong>Current Targets</strong>
               {syncsState.loading ? (
                 <i className="fa fa-refresh fa-spin fa-1x fa-fw" />
               ) : (
