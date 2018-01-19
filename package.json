@@ -37,6 +37,7 @@
     "redux-thunk": "^2.2.0",
     "sha.js": "^2.4.9",
     "simple-line-icons": "^2.4.1",
+    "url": "^0.11.0",
     "valid-url": "^1.0.9"
   },
   "scripts": {

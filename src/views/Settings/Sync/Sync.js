@@ -145,7 +145,7 @@ class SyncView extends Component {
                     {syncs.map((sync, idx) => {
                       return (
                         <tr key={sync.remote}>
-                          <td>{sync.remote}</td>
+                          <td>{sync.getRedactedRemoteUrl()}</td>
                           <td>{renderStatus(sync)}</td>
                           <td>
                             <ButtonGroup>
