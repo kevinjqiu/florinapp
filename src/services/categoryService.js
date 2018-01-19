@@ -32,7 +32,7 @@ export const update = async (categoryId: string, categoryData: Category): Promis
   let category = {
     ...(await db.get(categoryId)),
     ...categoryData
-  }
+  };
 
   await db.put(category);
 

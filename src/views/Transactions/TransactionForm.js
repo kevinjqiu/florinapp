@@ -5,6 +5,7 @@ import { Field } from "redux-form";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import * as actions from "../../actions";
+import * as moment from "moment";
 import { DropdownList, DateTimePicker } from "react-widgets";
 
 const CategoryField = ({
@@ -37,7 +38,13 @@ const CategoryField = ({
 };
 
 const DateField = ({ input, label, meta: { touched, error } }) => {
-  let options = touched ? { ...input, valid: !error } : { ...input };
+  const { value } = input;
+  if (value) {
+    input.value = moment(value).startOf("day").toDate();
+  } else {
+    input.value = moment().startOf("day").toDate();
+  }
+  const options = touched ? { ...input, valid: !error } : { ...input };
   return (
     <div className="form-group">
       <FormGroup row>
@@ -55,7 +62,6 @@ const DateField = ({ input, label, meta: { touched, error } }) => {
 
 const AccountField = ({ input, label, accounts, meta: { touched, error } }) => {
   let options = touched ? { ...input, valid: !error } : { ...input };
-  console.log(options);
   return (
     <div className="form-group">
       <FormGroup row>
