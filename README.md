@@ -14,17 +14,32 @@ Features
 ========
 
 * Single Page React App
-* Upload your bank statements
-* Offline ready
+* Upload your bank statements or manually enter transactions
 * Dashboard charts and reports
 * Fully client-side - no server component required
+* Offline ready
 * Bi-directional sync client-side data with a CouchDB-compatible server
+
+Quick Start
+===========
+
+    # check out this repo
+    git clone git@github.com:kevinjqiu/florinapp.git
+
+    # install dependencies
+    yarn install
+
+    # run in dev mode
+    yarn start
+
+    # the app is available on http://localhost:3000
 
 Roadmap
 =======
 
-* Budgeting (TODO)
-* Automatically categorize transactions using machine learning (TODO)
+* Budgeting
+* Automatically categorize transactions using machine learning
+* Electron
 
 Tech Stack
 ==========
