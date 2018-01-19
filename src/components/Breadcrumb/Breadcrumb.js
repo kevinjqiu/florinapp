@@ -5,7 +5,13 @@ import routes from '../../routes';
 
 const findRouteName = match => {
   const url = match.url
-  return routes[url];
+  for (let route in routes) {
+    let routePattern = new RegExp("^" + route + "$");
+    if (routePattern.exec(url)) {
+      return routes[route];
+    }
+  }
+  return null;
 }
 
 const getPaths = (pathname) => {
