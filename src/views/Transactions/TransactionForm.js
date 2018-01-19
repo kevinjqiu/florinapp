@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import * as actions from "../../actions";
 import * as moment from "moment";
 import { DropdownList, DateTimePicker } from "react-widgets";
+import CategorySelector from "./CategorySelector";
 
 const CategoryField = ({
   input,
@@ -22,14 +23,7 @@ const CategoryField = ({
           <Label htmlFor="{input.name}">{label}</Label>
         </Col>
         <Col xs="12" md="9">
-          <DropdownList
-            data={categories}
-            filter="contains"
-            textField="name"
-            valueField="_id"
-            groupBy="type"
-            {...options}
-          />
+          <CategorySelector categories={categories} {...options} />
           <FormFeedback>{error}</FormFeedback>
         </Col>
       </FormGroup>
@@ -40,9 +34,13 @@ const CategoryField = ({
 const DateField = ({ input, label, meta: { touched, error } }) => {
   const { value } = input;
   if (value) {
-    input.value = moment(value).startOf("day").toDate();
+    input.value = moment(value)
+      .startOf("day")
+      .toDate();
   } else {
-    input.value = moment().startOf("day").toDate();
+    input.value = moment()
+      .startOf("day")
+      .toDate();
   }
   const options = touched ? { ...input, valid: !error } : { ...input };
   return (
@@ -84,7 +82,7 @@ const AccountField = ({ input, label, accounts, meta: { touched, error } }) => {
   );
 };
 
-const validAmount = (value: string)=> {
+const validAmount = (value: string) => {
   if (isNaN(value)) {
     return "Must be a valid amount";
   }
@@ -105,18 +103,14 @@ class TransactionForm extends Component {
 
     return (
       <form className="form-horizontal" onSubmit={handleSubmit(onSubmit)}>
-        <Field
-          name="date"
-          label="Date (*)"
-          component={DateField}
-        />
+        <Field name="date" label="Date (*)" component={DateField} />
         <Field
           name="accountId"
           label="Account (*)"
           component={AccountField}
           accounts={accounts}
           validate={[required]}
-          parse={(value, name) => value ? value._id : undefined }
+          parse={(value, name) => (value ? value._id : undefined)}
         />
         <Field
           name="name"
@@ -141,7 +135,7 @@ class TransactionForm extends Component {
           label="Category"
           component={CategoryField}
           categories={categories}
-          parse={(value, name) => value ? value._id : undefined }
+          parse={(value, name) => (value ? value._id : undefined)}
         />
         <Field
           name="info"
