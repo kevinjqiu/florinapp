@@ -25,37 +25,48 @@ let CategoryItemComponent = ({ categoriesIdMap, item }) => {
   }
   if (item.parent) {
     const parent = categoriesIdMap[item.parent];
-    return <span style={{ color }}>{parent.name}::{item.name}</span>;
+    return (
+      <span style={{ color }}>
+        {parent.name}::{item.name}
+      </span>
+    );
   }
-  return <span style={{ color }}><strong>{item.name}</strong></span>;
+  return (
+    <span style={{ color }}>
+      <strong>{item.name}</strong>
+    </span>
+  );
 };
 
-CategoryItemComponent = connect(({categories}) => {
+CategoryItemComponent = connect(({ categories }) => {
   const { categoriesIdMap } = categories;
   return { categoriesIdMap };
 }, null)(CategoryItemComponent);
 
-let CategoryValueComponent = ({item, location}) => {
+let CategoryValueComponent = ({ item, location }) => {
   if (item) {
-    const newLink = links.createTransactionLink(location, (queryParams) => {
+    const newLink = links.createTransactionLink(location, queryParams => {
       return {
         ...queryParams,
         "filters.categoryId": item._id,
         page: 1
-      }
+      };
     });
-    return <Link to={newLink} onClick={(e)=>e.stopPropagation()}>{item.name}</Link>
+    return (
+      <Link to={newLink} onClick={e => e.stopPropagation()}>
+        <CategoryItemComponent item={item} />
+      </Link>
+    );
   }
   return null;
-}
+};
 
 const mapStateToProps = ({ router }) => {
   const { location } = router;
   return { location };
-}
+};
 
 CategoryValueComponent = connect(mapStateToProps, null)(CategoryValueComponent);
-
 
 export default class CategorySelector extends Component {
   render() {
