@@ -8,4 +8,12 @@ export default class Sync {
   constructor(props: {}) {
     Object.assign(this, props);
   }
+
+  getRedactedRemoteUrl() {
+    const url = new URL(this.remote);
+    if (url.password) {
+      url.password = "****";
+    }
+    return url.toString();
+  }
 }
