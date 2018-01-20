@@ -177,7 +177,7 @@ export const update = async (transactionId: string, transactionData: Transaction
     ...transactionData
   };
 
-  await db.put(transaction);
+  await db.put(new Transaction(transaction));
   return (await fetchById(transactionId));
 }
 

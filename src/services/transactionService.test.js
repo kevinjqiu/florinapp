@@ -8,6 +8,7 @@ import Account from "../models/Account";
 import Transaction from "../models/Transaction";
 import { transactionTypes } from "../models/TransactionType";
 import { categoryTypes } from "../models/CategoryType";
+import shajs from "sha.js";
 
 const defaultFetchOptions = {
   orderBy: ["date", "asc"],
@@ -739,4 +740,67 @@ describe("transactionService.del", () => {
       });
       expect(result.docs.length).toBe(2);
   })
+})
+
+describe("transactionService.create", () => {
+  beforeEach(async () => {
+    await reset();
+    await seed(db);
+    await setupIndex(db);
+    await setupViews(db);
+  });
+
+  it("should create a transaction and populate its checksum field", async () => {
+    const txn = await transactionService.create(new Transaction({
+      amount: "-19.99",
+      date: "2017-01-01",
+      name: "PAYMENT 1999",
+      memo: "",
+      type: transactionTypes.DEBIT
+    }));
+
+    expect(txn._id === undefined).toBe(false);
+    expect(txn._id === null).toBe(false);
+
+    const sha = shajs("sha256");
+    sha.update("-19.99");
+    sha.update("2017-01-01");
+    sha.update("PAYMENT 1999");
+    sha.update(transactionTypes.DEBIT);
+    const checksum = sha.digest("hex");
+    expect(txn.checksum).toEqual(`sha256:${checksum}`);
+  });
+})
+
+describe("transactionService.update", () => {
+  beforeEach(async () => {
+    await reset();
+    await seed(db);
+    await setupIndex(db);
+    await setupViews(db);
+  });
+
+  it("should update the fields and update checksum", async () => {
+    const txn = await transactionService.create(new Transaction({
+      amount: "-19.99",
+      date: "2017-01-01",
+      name: "PAYMENT 1999",
+      memo: "",
+      type: transactionTypes.DEBIT
+    }));
+
+    txn.memo = "HELLO";
+    await transactionService.update(txn._id, txn);
+
+    const updatedTxn = await db.get(txn._id)
+    expect(updatedTxn.memo).toEqual("HELLO");
+    const sha = shajs("sha256");
+    sha.update("-19.99");
+    sha.update("2017-01-01");
+    sha.update("PAYMENT 1999");
+    sha.update("HELLO");
+    sha.update(transactionTypes.DEBIT);
+    const checksum = sha.digest("hex");
+    expect(updatedTxn.checksum).toEqual(`sha256:${checksum}`);
+  });
 })
