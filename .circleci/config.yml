@@ -6,6 +6,9 @@ jobs:
       
     working_directory: ~/repo
 
+    environment:
+      CIRCLE_ARTIFACTS: coverage/
+
     steps:
       - checkout
 
@@ -24,4 +27,5 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
         
       # run tests!
-      - run: yarn test --coverage && node_modules/.bin/codecov
+      - run: yarn test --coverage
+      - run: yarn add -D codecov && node_modules/.bin/codecov
