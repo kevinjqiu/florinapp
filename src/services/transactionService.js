@@ -194,7 +194,7 @@ export const fetchUncategorizedTransactionsCount = async (filters: {dateFrom: st
       },
     },
     fields: [],
-    limit: Number.MAX_SAFE_INTEGER,
+    limit: MAX_NUMBER,
     skip: 0
   };
   const result = await db.find(query);
