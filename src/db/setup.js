@@ -15,7 +15,6 @@ export const setupIndex = async db => {
 };
 
 export const setupViews = async db => {
-  const emit = null;
   let ddoc = null;
   try {
     ddoc = await db.get("_design/transactions");
@@ -26,29 +25,29 @@ export const setupViews = async db => {
     _id: "_design/transactions",
     views: {
       byType: {
-        map: function(doc) {
+        map: `function(doc) {
           if (doc.metadata && doc.metadata.type === "Transaction") {
             if (doc.categoryId !== "internaltransfer") {
               emit([doc.type, doc.date], parseFloat(doc.amount));
             }
           }
-        }.toString(),
+        }`,
         reduce: "_sum"
       },
       byAmount: {
-        map: function(doc) {
+        map: `function(doc) {
           if (doc.metadata && doc.metadata.type === "Transaction") {
             emit([doc.amount, doc.date], null);
           }
-        }.toString()
+        }`
       },
       byCategory: {
-        map: function(doc) {
+        map: `function(doc) {
           if (doc.metadata && doc.metadata.type === "Transaction") {
             emit([doc.date, doc.categoryId], parseFloat(doc.amount));
           }
-        }.toString(),
-        reduce: function(key, values, rereduce) {
+        }`,
+        reduce: `function(key, values, rereduce) {
           var result = {}
           if (!rereduce) {
             for (var i=0; i<key.length; i++) {
@@ -65,7 +64,7 @@ export const setupViews = async db => {
             }
           }
           return result;
-        }.toString()
+        }`
       }
     }
   });
