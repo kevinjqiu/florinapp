@@ -261,4 +261,29 @@ describe("Transactions", () => {
       expect(notifications[0].title).toEqual("Transaction update failed");
     });
   });
+
+  describe("fetchTransactionById", () => {
+    let fetchById = null;
+    beforeEach(() => {
+      fetchById = sinon.stub(transactionService, "fetchById");
+    });
+
+    afterEach(() => {
+      fetchById.restore();
+    });
+
+    it("should call transactionService.update", async () => {
+      const txn = new Transaction({_id: "txn1"});
+      fetchById.returns(txn);
+      await store.dispatch(actions.fetchTransactionById("txn1"));
+      expect(store.getState().transactions.currentTransaction).toEqual(txn);
+    });
+
+    it("should throw exception when transactionService.update fails", async () => {
+      fetchById.throws();
+      await store.dispatch(actions.fetchTransactionById("txn1"));
+      const { notifications } = store.getState();
+      expect(notifications[0].title).toEqual("Failed to get transaction");
+    });
+  });
 });
