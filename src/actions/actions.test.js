@@ -286,17 +286,16 @@ describe("Transactions", () => {
     });
 
     it("should call transactionService.update", async () => {
-      await store.dispatch(actions.updateTransaction("txn1", new Transaction({_id: "txn1", "memo": "foobar"})));
-      const { notifications } = store.getState();
-      expect(notifications.length).toEqual(1);
-      expect(notifications[0].title).toEqual("Transaction updated");
+      await assertServiceAction(store, actions.updateTransaction("txn1", new Transaction({_id: "txn1"})), (state) => {
+        expectNotificationTitle(state, "Transaction updated");
+      });
     });
 
     it("should throw exception when transactionService.update fails", async () => {
       updateMethod.throws();
-      await store.dispatch(actions.updateTransaction("txn1", new Transaction({_id: "txn1"})));
-      const { notifications } = store.getState();
-      expect(notifications[0].title).toEqual("Transaction update failed");
+      await assertServiceAction(store, actions.updateTransaction("txn1", new Transaction({_id: "txn1"})), (state) => {
+        expectNotificationTitle(state, "Transaction update failed");
+      });
     });
   });
 
