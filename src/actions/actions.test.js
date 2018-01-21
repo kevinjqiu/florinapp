@@ -260,18 +260,17 @@ describe("Transactions", () => {
     });
 
     it("should call transactionService.create", async () => {
-      await store.dispatch(actions.createTransaction(new Transaction({})));
-      const { notifications } = store.getState();
-      expect(notifications.length).toEqual(1);
-      expect(notifications[0].title).toEqual("Transaction created");
+      await assertServiceAction(store, actions.createTransaction(new Transaction({})), (state) => {
+        expectNotificationTitle(state, "Transaction created");
+      });
     });
 
     it("should throw exception when transactionService.create fails", async () => {
       createMethod.throws();
-      await store.dispatch(actions.createTransaction(new Transaction({})));
-      const { notifications } = store.getState();
-      expect(notifications.length).toEqual(1);
-      expect(notifications[0].title).toEqual("Cannot create transaction");
+
+      await assertServiceAction(store, actions.createTransaction(new Transaction({})), (state) => {
+        expectNotificationTitle(state, "Cannot create transaction");
+      });
     });
   });
 
