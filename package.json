@@ -49,7 +49,7 @@
     "eject": "react-scripts eject",
     "build-css": "node-sass-chokidar scss/style.scss -o src",
     "watch-css": "npm run build-css && node-sass-chokidar scss/style.scss -o src --watch --recursive",
-    "publish": "gh-pages --repo https://github.com/florinapp/florinapp.github.io --dest demo -d build --branch master",
+    "deploy": "gh-pages --repo https://github.com/florinapp/florinapp.github.io --dest demo -d build --branch master",
     "flow": "flow"
   },
   "devDependencies": {
