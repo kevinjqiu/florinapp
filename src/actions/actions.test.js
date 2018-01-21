@@ -286,4 +286,29 @@ describe("Transactions", () => {
       expect(notifications[0].title).toEqual("Failed to get transaction");
     });
   });
+
+  describe("deleteTransaction", () => {
+    let del = null;
+    beforeEach(() => {
+      del = sinon.stub(transactionService, "del");
+    });
+
+    afterEach(() => {
+      del.restore();
+    });
+
+    it("should call transactionService.del", async () => {
+      del.returns({});
+      await store.dispatch(actions.deleteTransaction("txn1"));
+      const { notifications } = store.getState();
+      expect(notifications[0].title).toEqual("Transaction deleted");
+    });
+
+    it("should throw exception when transactionService.del fails", async () => {
+      del.throws();
+      await store.dispatch(actions.deleteTransaction("txn1"));
+      const { notifications } = store.getState();
+      expect(notifications[0].title).toEqual("Failed to delete transaction");
+    });
+  });
 });

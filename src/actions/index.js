@@ -405,11 +405,11 @@ export const deleteTransaction = (transactionId: string) => async dispatch => {
   dispatch(actionCreators.deleteTransactionRequested(transactionId));
   try {
     await transactionService.del(transactionId);
-    dispatch(actionCreators.showSuccessNotification("The transaction was deleted"));
+    dispatch(actionCreators.showSuccessNotification("Transaction deleted"));
     dispatch(actionCreators.deleteTransactionSucceeded(transactionId));
   } catch (err) {
     dispatch(
-      actionCreators.showErrorNotification("Cannot delete transaction", err)
+      actionCreators.showErrorNotification("Failed to delete transaction", err)
     );
     dispatch(actionCreators.deleteTransactionFailed(err));
   }
