@@ -29,4 +29,6 @@ const PROFILES = {
 
 const config = Object.assign({}, DEFAULT_CONFIG, PROFILES[ENV] || {});
 
+console.log(config);
+
 export default config;
