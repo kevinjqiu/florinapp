@@ -33,11 +33,11 @@ export const deleteAccount = (accountId: string) => async dispatch => {
   dispatch(actionCreators.deleteAccountRequested(accountId));
   try {
     await accountService.del(accountId);
-    dispatch(actionCreators.showSuccessNotification("The account was deleted"));
+    dispatch(actionCreators.showSuccessNotification("Account deleted"));
     dispatch(actionCreators.deleteAccountSucceeded(accountId));
   } catch (err) {
     dispatch(
-      actionCreators.showErrorNotification("Cannot delete account", err)
+      actionCreators.showErrorNotification("Failed to delete account", err)
     );
     dispatch(actionCreators.deleteAccountFailed(err));
   }

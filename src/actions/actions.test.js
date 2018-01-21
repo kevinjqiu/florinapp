@@ -16,12 +16,12 @@ import reducer from "../reducers";
 const expectNotificationTitle = ({ notifications }, notificationTitle) => {
   expect(notifications.length).toEqual(1);
   expect(notifications[0].title).toEqual(notificationTitle);
-}
+};
 
-const assertServiceAction = async (store, action, assertionCallback) => {
+const assertServiceAction = async (store, action, ...assertionCallbacks) => {
   await store.dispatch(action);
   const { notifications } = store.getState();
-  assertionCallback(store.getState());
+  assertionCallbacks.forEach(c => c(store.getState()));
 };
 
 const setup = async () => {
@@ -39,61 +39,66 @@ describe("Account", () => {
   });
 
   describe("fetchAccounts", () => {
+    let fetch = null;
+
+    beforeEach(() => {
+      fetch = sinon.stub(accountService, "fetch");
+    });
+
+    afterEach(() => {
+      fetch.restore();
+    });
+
     it("should set state to empty accounts when no accounts are loaded", async () => {
-      await store.dispatch(actions.fetchAccounts());
-      const { accounts } = store.getState();
-      expect(accounts.accounts.length).toBe(0);
+      fetch.returns([]);
+      await assertServiceAction(store, actions.fetchAccounts(), ({ accounts }) => {
+        expect(accounts.accounts.length).toEqual(0);
+      })
     });
 
     it("should load the accounts", async () => {
-      await db.post(
+      fetch.returns([
         new Account({
           name: "TEST",
           financialInstitution: "TEST_FI",
           type: "CHECKING"
         })
-      );
-      await store.dispatch(actions.fetchAccounts());
-      const { accounts } = store.getState();
-      expect(accounts.accounts.length).toBe(1);
-      expect(accounts.accounts[0].name).toEqual("TEST");
-      expect(accounts.accounts[0].financialInstitution).toEqual("TEST_FI");
-      expect(accounts.accounts[0].type).toEqual("CHECKING");
+      ]);
+      await assertServiceAction(store, actions.fetchAccounts(), ({accounts}) => {
+        expect(accounts.accounts.length).toBe(1);
+        expect(accounts.accounts[0].name).toEqual("TEST");
+        expect(accounts.accounts[0].financialInstitution).toEqual("TEST_FI");
+        expect(accounts.accounts[0].type).toEqual("CHECKING");
+      })
     });
 
-    it("should signal failure when db.find fails", async () => {
-      const mockDb = sinon.stub(db, "find");
-      mockDb.throws();
-      await store.dispatch(actions.fetchAccounts());
-      const { accounts } = store.getState();
-      expect(accounts.accounts.length).toBe(0);
-      expect(accounts.failed).toBe(true);
-      mockDb.restore();
+    it("should signal failure when accountService.fetch fails", async () => {
+      fetch.throws();
+      await assertServiceAction(store, actions.fetchAccounts(), ({accounts}) => {
+        expect(accounts.accounts.length).toBe(0);
+        expect(accounts.failed).toBe(true);
+      })
     });
   });
 
   describe("deleteAccount", () => {
+    let del = null;
+
+    beforeEach(() => {
+      del = sinon.stub(accountService, "del");
+    });
+
+    afterEach(() => {
+      del.restore();
+    });
+
     it("should signal failure when account to delete does not exist", async () => {
-      await store.dispatch(actions.deleteAccount("nonexistent"));
-      const { notifications, accounts } = store.getState();
-      expect(accounts.accounts.length).toBe(0);
-      expect(notifications.length).toBe(1);
-      expect(notifications[0].title).toEqual("Cannot delete account");
+      del.throws();
+      await assertServiceAction(store, actions.deleteAccount("nonexistent"), (state) => expectNotificationTitle(state, "Failed to delete account"))
     });
 
     it("should delete the account from the store", async () => {
-      const response = await db.post(
-        new Account({
-          name: "TEST",
-          financialInstitution: "TEST_FI",
-          type: "CHECKING"
-        })
-      );
-      await store.dispatch(actions.deleteAccount(response.id));
-      const { notifications, accounts } = store.getState();
-      expect(accounts.accounts.length).toBe(0);
-      expect(notifications.length).toBe(1);
-      expect(notifications[0].title).toEqual("The account was deleted");
+      await assertServiceAction(store, actions.deleteAccount("nonexistent"), (state) => expectNotificationTitle(state, "Account deleted"))
     });
   });
 
@@ -141,57 +146,75 @@ describe("Account", () => {
   });
 
   describe("updateAccount", () => {
-    it("should update account", async () => {
-      let result = await db.post(
-        new Account({
-          name: "TEST",
-          financialInstitution: "TEST_FI",
-          type: "CHECKING"
-        })
-      );
+    let update;
+    beforeEach(() => {
+      update = sinon.stub(accountService, "update");
+    })
 
-      await store.dispatch(
+    afterEach(() => {
+      update.restore();
+    })
+
+    it("should update account", async () => {
+      await assertServiceAction(store,
         actions.updateAccount(
-          result.id,
+          "a1",
           new Account({
             name: "TEST",
             financialInstitution: "TEST_FI",
             type: "INVESTMENT"
           })
-        )
-      );
-      const { notifications } = store.getState();
-      expect(notifications.length).toBe(1);
-      expect(notifications[0].title).toEqual("Account updated");
-      result = await db.get(result.id);
-      expect(result.type).toEqual("INVESTMENT");
-      expect(result.name).toEqual("TEST");
-      expect(result.financialInstitution).toEqual("TEST_FI");
+        ),
+        (state) => expectNotificationTitle(state, "Account updated"));
     });
+
+    it("should notify error when account update fails", async () => {
+      update.throws();
+      await assertServiceAction(store,
+        actions.updateAccount(
+          "a1",
+          new Account({
+            name: "TEST",
+            financialInstitution: "TEST_FI",
+            type: "INVESTMENT"
+          })
+        ),
+        (state) => expectNotificationTitle(state, "Account update failed"));
+    })
   });
 
   describe("fetchAccountById", () => {
+    let fetchById;
+    beforeEach(() => {
+      fetchById = sinon.stub(accountService, "fetchById");
+    })
+
+    afterEach(() => {
+      fetchById.restore();
+    })
+
     it("should fetch account by id", async () => {
-      const result = await db.post(
-        new Account({
-          name: "TEST",
-          financialInstitution: "TEST_FI",
-          type: "CHECKING"
-        })
-      );
-      await store.dispatch(actions.fetchAccountById(result.id));
-      const { currentAccount } = store.getState();
-      expect(currentAccount.name).toEqual("TEST");
-      expect(currentAccount.financialInstitution).toEqual("TEST_FI");
-      expect(currentAccount.type).toEqual("CHECKING");
+      fetchById.returns(new Account({
+        _id: "a1",
+        name: "TEST",
+        financialInstitution: "TEST_FI",
+        type: "CHECKING"
+      }));
+
+      await assertServiceAction(store, actions.fetchAccountById("a1"), ({ currentAccount }) => {
+        expect(currentAccount.name).toEqual("TEST");
+        expect(currentAccount.financialInstitution).toEqual("TEST_FI");
+        expect(currentAccount.type).toEqual("CHECKING");
+      });
     });
 
     it("should return error when account not found", async () => {
-      await store.dispatch(actions.fetchAccountById("nonexistent"));
-      const { currentAccount, notifications } = store.getState();
-      expect(currentAccount).toBe(null);
-      expect(notifications.length).toBe(1);
-      expect(notifications[0].title).toBe("Failed to get account");
+      await assertServiceAction(
+        store,
+        actions.fetchAccountById("nonexistent"),
+        ({ currentAccount }) => expect(currentAccount).toBe(null),
+        state => expectNotificationTitle(state, "Failed to get account")
+      );
     });
   });
 });
@@ -204,47 +227,67 @@ describe("Transactions", () => {
   });
 
   describe("fetchTransactions", () => {
-    it("should return empty when there's no transactions", async () => {
-      await store.dispatch(actions.fetchTransactions());
-      const { transactions } = store.getState();
-      expect(transactions.transactions).toEqual([]);
+    let fetch;
+
+    beforeEach(() => {
+      fetch = sinon.stub(transactionService, "fetch");
     });
 
-    it("should signal failure when db.find fails", async () => {
-      const mockDb = sinon.stub(db, "find");
-      mockDb.throws();
-      await store.dispatch(actions.fetchTransactions());
-      const { transactions } = store.getState();
-      expect(transactions.loading).toBe(false);
-      expect(transactions.failed).toBe(true);
-      mockDb.restore();
+    afterEach(() => {
+      fetch.restore();
+    });
+
+    it("should return empty when there's no transactions", async () => {
+      fetch.returns({ result: [] });
+      await assertServiceAction(
+        store,
+        actions.fetchTransactions(),
+        ({ transactions }) => {
+          expect(transactions.transactions).toEqual([]);
+        }
+      );
+    });
+
+    it("should signal failure when transactionService.fetch fails", async () => {
+      fetch.throws();
+      await assertServiceAction(
+        store,
+        actions.fetchTransactions(),
+        ({ transactions }) => {
+          expect(transactions.loading).toBe(false);
+          expect(transactions.failed).toBe(true);
+        }
+      );
     });
 
     it("should fetch associated account when possible", async () => {
-      const account = await db.post(new Account());
-      await db.post(
-        new Transaction({
-          _id: "txn1",
-          date: "2017-01-01",
-          accountId: account.id
-        })
-      );
-      await db.post(new Transaction({ _id: "txn2", date: "2017-05-05" }));
-      await store.dispatch(
+      fetch.returns({
+        result: [
+          new Transaction({
+            _id: "txn1",
+            date: "2017-01-01",
+            accountId: "a1"
+          }),
+          new Transaction({ _id: "txn2", date: "2017-05-05" })
+        ]
+      });
+
+      await assertServiceAction(
+        store,
         actions.fetchTransactions({
           orderBy: ["date", "asc"],
           pagination: { perPage: 999, page: 1 },
           filters: {}
-        })
+        }),
+        state => {
+          const { transactions, loading, failed } = state.transactions;
+          expect(loading).toBe(false);
+          expect(failed).toBe(false);
+          expect(transactions.length).toBe(2);
+          expect(transactions[0]._id).toEqual("txn1");
+          expect(transactions[1]._id).toEqual("txn2");
+        }
       );
-      const { transactions, loading, failed } = store.getState().transactions;
-      expect(loading).toBe(false);
-      expect(failed).toBe(false);
-      expect(transactions.length).toBe(2);
-      expect(transactions[0]._id).toEqual("txn1");
-      expect(transactions[0].account._id).toEqual(account.id);
-      expect(transactions[1]._id).toEqual("txn2");
-      expect(transactions[1].account).toBe(undefined);
     });
   });
 
@@ -260,17 +303,25 @@ describe("Transactions", () => {
     });
 
     it("should call transactionService.create", async () => {
-      await assertServiceAction(store, actions.createTransaction(new Transaction({})), (state) => {
-        expectNotificationTitle(state, "Transaction created");
-      });
+      await assertServiceAction(
+        store,
+        actions.createTransaction(new Transaction({})),
+        state => {
+          expectNotificationTitle(state, "Transaction created");
+        }
+      );
     });
 
     it("should throw exception when transactionService.create fails", async () => {
       createMethod.throws();
 
-      await assertServiceAction(store, actions.createTransaction(new Transaction({})), (state) => {
-        expectNotificationTitle(state, "Cannot create transaction");
-      });
+      await assertServiceAction(
+        store,
+        actions.createTransaction(new Transaction({})),
+        state => {
+          expectNotificationTitle(state, "Cannot create transaction");
+        }
+      );
     });
   });
 
@@ -285,16 +336,24 @@ describe("Transactions", () => {
     });
 
     it("should call transactionService.update", async () => {
-      await assertServiceAction(store, actions.updateTransaction("txn1", new Transaction({_id: "txn1"})), (state) => {
-        expectNotificationTitle(state, "Transaction updated");
-      });
+      await assertServiceAction(
+        store,
+        actions.updateTransaction("txn1", new Transaction({ _id: "txn1" })),
+        state => {
+          expectNotificationTitle(state, "Transaction updated");
+        }
+      );
     });
 
     it("should throw exception when transactionService.update fails", async () => {
       updateMethod.throws();
-      await assertServiceAction(store, actions.updateTransaction("txn1", new Transaction({_id: "txn1"})), (state) => {
-        expectNotificationTitle(state, "Transaction update failed");
-      });
+      await assertServiceAction(
+        store,
+        actions.updateTransaction("txn1", new Transaction({ _id: "txn1" })),
+        state => {
+          expectNotificationTitle(state, "Transaction update failed");
+        }
+      );
     });
   });
 
@@ -309,18 +368,26 @@ describe("Transactions", () => {
     });
 
     it("should call transactionService.update", async () => {
-      const txn = new Transaction({_id: "txn1"});
+      const txn = new Transaction({ _id: "txn1" });
       fetchById.returns(txn);
-      await assertServiceAction(store, actions.fetchTransactionById("txn1"), ({transactions}) => {
-        expect(transactions.currentTransaction).toEqual(txn);
-      });
+      await assertServiceAction(
+        store,
+        actions.fetchTransactionById("txn1"),
+        ({ transactions }) => {
+          expect(transactions.currentTransaction).toEqual(txn);
+        }
+      );
     });
 
     it("should throw exception when transactionService.update fails", async () => {
       fetchById.throws();
-      await assertServiceAction(store, actions.fetchTransactionById("txn1"), state => {
-        expectNotificationTitle(state, "Failed to get transaction");
-      });
+      await assertServiceAction(
+        store,
+        actions.fetchTransactionById("txn1"),
+        state => {
+          expectNotificationTitle(state, "Failed to get transaction");
+        }
+      );
     });
   });
 
@@ -336,16 +403,24 @@ describe("Transactions", () => {
 
     it("should call transactionService.del", async () => {
       del.returns({});
-      await assertServiceAction(store, actions.deleteTransaction("txn1"), (state) => {
-        expectNotificationTitle(state, "Transaction deleted");
-      });
+      await assertServiceAction(
+        store,
+        actions.deleteTransaction("txn1"),
+        state => {
+          expectNotificationTitle(state, "Transaction deleted");
+        }
+      );
     });
 
     it("should throw exception when transactionService.del fails", async () => {
       del.throws();
-      await assertServiceAction(store, actions.deleteTransaction("txn1"), (state) => {
-        expectNotificationTitle(state, "Failed to delete transaction");
-      });
+      await assertServiceAction(
+        store,
+        actions.deleteTransaction("txn1"),
+        state => {
+          expectNotificationTitle(state, "Failed to delete transaction");
+        }
+      );
     });
   });
 });
