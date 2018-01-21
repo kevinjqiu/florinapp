@@ -1,19 +1,17 @@
 import sinon from "sinon";
 import { FlushThunks, Thunk } from "redux-testkit";
 import { createStore, applyMiddleware } from "redux";
-import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import db from "../db";
 import reset from "../db/reset";
 import * as actionCreators from "./creators";
 import * as actionTypes from "./types";
 import * as actions from "./index";
+import * as transactionService from "../services/transactionService";
 import Account from "../models/Account";
 import Transaction from "../models/Transaction";
 import reducer from "../reducers";
 import { fetchAccounts } from "./index";
-
-const mockStore = configureMockStore([thunk]);
 
 const setup = async () => {
   await reset();
@@ -168,7 +166,7 @@ describe("Transactions", () => {
     store = await setup();
   });
 
-  describe("fetchTransactions", async () => {
+  describe("fetchTransactions", () => {
     it("should return empty when there's no transactions", async () => {
       await store.dispatch(actions.fetchTransactions());
       const { transactions } = store.getState();
@@ -212,4 +210,25 @@ describe("Transactions", () => {
       expect(transactions[1].account).toBe(undefined);
     });
   });
+
+  describe("createTransaction", () => {
+    it("should call transactionService.create", async () => {
+      const createMethod = sinon.stub(transactionService, "create");
+      await store.dispatch(actions.createTransaction(new Transaction({})));
+      const { notifications } = store.getState();
+      expect(notifications.length).toEqual(1);
+      expect(notifications[0].title).toEqual("Transaction created");
+      createMethod.restore();
+    })
+
+    it("should throw exception when transactionService.create fails", async () => {
+      const createMethod = sinon.stub(transactionService, "create");
+      createMethod.throws();
+      await store.dispatch(actions.createTransaction(new Transaction({})));
+      const { notifications } = store.getState();
+      expect(notifications.length).toEqual(1);
+      expect(notifications[0].title).toEqual("Cannot create transaction");
+      createMethod.restore();
+    })
+  })
 });

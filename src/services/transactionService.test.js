@@ -1,3 +1,4 @@
+import sinon from "sinon";
 import * as fs from "fs";
 import * as transactionService from "./transactionService";
 import db from "../db";
@@ -69,7 +70,8 @@ describe("transactionService.importAccountStatement", () => {
     expect(response.docs.length).toBe(3);
   });
 
-  it("should existing transactions", async () => {
+  it("should skip existing transactions", async () => {
+    const log = sinon.stub(console, "log");
     const account = await newAccount();
     const content = fs.readFileSync(`${__dirname}/fixtures/newtxns.ofx`);
     const file = new Blob([content]);
@@ -85,6 +87,8 @@ describe("transactionService.importAccountStatement", () => {
       selector: { "metadata.type": "Transaction" }
     });
     expect(response.docs.length).toBe(3);
+    expect(log.calledThrice).toEqual(true);
+    log.restore();
   });
 });
 
