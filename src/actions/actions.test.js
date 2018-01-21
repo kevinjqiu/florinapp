@@ -11,7 +11,6 @@ import * as transactionService from "../services/transactionService";
 import Account from "../models/Account";
 import Transaction from "../models/Transaction";
 import reducer from "../reducers";
-import { fetchAccounts } from "./index";
 
 const setup = async () => {
   await reset();
@@ -212,23 +211,54 @@ describe("Transactions", () => {
   });
 
   describe("createTransaction", () => {
+    let createMethod = null;
+
+    beforeEach(() => {
+      createMethod = sinon.stub(transactionService, "create");
+    });
+
+    afterEach(() => {
+      createMethod.restore();
+    });
+
     it("should call transactionService.create", async () => {
-      const createMethod = sinon.stub(transactionService, "create");
       await store.dispatch(actions.createTransaction(new Transaction({})));
       const { notifications } = store.getState();
       expect(notifications.length).toEqual(1);
       expect(notifications[0].title).toEqual("Transaction created");
-      createMethod.restore();
-    })
+    });
 
     it("should throw exception when transactionService.create fails", async () => {
-      const createMethod = sinon.stub(transactionService, "create");
       createMethod.throws();
       await store.dispatch(actions.createTransaction(new Transaction({})));
       const { notifications } = store.getState();
       expect(notifications.length).toEqual(1);
       expect(notifications[0].title).toEqual("Cannot create transaction");
-      createMethod.restore();
-    })
-  })
+    });
+  });
+
+  describe("updateTransaction", () => {
+    let updateMethod = null;
+    beforeEach(() => {
+      updateMethod = sinon.stub(transactionService, "update");
+    });
+
+    afterEach(() => {
+      updateMethod.restore();
+    });
+
+    it("should call transactionService.update", async () => {
+      await store.dispatch(actions.updateTransaction("txn1", new Transaction({_id: "txn1", "memo": "foobar"})));
+      const { notifications } = store.getState();
+      expect(notifications.length).toEqual(1);
+      expect(notifications[0].title).toEqual("Transaction updated");
+    });
+
+    it("should throw exception when transactionService.update fails", async () => {
+      updateMethod.throws();
+      await store.dispatch(actions.updateTransaction("txn1", new Transaction({_id: "txn1"})));
+      const { notifications } = store.getState();
+      expect(notifications[0].title).toEqual("Transaction update failed");
+    });
+  });
 });
