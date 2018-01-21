@@ -9,6 +9,7 @@ export const setupIndex = async db => {
 
   await Promise.all(
     indexes.map(async index => {
+      console.log(db);
       await db.createIndex(index);
     })
   );

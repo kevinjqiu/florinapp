@@ -1,20 +1,28 @@
 const { ENV } = process.env;
 
 const DEFAULT_CONFIG = {
-  basename: "/"
+  basename: "/",
+  dbname: "florin",
+  dbadapter: "idb",
+  dbdebug: false
 };
 
 const PROFILES = {
   test: {
-
+    dbname: "florin-test",
+    dbadapter: "memory",
+    dbdebug: false
   },
 
   local: {
-
-
+    dbname: "florin-test",
+    dbdebug: false
   },
+
   prod: {
-    basename: "/demo"
+    basename: "/demo",
+    dbname: "florin",
+    dbdebug: false
   }
 
 };
