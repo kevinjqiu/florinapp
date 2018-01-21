@@ -43,7 +43,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && bin/generate_build_manifest.sh",
     "test": "ENV=test react-scripts test --env=jsdom",
     "coverage": "ENV=test react-scripts test --env=jsdom --coverage",
     "eject": "react-scripts eject",

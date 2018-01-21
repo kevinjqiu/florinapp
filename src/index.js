@@ -15,8 +15,9 @@ import "react-widgets/dist/css/react-widgets.css";
 import "font-awesome/css/font-awesome.min.css";
 import "simple-line-icons/css/simple-line-icons.css";
 import "./style.css";
+import config from "./config/index";
 
-const history = createHistory();
+const history = createHistory({ basename: config.basename });
 
 const store = createStore(
   reducers,
