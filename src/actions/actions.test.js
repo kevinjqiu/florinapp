@@ -2,15 +2,16 @@ import sinon from "sinon";
 import { FlushThunks, Thunk } from "redux-testkit";
 import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
-import db from "../db";
 import reset from "../db/reset";
 import * as actionCreators from "./creators";
 import * as actionTypes from "./types";
 import * as actions from "./index";
 import * as transactionService from "../services/transactionService";
 import * as accountService from "../services/accountService";
+import * as categoryService from "../services/categoryService";
 import Account from "../models/Account";
 import Transaction from "../models/Transaction";
+import Category from "../models/Category";
 import reducer from "../reducers";
 
 const expectNotificationTitle = ({ notifications }, notificationTitle) => {
@@ -25,7 +26,6 @@ const assertServiceAction = async (store, action, ...assertionCallbacks) => {
 };
 
 const setup = async () => {
-  await reset();
   const flushThunks = FlushThunks.createMiddleware();
   const store = createStore(reducer, applyMiddleware(flushThunks, thunk));
   return store;
@@ -51,9 +51,13 @@ describe("Account", () => {
 
     it("should set state to empty accounts when no accounts are loaded", async () => {
       fetch.returns([]);
-      await assertServiceAction(store, actions.fetchAccounts(), ({ accounts }) => {
-        expect(accounts.accounts.length).toEqual(0);
-      })
+      await assertServiceAction(
+        store,
+        actions.fetchAccounts(),
+        ({ accounts }) => {
+          expect(accounts.accounts.length).toEqual(0);
+        }
+      );
     });
 
     it("should load the accounts", async () => {
@@ -64,20 +68,28 @@ describe("Account", () => {
           type: "CHECKING"
         })
       ]);
-      await assertServiceAction(store, actions.fetchAccounts(), ({accounts}) => {
-        expect(accounts.accounts.length).toBe(1);
-        expect(accounts.accounts[0].name).toEqual("TEST");
-        expect(accounts.accounts[0].financialInstitution).toEqual("TEST_FI");
-        expect(accounts.accounts[0].type).toEqual("CHECKING");
-      })
+      await assertServiceAction(
+        store,
+        actions.fetchAccounts(),
+        ({ accounts }) => {
+          expect(accounts.accounts.length).toBe(1);
+          expect(accounts.accounts[0].name).toEqual("TEST");
+          expect(accounts.accounts[0].financialInstitution).toEqual("TEST_FI");
+          expect(accounts.accounts[0].type).toEqual("CHECKING");
+        }
+      );
     });
 
     it("should signal failure when accountService.fetch fails", async () => {
       fetch.throws();
-      await assertServiceAction(store, actions.fetchAccounts(), ({accounts}) => {
-        expect(accounts.accounts.length).toBe(0);
-        expect(accounts.failed).toBe(true);
-      })
+      await assertServiceAction(
+        store,
+        actions.fetchAccounts(),
+        ({ accounts }) => {
+          expect(accounts.accounts.length).toBe(0);
+          expect(accounts.failed).toBe(true);
+        }
+      );
     });
   });
 
@@ -94,11 +106,19 @@ describe("Account", () => {
 
     it("should signal failure when account to delete does not exist", async () => {
       del.throws();
-      await assertServiceAction(store, actions.deleteAccount("nonexistent"), (state) => expectNotificationTitle(state, "Failed to delete account"))
+      await assertServiceAction(
+        store,
+        actions.deleteAccount("nonexistent"),
+        state => expectNotificationTitle(state, "Failed to delete account")
+      );
     });
 
     it("should delete the account from the store", async () => {
-      await assertServiceAction(store, actions.deleteAccount("nonexistent"), (state) => expectNotificationTitle(state, "Account deleted"))
+      await assertServiceAction(
+        store,
+        actions.deleteAccount("nonexistent"),
+        state => expectNotificationTitle(state, "Account deleted")
+      );
     });
   });
 
@@ -149,14 +169,15 @@ describe("Account", () => {
     let update;
     beforeEach(() => {
       update = sinon.stub(accountService, "update");
-    })
+    });
 
     afterEach(() => {
       update.restore();
-    })
+    });
 
     it("should update account", async () => {
-      await assertServiceAction(store,
+      await assertServiceAction(
+        store,
         actions.updateAccount(
           "a1",
           new Account({
@@ -165,12 +186,14 @@ describe("Account", () => {
             type: "INVESTMENT"
           })
         ),
-        (state) => expectNotificationTitle(state, "Account updated"));
+        state => expectNotificationTitle(state, "Account updated")
+      );
     });
 
     it("should notify error when account update fails", async () => {
       update.throws();
-      await assertServiceAction(store,
+      await assertServiceAction(
+        store,
         actions.updateAccount(
           "a1",
           new Account({
@@ -179,33 +202,40 @@ describe("Account", () => {
             type: "INVESTMENT"
           })
         ),
-        (state) => expectNotificationTitle(state, "Account update failed"));
-    })
+        state => expectNotificationTitle(state, "Account update failed")
+      );
+    });
   });
 
   describe("fetchAccountById", () => {
     let fetchById;
     beforeEach(() => {
       fetchById = sinon.stub(accountService, "fetchById");
-    })
+    });
 
     afterEach(() => {
       fetchById.restore();
-    })
+    });
 
     it("should fetch account by id", async () => {
-      fetchById.returns(new Account({
-        _id: "a1",
-        name: "TEST",
-        financialInstitution: "TEST_FI",
-        type: "CHECKING"
-      }));
+      fetchById.returns(
+        new Account({
+          _id: "a1",
+          name: "TEST",
+          financialInstitution: "TEST_FI",
+          type: "CHECKING"
+        })
+      );
 
-      await assertServiceAction(store, actions.fetchAccountById("a1"), ({ currentAccount }) => {
-        expect(currentAccount.name).toEqual("TEST");
-        expect(currentAccount.financialInstitution).toEqual("TEST_FI");
-        expect(currentAccount.type).toEqual("CHECKING");
-      });
+      await assertServiceAction(
+        store,
+        actions.fetchAccountById("a1"),
+        ({ currentAccount }) => {
+          expect(currentAccount.name).toEqual("TEST");
+          expect(currentAccount.financialInstitution).toEqual("TEST_FI");
+          expect(currentAccount.type).toEqual("CHECKING");
+        }
+      );
     });
 
     it("should return error when account not found", async () => {
@@ -420,6 +450,44 @@ describe("Transactions", () => {
         state => {
           expectNotificationTitle(state, "Failed to delete transaction");
         }
+      );
+    });
+  });
+});
+
+describe("Category", () => {
+  let store;
+
+  beforeEach(async () => {
+    store = await setup();
+  });
+
+  describe("fetchCategories", () => {
+    let fetch;
+
+    beforeEach(() => {
+      fetch = sinon.stub(categoryService, "fetch");
+    });
+
+    afterEach(() => {
+      fetch.restore();
+    });
+
+    it("should fetch categories", async () => {
+      fetch.returns([new Category()]);
+      await assertServiceAction(
+        store,
+        actions.fetchCategories(),
+        ({ categories }) => {
+          expect(categories.categories.length).toEqual(1);
+        }
+      );
+    });
+
+    it("should signal error when fetch fails", async () => {
+      fetch.throws();
+      await assertServiceAction(store, actions.fetchCategories(), state =>
+        expectNotificationTitle(state, "Cannot fetch categories")
       );
     });
   });
