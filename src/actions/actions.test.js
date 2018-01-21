@@ -13,6 +13,17 @@ import Account from "../models/Account";
 import Transaction from "../models/Transaction";
 import reducer from "../reducers";
 
+const expectNotificationTitle = ({ notifications }, notificationTitle) => {
+  expect(notifications.length).toEqual(1);
+  expect(notifications[0].title).toEqual(notificationTitle);
+}
+
+const assertServiceAction = async (store, action, assertionCallback) => {
+  await store.dispatch(action);
+  const { notifications } = store.getState();
+  assertionCallback(store.getState());
+};
+
 const setup = async () => {
   await reset();
   const flushThunks = FlushThunks.createMiddleware();
@@ -302,15 +313,16 @@ describe("Transactions", () => {
     it("should call transactionService.update", async () => {
       const txn = new Transaction({_id: "txn1"});
       fetchById.returns(txn);
-      await store.dispatch(actions.fetchTransactionById("txn1"));
-      expect(store.getState().transactions.currentTransaction).toEqual(txn);
+      await assertServiceAction(store, actions.fetchTransactionById("txn1"), ({transactions}) => {
+        expect(transactions.currentTransaction).toEqual(txn);
+      });
     });
 
     it("should throw exception when transactionService.update fails", async () => {
       fetchById.throws();
-      await store.dispatch(actions.fetchTransactionById("txn1"));
-      const { notifications } = store.getState();
-      expect(notifications[0].title).toEqual("Failed to get transaction");
+      await assertServiceAction(store, actions.fetchTransactionById("txn1"), state => {
+        expectNotificationTitle(state, "Failed to get transaction");
+      });
     });
   });
 
@@ -326,16 +338,16 @@ describe("Transactions", () => {
 
     it("should call transactionService.del", async () => {
       del.returns({});
-      await store.dispatch(actions.deleteTransaction("txn1"));
-      const { notifications } = store.getState();
-      expect(notifications[0].title).toEqual("Transaction deleted");
+      await assertServiceAction(store, actions.deleteTransaction("txn1"), (state) => {
+        expectNotificationTitle(state, "Transaction deleted");
+      });
     });
 
     it("should throw exception when transactionService.del fails", async () => {
       del.throws();
-      await store.dispatch(actions.deleteTransaction("txn1"));
-      const { notifications } = store.getState();
-      expect(notifications[0].title).toEqual("Failed to delete transaction");
+      await assertServiceAction(store, actions.deleteTransaction("txn1"), (state) => {
+        expectNotificationTitle(state, "Failed to delete transaction");
+      });
     });
   });
 });
