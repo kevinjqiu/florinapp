@@ -8,6 +8,7 @@ import * as actionCreators from "./creators";
 import * as actionTypes from "./types";
 import * as actions from "./index";
 import * as transactionService from "../services/transactionService";
+import * as accountService from "../services/accountService";
 import Account from "../models/Account";
 import Transaction from "../models/Transaction";
 import reducer from "../reducers";
@@ -86,6 +87,16 @@ describe("Account", () => {
   });
 
   describe("createAccount", () => {
+    let createAccount = null;
+
+    beforeEach(() => {
+      createAccount = sinon.stub(accountService, "create");
+    });
+
+    afterEach(() => {
+      createAccount.restore();
+    });
+
     it("should create account", async () => {
       await store.dispatch(
         actions.createAccount(
@@ -100,9 +111,25 @@ describe("Account", () => {
       expect(notifications.length).toBe(1);
       expect(notifications[0].title).toEqual("Account created");
     });
+
+    it("should show error message if account.create fails", async () => {
+      createAccount.throws();
+      await store.dispatch(
+        actions.createAccount(
+          new Account({
+            name: "TEST",
+            financialInstitution: "FI",
+            type: "CHECKING"
+          })
+        )
+      );
+      const { notifications } = store.getState();
+      expect(notifications.length).toBe(1);
+      expect(notifications[0].title).toEqual("Failed to create account");
+    });
   });
 
-  describe("udpateAccount", () => {
+  describe("updateAccount", () => {
     it("should update account", async () => {
       let result = await db.post(
         new Account({

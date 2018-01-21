@@ -51,7 +51,7 @@ export const createAccount = (accountData: Account) => async dispatch => {
     dispatch(actionCreators.showSuccessNotification("Account created"));
   } catch (err) {
     dispatch(
-      actionCreators.showErrorNotification("Account creation failed", err)
+      actionCreators.showErrorNotification("Failed to create account", err)
     );
     dispatch(actionCreators.createAccountFailed(err));
   }
