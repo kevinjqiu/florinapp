@@ -33,11 +33,11 @@ export const deleteAccount = (accountId: string) => async dispatch => {
   dispatch(actionCreators.deleteAccountRequested(accountId));
   try {
     await accountService.del(accountId);
-    dispatch(actionCreators.showSuccessNotification("The account was deleted"));
+    dispatch(actionCreators.showSuccessNotification("Account deleted"));
     dispatch(actionCreators.deleteAccountSucceeded(accountId));
   } catch (err) {
     dispatch(
-      actionCreators.showErrorNotification("Cannot delete account", err)
+      actionCreators.showErrorNotification("Failed to delete account", err)
     );
     dispatch(actionCreators.deleteAccountFailed(err));
   }
@@ -51,7 +51,7 @@ export const createAccount = (accountData: Account) => async dispatch => {
     dispatch(actionCreators.showSuccessNotification("Account created"));
   } catch (err) {
     dispatch(
-      actionCreators.showErrorNotification("Account creation failed", err)
+      actionCreators.showErrorNotification("Failed to create account", err)
     );
     dispatch(actionCreators.createAccountFailed(err));
   }
@@ -405,11 +405,11 @@ export const deleteTransaction = (transactionId: string) => async dispatch => {
   dispatch(actionCreators.deleteTransactionRequested(transactionId));
   try {
     await transactionService.del(transactionId);
-    dispatch(actionCreators.showSuccessNotification("The transaction was deleted"));
+    dispatch(actionCreators.showSuccessNotification("Transaction deleted"));
     dispatch(actionCreators.deleteTransactionSucceeded(transactionId));
   } catch (err) {
     dispatch(
-      actionCreators.showErrorNotification("Cannot delete transaction", err)
+      actionCreators.showErrorNotification("Failed to delete transaction", err)
     );
     dispatch(actionCreators.deleteTransactionFailed(err));
   }

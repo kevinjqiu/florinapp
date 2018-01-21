@@ -130,7 +130,7 @@ describe("Account List", async () => {
     expect(actions[0].accountId).toBe("deadbeefcafebabe");
 
     expect(actions[1].type).toBe("RNS_SHOW_NOTIFICATION");
-    expect(actions[1].title).toBe("Cannot delete account");
+    expect(actions[1].title).toBe("Failed to delete account");
     expect(actions[1].level).toBe("error");
 
     expect(actions[2].type).toBe(actionTypes.DELETE_ACCOUNT_FAILED);
@@ -179,7 +179,7 @@ describe("Account List", async () => {
     expect(actions[0].accountId).toBe("deadbeefcafebabe");
 
     expect(actions[1].type).toBe("RNS_SHOW_NOTIFICATION");
-    expect(actions[1].title).toBe("The account was deleted");
+    expect(actions[1].title).toBe("Account deleted");
     expect(actions[1].level).toBe("success");
 
     expect(actions[2].type).toBe(actionTypes.DELETE_ACCOUNT_SUCCEEDED);
