@@ -3,7 +3,9 @@ let envConfig = null;
 const DEFAULT_CONFIG = {
   basename: "/",
   dbname: "florin",
-  dbdebug: false
+  dbdebug: false,
+  appbranch: process.env.REACT_APP_BRANCH,
+  appcommithash: process.env.REACT_APP_COMMIT_HASH
 };
 
 const currentEnv = process.env.NODE_ENV;

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Row, Col } from "reactstrap";
 import Header from "../components/Header/Header";
 import Sidebar from "../components/Sidebar/Sidebar";
 import { Container } from "reactstrap";
@@ -12,6 +13,7 @@ import * as actions from "../actions";
 import GlobalModal from "../components/GlobalModal/GlobalModal";
 import Aside from "../components/Aside/Aside";
 import Notifications from "react-notification-system-redux";
+import config from "../config";
 
 class App extends Component {
   render() {
@@ -36,6 +38,14 @@ class App extends Component {
         </div>
         <GlobalModal />
         <Notifications notifications={notifications} />
+        <footer>
+          <Row>
+            <Col lg="4" sm="4" />
+            <Col lg="8" sm="8">
+              {config.appbranch}:{config.appcommithash}
+            </Col>
+          </Row>
+        </footer>
       </div>
     );
   }
