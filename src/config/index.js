@@ -1,34 +1,26 @@
-const { ENV } = process.env;
+let envConfig = null;
 
 const DEFAULT_CONFIG = {
   basename: "/",
   dbname: "florin",
-  dbadapter: "idb",
   dbdebug: false
 };
 
-const PROFILES = {
-  test: {
-    dbname: "florin-test",
-    dbadapter: "memory",
-    dbdebug: false
-  },
+const currentEnv = process.ENV;
 
-  local: {
+const envConfigs = {
+  "test": {
     dbname: "florin-test",
-    dbdebug: false
+    dbadapter: "memory"
   },
-
-  prod: {
+  "local": {
+    dbname: "florin-test"
+  },
+  "prod": {
     basename: "/demo",
-    dbname: "florin",
-    dbdebug: false
   }
+}
 
-};
-
-const config = Object.assign({}, DEFAULT_CONFIG, PROFILES[ENV] || {});
-
-console.log(config);
+const config = Object.assign({}, DEFAULT_CONFIG, envConfigs[currentEnv] || {});
 
 export default config;
