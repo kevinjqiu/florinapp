@@ -6,17 +6,17 @@ const DEFAULT_CONFIG = {
   dbdebug: false
 };
 
-const currentEnv = process.ENV;
+const currentEnv = process.env.NODE_ENV;
 
 const envConfigs = {
   "test": {
     dbname: "florin-test",
     dbadapter: "memory"
   },
-  "local": {
+  "development": {
     dbname: "florin-test"
   },
-  "prod": {
+  "production": {
     basename: "/demo",
   }
 }
