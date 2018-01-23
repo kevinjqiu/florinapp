@@ -42,10 +42,10 @@
     "valid-url": "^1.0.9"
   },
   "scripts": {
-    "start": "source bin/envvars.sh && ENV=local && react-scripts start",
-    "build": "source bin/envvars.sh && ENV=prod && react-scripts build && bin/generate_build_manifest.sh",
-    "test": "source bin/envvars.sh && ENV=test && react-scripts test --env=jsdom",
-    "coverage": "source bin/envvars.sh && ENV=test && react-scripts test --env=jsdom --coverage",
+    "start": ". bin/envvars.sh && ENV=local && react-scripts start",
+    "build": ". bin/envvars.sh && ENV=prod && react-scripts build && bin/generate_build_manifest.sh",
+    "test": ". bin/envvars.sh && ENV=test && react-scripts test --env=jsdom",
+    "coverage": ". bin/envvars.sh && ENV=test && react-scripts test --env=jsdom --coverage",
     "eject": "react-scripts eject",
     "build-css": "node-sass-chokidar scss/style.scss -o src",
     "watch-css": "npm run build-css && node-sass-chokidar scss/style.scss -o src --watch --recursive",
