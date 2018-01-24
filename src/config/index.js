@@ -1,5 +1,3 @@
-let envConfig = null;
-
 const DEFAULT_CONFIG = {
   basename: "/",
   dbname: "florin",
