@@ -42,14 +42,14 @@
     "valid-url": "^1.0.9"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "ENV=test react-scripts test --env=jsdom",
-    "coverage": "ENV=test react-scripts test --env=jsdom --coverage",
+    "start": ". bin/envvars.sh && ENV=local && react-scripts start",
+    "build": ". bin/envvars.sh && ENV=prod && react-scripts build && bin/generate_build_manifest.sh",
+    "test": ". bin/envvars.sh && ENV=test && react-scripts test --env=jsdom",
+    "coverage": ". bin/envvars.sh && ENV=test && react-scripts test --env=jsdom --coverage",
     "eject": "react-scripts eject",
     "build-css": "node-sass-chokidar scss/style.scss -o src",
     "watch-css": "npm run build-css && node-sass-chokidar scss/style.scss -o src --watch --recursive",
-    "publish": "gh-pages --repo https://github.com/florinapp/florinapp.github.io --dest demo -d build --branch master",
+    "deploy": "gh-pages --repo https://github.com/florinapp/florinapp.github.io --dest demo -d build --branch master",
     "flow": "flow"
   },
   "devDependencies": {

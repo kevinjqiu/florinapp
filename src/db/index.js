@@ -2,28 +2,26 @@ import PouchDB from "pouchdb";
 import PouchDBFind from "pouchdb-find";
 import PouchDBMemoryAdapter from "pouchdb-adapter-memory";
 import { setupIndex, setupViews } from "./setup";
-
-let db;
-
-const { ENV, DEBUG } = process.env;
+import config from "../config";
 
 PouchDB.plugin(PouchDBFind);
-if (ENV === "test") {
-  PouchDB.plugin(PouchDBMemoryAdapter);
-  // db = new PouchDB("florin-test", { adapter: "memory" });
-  db = new PouchDB("florin-test", { adapter: "memory" });
-} else {
-  db = new PouchDB("florin-test");
-  // db = new PouchDB("http://localhost:5984/florin");
+
+const fromConfig = ({ dbadapter, dbname, dbdebug }) => {
+  let db;
+  if (dbdebug) {
+    PouchDB.debug.enable("*");
+  }
+
+  if (dbadapter === "memory") {
+    PouchDB.plugin(PouchDBMemoryAdapter);
+  }
+
+  db = new PouchDB(dbname, { adapter: dbadapter });
+
+  setupIndex(db);
+  setupViews(db);
+
+  return db;
 }
 
-if (DEBUG) {
-  PouchDB.debug.enable("*");
-}
-
-setupIndex(db);
-setupViews(db);
-
-// const target = new PouchDB("http://localhost:5984/florin");
-// db.sync(target);
-export default db;
+export default fromConfig(config);
