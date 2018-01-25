@@ -15,19 +15,18 @@ describe("accounts reducer", () => {
         { name: "FOO", financialInstitution: "Tang" }
       ])
     );
-    expect(newState.accounts).toEqual([{ name: "FOO", financialInstitution: "Tang" }]);
+    expect(newState.accounts).toEqual([
+      { name: "FOO", financialInstitution: "Tang" }
+    ]);
   });
 
   it("should set loading to true when fetch accounts requested", () => {
     const state = {
       accounts: [],
       loading: false,
-      failed: true,
-    }
-    const newState = reducer(
-      state,
-      actionCreators.fetchAccountsRequested()
-    );
+      failed: true
+    };
+    const newState = reducer(state, actionCreators.fetchAccountsRequested());
     expect(newState.loading).toEqual(true);
     expect(newState.failed).toEqual(false);
   });
@@ -66,22 +65,25 @@ describe("accounts reducer", () => {
   it("should change account list groupby option", () => {
     const state = {
       uiOptions: { groupBy: "financialInstitution" }
-    }
-    const newState = reducer(state, actionCreators.changeAccountListGroupByOptionSucceeded("type"));
+    };
+    const newState = reducer(
+      state,
+      actionCreators.changeAccountListGroupByOptionSucceeded("type")
+    );
     expect(newState.uiOptions.groupBy).toEqual("type");
-  })
+  });
 
   it("should update account", () => {
-    const a1 = new Account({_id: "a1", name: "A1"})
-    const a2 = new Account({_id: "a2", name: "A2"})
-    const a3 = new Account({_id: "a3", name: "A3"})
-    const a2p = new Account({_id: "a2", name: "AAA222"})
+    const a1 = new Account({ _id: "a1", name: "A1" });
+    const a2 = new Account({ _id: "a2", name: "A2" });
+    const a3 = new Account({ _id: "a3", name: "A3" });
+    const a2p = new Account({ _id: "a2", name: "AAA222" });
 
     const state = {
       accounts: [a1, a2, a3]
-    }
+    };
 
-    const newState = reducer(state, actionCreators.updateAccountSucceeded(a2p))
-    expect(newState.accounts).toEqual([a1, a2p, a3])
-  })
+    const newState = reducer(state, actionCreators.updateAccountSucceeded(a2p));
+    expect(newState.accounts).toEqual([a1, a2p, a3]);
+  });
 });

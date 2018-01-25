@@ -21,5 +21,5 @@ describe("aside reducer", () => {
       }
     });
     expect(newState.asideType).toEqual(null);
-  })
+  });
 });
