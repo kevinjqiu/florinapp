@@ -6,6 +6,7 @@ import * as actions from "../../actions";
 import { reduxForm } from "redux-form";
 import Account from "../../models/Account";
 import AccountStatementImports from "./AccountStatementImports";
+import * as PropTypes from "prop-types";
 
 const ViewAccountForm = connect(({ currentAccount }) => {
   return {
@@ -14,6 +15,11 @@ const ViewAccountForm = connect(({ currentAccount }) => {
 }, null)(reduxForm({ form: "viewAccount" })(AccountForm));
 
 class AccountDetails extends Component {
+  static propTypes = {
+    match: PropTypes.object,
+    updateAccount: PropTypes.func
+  }
+
   componentWillMount() {
     const { accountId } = this.props.match.params;
     this.props.fetchAccountById(accountId);

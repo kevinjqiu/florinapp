@@ -18,6 +18,7 @@ import RefreshButton from "../../components/RefreshButton/RefreshButton";
 import ViewButton from "../../components/ListActionButton/ViewButton";
 import DeleteButton from "../../components/ListActionButton/DeleteButton";
 import NewButton from "../../components/NewButton/NewButton";
+import * as PropTypes from "prop-types";
 
 const NewAccountButton = ({ alignRight }) => {
   return <NewButton linkUrl="/accounts/new" caption="New Account" className={alignRight ? "float-right" : ""} />
@@ -280,6 +281,11 @@ const AccountCardBody = ({
 };
 
 class AccountList extends Component {
+  static propTypes = {
+    fetchAccounts: PropTypes.func,
+    accountState: PropTypes.object
+  }
+
   componentWillMount() {
     this.props.fetchAccounts();
   }

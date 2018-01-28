@@ -33,7 +33,6 @@ const AccountHistory = ({ currentAccount }) => {
 class AccountStatementImports extends Component {
   render() {
     const { ui, currentAccount, importAccountStatement } = this.props;
-    console.log(currentAccount);
     return (
       <Row>
         <Col xs="3" lg="3">
