@@ -27,6 +27,7 @@ export default (state = initState, action) => {
     case actionTypes.FETCH_ACCOUNTS_FAILED:
       return {
         ...state,
+        loading: false,
         failed: true
       };
     case actionTypes.DELETE_ACCOUNT_SUCCEEDED:
