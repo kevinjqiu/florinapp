@@ -12,6 +12,7 @@ import { CategorySummary, Summary } from "../models/CategorySummary";
 import Category from "../models/Category";
 import { categoryTypes } from "../models/CategoryType";
 import { MAX_NUMBER } from "../common/const";
+const Decimal = require('decimal.js/decimal.min');
 
 const thisMonthDateRange = thisMonth();
 
@@ -255,7 +256,7 @@ export const importAccountStatement = async (
 };
 
 export const fetchTransactionLinkCandidates = async (transaction: Transaction): Promise<Array<Transaction>> => {
-  const amount = "" + parseFloat(transaction.amount) * -1;
+  const amount = (new Decimal(transaction.amount) * -1).toString();
   const options = {
     startkey: [amount, "9999"],
     endkey: [amount, ""],
