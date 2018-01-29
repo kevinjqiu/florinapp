@@ -19,6 +19,7 @@ import ViewButton from "../../components/ListActionButton/ViewButton";
 import DeleteButton from "../../components/ListActionButton/DeleteButton";
 import NewButton from "../../components/NewButton/NewButton";
 import * as PropTypes from "prop-types";
+const Decimal = require('decimal.js/decimal.min');
 
 const NewAccountButton = ({ alignRight }) => {
   return <NewButton linkUrl="/accounts/new" caption="New Account" className={alignRight ? "float-right" : ""} />
@@ -133,13 +134,9 @@ const GroupByOption = ({uiOptions, changeAccountListGroupByOption}) => {
 
 const AccountsTable = ({accounts, deleteAccountWithConfirmation, showGlobalModal, hideGlobalModal, deleteAccount, fetchAccounts}) => {
   const accountsTally = accounts.reduce((aggregateByCurrency, currentAccount) => {
-    // TODO: I'm not able to get decimal.js to work with ES6...
-    // It compalins:
-    // TypeError: __WEBPACK_IMPORTED_MODULE_9_decimal_js__ is not a constructor
-    // Temporarily use the imprecise float point arithmatic for summing monies
     aggregateByCurrency[currentAccount.currency] = aggregateByCurrency[currentAccount.currency] || 0;
     const currentBalance = currentAccount.history ? currentAccount.history[currentAccount.history.length - 1].balance : "0";
-    aggregateByCurrency[currentAccount.currency] = aggregateByCurrency[currentAccount.currency] + parseFloat(currentBalance);
+    aggregateByCurrency[currentAccount.currency] = new Decimal(currentBalance).plus(new Decimal(aggregateByCurrency[currentAccount.currency]));
     return aggregateByCurrency;
   }, {})
   return <Table>
