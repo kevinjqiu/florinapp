@@ -20,7 +20,7 @@ const CategoryField = ({
     <div className="form-group">
       <FormGroup row>
         <Col md="3">
-          <Label htmlFor="{input.name}">{label}</Label>
+          <Label htmlFor={input.name}>{label}</Label>
         </Col>
         <Col xs="12" md="9">
           <CategorySelector categories={categories} {...options} />
