@@ -5,6 +5,7 @@ import * as transactionService from "../services/transactionService";
 import * as accountService from "../services/accountService";
 import * as categoryService from "../services/categoryService";
 import * as syncService from "../services/syncService";
+import * as settingsService from "../services/settingsService";
 import type FetchOptions from "../services/FetchOptions";
 import DateRange from "../models/DateRange";
 import Account from "../models/Account";
@@ -440,5 +441,18 @@ export const updateTransaction = (transactionId: string, transactionData: Transa
       actionCreators.showErrorNotification("Transaction update failed", err)
     );
     dispatch(actionCreators.updateTransactionFailed(err));
+  }
+}
+
+export const fetchSettings = () => async dispatch => {
+  dispatch(actionCreators.fetchSettingsRequested());
+  try {
+    const settings = await settingsService.fetch();
+    dispatch(actionCreators.fetchSettingsSucceeded(settings));
+  } catch (err) {
+    dispatch(actionCreators.fetchSettingsFailed(err));
+    dispatch(
+      actionCreators.showErrorNotification("Failed to fetch settings", err)
+    );
   }
 }

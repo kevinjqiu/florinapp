@@ -501,3 +501,18 @@ export const updateTransactionSucceeded = (transaction: Transaction) => {
 }
 
 export const updateTransactionFailed = actionFailed(actionTypes.UPDATE_TRANSACTION_FAILED);
+
+export const fetchSettingsRequested = () => {
+  return {
+    type: actionTypes.FETCH_SETTINGS_REQUESTED
+  }
+}
+
+export const fetchSettingsSucceeded = (settings: Settings) => {
+  return {
+    type: actionTypes.FETCH_SETTINGS_SUCCEEDED,
+    settings
+  }
+}
+
+export const fetchSettingsFailed = actionFailed(actionTypes.FETCH_SETTINGS_FAILED);
