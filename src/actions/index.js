@@ -1,5 +1,5 @@
 // @flow
-import { push } from "react-router-redux";
+import { push, goBack } from "react-router-redux";
 import * as actionCreators from "./creators";
 import * as transactionService from "../services/transactionService";
 import * as accountService from "../services/accountService";
@@ -12,6 +12,7 @@ import Account from "../models/Account";
 import Transaction from "../models/Transaction";
 import Category from "../models/Category";
 import Sync from "../models/Sync";
+import Settings from "../models/Settings";
 import { Location } from "react-router";
 import * as links from "../models/links";
 import seed from "../db/seed";
@@ -453,6 +454,23 @@ export const fetchSettings = () => async dispatch => {
     dispatch(actionCreators.fetchSettingsFailed(err));
     dispatch(
       actionCreators.showErrorNotification("Failed to fetch settings", err)
+    );
+  }
+}
+
+export const updateSettings = (settings: Settings) => async dispatch => {
+  dispatch(actionCreators.updateSettingsRequested());
+  try {
+    await settingsService.update(settings);
+    dispatch(actionCreators.updateSettingsSucceeded(settings));
+    dispatch(
+      actionCreators.showSuccessNotification("Settings updated")
+    );
+    dispatch(goBack());
+  } catch (err) {
+    dispatch(actionCreators.updateSettingsFailed(err));
+    dispatch(
+      actionCreators.showErrorNotification("Failed to update settings", err)
     );
   }
 }

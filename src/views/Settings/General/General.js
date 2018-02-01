@@ -5,6 +5,7 @@ import { Field, reduxForm } from "redux-form";
 import { DropdownList } from "react-widgets";
 import { connect } from "react-redux";
 import * as actions from "../../../actions";
+import Settings from "../../../models/Settings";
 
 const LOCALES = ["en_US", "en_GB", "en_CA"];
 
@@ -50,7 +51,7 @@ class General extends Component {
   }
 
   render() {
-    const { settings } = this.props;
+    const { settings, updateSettings } = this.props;
     return (
       <Container fluid>
         <Row>
@@ -61,7 +62,9 @@ class General extends Component {
         <Row>
           <Col sm="12" lg="12">
             <GeneralSettingsForm initialValues={settings} onSubmit={(props)=>{
-              console.log(props);
+              const settings = new Settings(props);
+              console.log(settings);
+              updateSettings(settings);
             }} />
           </Col>
         </Row>
