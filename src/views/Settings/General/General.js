@@ -2,11 +2,13 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Container, Row, Col, Button, FormFeedback, FormGroup, Label } from "reactstrap";
 import { Field, reduxForm } from "redux-form";
-import Settings from "../../../models/Settings";
-import InputField from "../../../components/InputField/InputField";
 import { DropdownList } from "react-widgets";
+import { connect } from "react-redux";
+import * as actions from "../../../actions";
 
-const LocaleField = ({ input, label, locales, meta: { touched, error } }) => {
+const LOCALES = ["en_US", "en_GB", "en_CA"];
+
+const LocaleField = ({ input, label, meta: { touched, error } }) => {
   let options = touched ? { ...input, valid: !error } : { ...input };
   return (
     <div className="form-group">
@@ -16,7 +18,7 @@ const LocaleField = ({ input, label, locales, meta: { touched, error } }) => {
         </Col>
         <Col xs="12" md="9">
           <DropdownList
-            data={locales}
+            data={LOCALES}
             filter="contains"
             {...options}
           />
@@ -30,7 +32,7 @@ const LocaleField = ({ input, label, locales, meta: { touched, error } }) => {
 let GeneralSettingsForm = ({ handleSubmit, onSubmit, reset }) => {
   return (
     <form className="form-horizontal" onSubmit={handleSubmit(onSubmit)}>
-      <Field name="locale" label="Locale" component={InputField} />
+      <Field name="locale" label="Locale" component={LocaleField} />
       <Button type="submit" color="primary">Save</Button>
       <Button color="secondary" onClick={reset}>Reset</Button>
       <Link to="/"><Button color="danger">Cancel</Button></Link>
@@ -42,9 +44,13 @@ GeneralSettingsForm = reduxForm({
   form: "generalSettings",
 })(GeneralSettingsForm);
 
-export default class General extends Component {
+class General extends Component {
+  componentDidMount() {
+    this.props.fetchSettings();
+  }
+
   render() {
-    const settings = new Settings({locale: "en_US"});
+    const { settings } = this.props;
     return (
       <Container fluid>
         <Row>
@@ -54,10 +60,20 @@ export default class General extends Component {
         </Row>
         <Row>
           <Col sm="12" lg="12">
-            <GeneralSettingsForm initialValues={settings} onSubmit={()=>{}} />
+            <GeneralSettingsForm initialValues={settings} onSubmit={(props)=>{
+              console.log(props);
+            }} />
           </Col>
         </Row>
       </Container>
     );
   }
 }
+
+const mapStateToProps = ({ settings }) => {
+  return {
+    settings: settings.settings
+  }
+}
+
+export default connect(mapStateToProps, actions)(General);
