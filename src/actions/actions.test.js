@@ -530,4 +530,35 @@ describe("Settings", () => {
       );
     });
   })
+
+  describe("updateSettings", () => {
+    let update;
+    beforeEach(() => {
+      update = sinon.stub(settingsService, "update");
+    })
+
+    afterEach(() => {
+      update.restore();
+    });
+
+    it("should update settings", async () => {
+      update.returns(new Settings({locale: "en_GB"}));
+      await assertServiceAction(
+        store,
+        actions.updateSettings(new Settings({locale: "en_US"})),
+        ({ settings }) => {
+          expect(settings.settings.locale).toEqual("en_US");
+        }
+      );
+    })
+
+    it("should signal error when update fails", async () => {
+      update.throws();
+
+      await assertServiceAction(store, actions.updateSettings(new Settings()), state =>
+        expectNotificationTitle(state, "Failed to update settings")
+      );
+    })
+
+  })
 })
