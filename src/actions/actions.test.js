@@ -9,9 +9,11 @@ import * as actions from "./index";
 import * as transactionService from "../services/transactionService";
 import * as accountService from "../services/accountService";
 import * as categoryService from "../services/categoryService";
+import * as settingsService from "../services/settingsService";
 import Account from "../models/Account";
 import Transaction from "../models/Transaction";
 import Category from "../models/Category";
+import Settings from "../models/Settings";
 import reducer from "../reducers";
 
 const expectNotificationTitle = ({ notifications }, notificationTitle) => {
@@ -492,3 +494,71 @@ describe("Category", () => {
     });
   });
 });
+
+describe("Settings", () => {
+  let store;
+
+  beforeEach(async () => {
+    store = await setup();
+  });
+
+  describe("fetchSettings", () => {
+    let fetch;
+    beforeEach(() => {
+      fetch = sinon.stub(settingsService, "fetch");
+    })
+
+    afterEach(() => {
+      fetch.restore();
+    });
+
+    it("should fetch settings", async () => {
+      fetch.returns(new Settings());
+      await assertServiceAction(
+        store,
+        actions.fetchSettings(),
+        ({ settings }) => {
+          expect(settings.settings.locale).toEqual("en_US");
+        }
+      );
+    });
+
+    it("should signal error when fetch fails", async () => {
+      fetch.throws();
+      await assertServiceAction(store, actions.fetchSettings(), state =>
+        expectNotificationTitle(state, "Failed to fetch settings")
+      );
+    });
+  })
+
+  describe("updateSettings", () => {
+    let update;
+    beforeEach(() => {
+      update = sinon.stub(settingsService, "update");
+    })
+
+    afterEach(() => {
+      update.restore();
+    });
+
+    it("should update settings", async () => {
+      update.returns(new Settings({locale: "en_GB"}));
+      await assertServiceAction(
+        store,
+        actions.updateSettings(new Settings({locale: "en_US"})),
+        ({ settings }) => {
+          expect(settings.settings.locale).toEqual("en_US");
+        }
+      );
+    })
+
+    it("should signal error when update fails", async () => {
+      update.throws();
+
+      await assertServiceAction(store, actions.updateSettings(new Settings()), state =>
+        expectNotificationTitle(state, "Failed to update settings")
+      );
+    })
+
+  })
+})

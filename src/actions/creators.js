@@ -1,6 +1,7 @@
 import * as actionTypes from "./types";
 import { success, error } from "react-notification-system-redux";
 import Account from "../models/Account";
+import Settings from "../models/Settings";
 import Sync from "../models/Sync";
 
 const actionFailed = (actionType: string) => {
@@ -501,3 +502,33 @@ export const updateTransactionSucceeded = (transaction: Transaction) => {
 }
 
 export const updateTransactionFailed = actionFailed(actionTypes.UPDATE_TRANSACTION_FAILED);
+
+export const fetchSettingsRequested = () => {
+  return {
+    type: actionTypes.FETCH_SETTINGS_REQUESTED
+  }
+}
+
+export const fetchSettingsSucceeded = (settings: Settings) => {
+  return {
+    type: actionTypes.FETCH_SETTINGS_SUCCEEDED,
+    settings
+  }
+}
+
+export const fetchSettingsFailed = actionFailed(actionTypes.FETCH_SETTINGS_FAILED);
+
+export const updateSettingsRequested = () => {
+  return {
+    type: actionTypes.UPDATE_SETTINGS_REQUESTED
+  }
+}
+
+export const updateSettingsSucceeded = (settings: Settings) => {
+  return {
+    type: actionTypes.UPDATE_SETTINGS_SUCCEEDED,
+    settings
+  }
+}
+
+export const updateSettingsFailed = actionFailed(actionTypes.UPDATE_SETTINGS_FAILED);

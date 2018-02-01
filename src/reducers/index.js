@@ -7,6 +7,7 @@ import categories from "./categories";
 import globals from "./globals";
 import syncs from "./syncs";
 import aside from "./aside";
+import settings from "./settings";
 import transactionListAside from "./transactionListAside";
 import { reducer as notifications } from "react-notification-system-redux";
 import { reducer as form } from "redux-form";
@@ -24,5 +25,6 @@ export default combineReducers({
   syncs,
   ui,
   notifications,
-  form
+  form,
+  settings
 });
