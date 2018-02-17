@@ -149,6 +149,7 @@ describe("transactionService.fetch", () => {
   it("should return transactions filtered by date", async () => {
     await db.post(new Transaction({ _id: "txn1", date: "2017-01-01" }));
     await db.post(new Transaction({ _id: "txn2", date: "2017-01-15" }));
+    await db.post(new Transaction({ _id: "txn4", date: "2017-01-31" }));
     await db.post(new Transaction({ _id: "txn3", date: "2017-02-01" }));
 
     const result = await transactionService.fetch({
@@ -164,7 +165,7 @@ describe("transactionService.fetch", () => {
       }
     });
     const transactions = result.result;
-    expect(transactions.map(t => t._id)).toEqual(["txn1", "txn2"]);
+    expect(transactions.map(t => t._id)).toEqual(["txn1", "txn2", "txn4"]);
   });
 
   it("should set the linkedToTransaction attribute when applicable", async () => {
