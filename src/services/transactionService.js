@@ -12,6 +12,8 @@ import { CategorySummary, Summary } from "../models/CategorySummary";
 import Category from "../models/Category";
 import { categoryTypes } from "../models/CategoryType";
 import { MAX_NUMBER } from "../common/const";
+import ServiceError from "./ServiceError";
+
 const Decimal = require('decimal.js/decimal.min');
 
 const thisMonthDateRange = thisMonth();
@@ -223,7 +225,7 @@ export const saveNewTransaction = async (transaction: Transaction): Promise<Stri
     }
   });
   if (response.docs.length !== 0) {
-    throw { error: "Transaction is already imported" };
+    throw new ServiceError("Transaction is already imported");
   }
   return (await db.post(transaction)).id;
 };

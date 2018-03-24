@@ -2,6 +2,7 @@
 import db from "../db";
 import Sync from "../models/Sync";
 import { syncStatuses } from "../models/SyncStatus";
+import ServiceError from "./ServiceError";
 
 const DEFAULT_SYNC_OPTIONS = { live: true, retry: true };
 export const SYNC_KEY = "florin-syncs";
@@ -13,7 +14,7 @@ export const create = (
   const syncs = fetch(localStorage);
   const existingRemotes = new Set(syncs.map(sync => sync.remote));
   if (existingRemotes.has(sync.remote)) {
-    throw { error: "The sync target is already setup" };
+    throw new ServiceError("The sync target is already setup");
   }
   syncs.push(sync);
   localStorage.setItem(SYNC_KEY, JSON.stringify(syncs));
