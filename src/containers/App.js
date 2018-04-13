@@ -33,19 +33,18 @@ class App extends Component {
                 <Redirect from="/" to="/dashboard" />
               </Switch>
             </Container>
+            <Row>
+              <Col>
+                <p className="text-center">
+                  {config.appbranch}:{config.appcommithash}
+                </p>
+              </Col>
+            </Row>
           </main>
           <Aside />
         </div>
         <GlobalModal />
         <Notifications notifications={notifications} />
-        <footer>
-          <Row>
-            <Col lg="4" sm="4" />
-            <Col lg="8" sm="8">
-              {config.appbranch}:{config.appcommithash}
-            </Col>
-          </Row>
-        </footer>
       </div>
     );
   }
