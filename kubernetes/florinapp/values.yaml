@@ -1,0 +1,16 @@
+replicaCount: 1
+
+image:
+  repository: kevinjqiu/florinapp
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  path: /
+  hosts:
+    - florinapp.svc.qiu.home
