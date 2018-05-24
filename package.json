@@ -2,7 +2,6 @@
   "name": "florin",
   "version": "2.0.0",
   "private": true,
-  "homepage": "https://florinapp.github.io/demo",
   "dependencies": {
     "@coreui/react": "1.0.6",
     "banking": "^1.1.0",

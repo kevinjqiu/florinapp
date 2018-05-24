@@ -17,7 +17,7 @@ const envConfigs = {
     dbname: "florin-test"
   },
   "demo": {
-    basename: process.env.BASENAME || "/demo",
+    basename: "/demo",
   },
   "production": {
   }
