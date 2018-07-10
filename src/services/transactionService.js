@@ -247,6 +247,8 @@ export const importAccountStatement = async (
     }
   });
 
+  const numImported = 0;
+  const numSkipped = 0;
   const resolvedResults = await Promise.all(dbPromises);
   const numImported = resolvedResults.filter(r => r === true).length;
   const numSkipped = resolvedResults.filter(r => r === false).length;

@@ -30,9 +30,21 @@ export default class OfxAdapter {
     return this.ofxObject;
   }
 
+  getStatement(ofxObject) {
+    let bankTranList = {};
+    if ('BANKMSGSRSV1' in ofxObject.body.OFX) {
+      return ofxObject.body.OFX.BANKMSGSRSV1.STMTTRNRS.STMTRS;
+    } else if ('CREDITCARDMSGSRSV1' in ofxObject.body.OFX) {
+      return ofxObject.body.OFX.CREDITCARDMSGSRSV1.CCSTMTTRNRS.CCSTMTRS;
+    } else {
+      console.log('POSSIBLY MALFORMED OFX FILE!!!');
+      return {};
+    }
+  }
+
   async getTransactions(account: {_id: string}): Promise<Array<Transaction>> {
     const ofxObject = await this.getOfxObject();
-    const stmttrns = ofxObject.body.OFX.BANKMSGSRSV1.STMTTRNRS.STMTRS.BANKTRANLIST.STMTTRN || [];
+    const stmttrns = this.getStatement(ofxObject).BANKTRANLIST.STMTTRN || [];
     return stmttrns.map(t => {
       return new Transaction({
         accountId: account._id,
@@ -50,8 +62,10 @@ export default class OfxAdapter {
 
   async getBalance(): Promise<{dateTime: string, amount: string}> {
     const ofxObject = await this.getOfxObject();
-    const ledgerBalance = ofxObject.body.OFX.BANKMSGSRSV1.STMTTRNRS.STMTRS.LEDGERBAL;
+    const ledgerBalance = this.getStatement(ofxObject).LEDGERBAL;
     const dt = ledgerBalance.DTASOF;
+    // TODO: doesn't work for Rogers Bank's new OFX format
+    // <DTASOF>20180710174252
     const matched = /([\d.]+)\[([\d-]+).+\]/.exec(dt);
     const dtString = matched[1];
     const offset = parseInt(matched[2], 10) * 60;
