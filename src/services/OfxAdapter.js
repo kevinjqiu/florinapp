@@ -31,7 +31,6 @@ export default class OfxAdapter {
   }
 
   getStatement(ofxObject) {
-    let bankTranList = {};
     if ('BANKMSGSRSV1' in ofxObject.body.OFX) {
       return ofxObject.body.OFX.BANKMSGSRSV1.STMTTRNRS.STMTRS;
     } else if ('CREDITCARDMSGSRSV1' in ofxObject.body.OFX) {
